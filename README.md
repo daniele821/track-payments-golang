@@ -2,11 +2,10 @@
 
 ## requirements
 
-- xampp php server, with mysql database
+- python3 (`sqlite3` module is in standard library!!!)
 
-## known bugs
+## general ideas
 
-- xampp on linux possible bugs:
-    - if errors are not reported, try setting display_errors=On in /opt/lampp/etc/php.ini
-    - if reset-admin.php not work in linux and say something about using mysql_upgrade, try running: 
-        `sudo /opt/lampp/bin/mysql_upgrade -u root -p`
+- use python for the backend, and html + css for frontend and js for interactions
+    - python: create a server which allows POST parameters, and uses them to make sqlite queries, and then answer via json
+    - javascript: via `fetch()` make requests to python backend, and use it to get database data
