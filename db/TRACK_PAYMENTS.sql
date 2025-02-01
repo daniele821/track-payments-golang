@@ -12,8 +12,8 @@
 -- Database Section
 -- ________________ 
 
-create database track_payments_logico;
-use track_payments_logico;
+create database track_payments;
+use track_payments;
 
 
 -- Tables Section
