@@ -21,9 +21,6 @@ class Db:
         self.__conn__.commit()
         return self.__cursor__.lastrowid, self.__cursor__.rowcount
 
-    def __select__(self):
-        pass
-
     def __updateTotalPrice__(self, paymentId):
         query = """
         UPDATE PAYMENT
@@ -141,5 +138,5 @@ class Db:
 
     def deletePayment(self, paymentId):
         query = "DELETE FROM PAYMENT WHERE paymentId = ?"
-        data = (paymentId, )
+        data = (paymentId,)
         return self.__execute__(query, data)
