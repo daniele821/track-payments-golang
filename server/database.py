@@ -28,7 +28,18 @@ class Db:
         return self.__cursor__.execute("SELECT name FROM ITEM").fetchall()
 
     def getAllDetails(self):
-        return self.__cursor__.execute("SELECT nameItem, paymentId, quantity, unit_price FROM DETAIL_ORDER").fetchall()
+        query = "SELECT nameItem, paymentId, quantity, unit_price FROM DETAIL_ORDER"
+        return self.__cursor__.execute(query).fetchall()
 
     def getAllPayments(self):
-        return self.__cursor__.execute("SELECT paymentId, date, total_price, city, shop, payment_method FROM PAYMENT").fetchall()
+        query = "SELECT paymentId, date, total_price, city, shop, payment_method FROM PAYMENT"
+        return self.__cursor__.execute(query).fetchall()
+
+    def getAll(self):
+        query = """
+        SELECT P.paymentId, D.nameItem, D.quantity, D.unit_price, P.date, P.total_price, 
+            P.city, P.shop, P.payment_method 
+        FROM PAYMENT P, DETAIL_ORDER D, ITEM I
+        WHERE P.paymentId = D.paymentId AND D.nameItem = I.name
+        """
+        return self.__cursor__.execute(query).fetchall()

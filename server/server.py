@@ -9,3 +9,6 @@ print(db.getAllItems())
 print(db.getAllMethods())
 print(db.getAllPayments())
 print(db.getAllShops())
+print()
+for line in db.getAll():
+    print(line)
