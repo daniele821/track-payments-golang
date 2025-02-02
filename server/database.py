@@ -11,6 +11,7 @@ class Db:
         self.__dbpath__ = DATA_DIR + "/" + nameDb + ".db"
         os.makedirs(DATA_DIR, exist_ok=True)
         self.__conn__ = sqlite3.connect(self.__dbpath__)
+        self.__conn__.execute("PRAGMA foreign_keys = ON")
         self.__cursor__ = self.__conn__.cursor()
         self.__cursor__.executescript(open(SQL_CREATION_FILE, "r").read())
         
@@ -31,5 +32,3 @@ class Db:
 
     def getAllPayments():
         return CURSOR.execute("SELECT * FROM PAYMENT").fetchall()
-
-
