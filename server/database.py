@@ -21,6 +21,9 @@ class Db:
         self.__conn__.commit()
         return self.__cursor__.lastrowid, self.__cursor__.rowcount
 
+    def __select__(self):
+        pass
+
     def __updateTotalPrice__(self, paymentId):
         query = """
         UPDATE PAYMENT
@@ -93,4 +96,25 @@ class Db:
     def insertPayment(self, date, city, shop, method):
         query = "INSERT INTO PAYMENT(date, total_price, city, shop, payment_method) values(?,?,?,?,?)"
         data = (date, 0, city, shop, method)
+        return self.__execute__(query, data)
+
+    # update queries
+    def updateCity(self, old, new):
+        query = "UPDATE CITY SET name = ? WHERE name = ?"
+        data = (new, old)
+        return self.__execute__(query, data)
+
+    def updateShop(self, old, new):
+        query = "UPDATE SHOP SET name = ? WHERE name = ?"
+        data = (new, old)
+        return self.__execute__(query, data)
+
+    def updateMethod(self, old, new):
+        query = "UPDATE PAYMENT_METHOD SET method = ? WHERE method = ?"
+        data = (new, old)
+        return self.__execute__(query, data)
+
+    def updateItem(self, old, new):
+        query = "UPDATE ITEM SET name = ? WHERE name = ?"
+        data = (new, old)
         return self.__execute__(query, data)
