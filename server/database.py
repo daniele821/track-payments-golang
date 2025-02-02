@@ -14,7 +14,7 @@ class Db:
         self.__conn__.execute("PRAGMA foreign_keys = ON")
         self.__cursor__ = self.__conn__.cursor()
         self.__cursor__.executescript(open(SQL_CREATION_FILE, "r").read())
-        
+
     def getAllCities():
         return CURSOR.execute("SELECT name FROM CITY").fetchall()
 
