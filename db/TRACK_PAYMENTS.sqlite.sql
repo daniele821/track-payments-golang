@@ -38,9 +38,9 @@ create table if not exists PAYMENT (
      shop           TEXT    not null,
      payment_method TEXT    not null,
      constraint IDPAYMENT primary key (paymentId),
-     foreign key (city) references CITY(name),
-     foreign key (shop) references SHOP(name),
-     foreign key (payment_method) references PAYMENT_METHOD(method)
+     foreign key (city) references CITY(name) ON UPDATE CASCADE ON DELETE RESTRICT,
+     foreign key (shop) references SHOP(name) ON UPDATE CASCADE ON DELETE RESTRICT,
+     foreign key (payment_method) references PAYMENT_METHOD(method) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
 create table if not exists DETAIL_ORDER (
@@ -49,7 +49,7 @@ create table if not exists DETAIL_ORDER (
      quantity       INTEGER not null,
      unit_price     INTEGER not null,
      constraint IDDETAIL_ORDER primary key (paymentId, nameItem),
-     foreign key (paymentId) references PAYMENT(paymentId),
-     foreign key (nameItem) references ITEM(name)
+     foreign key (paymentId) references PAYMENT(paymentId) ON UPDATE CASCADE ON DELETE CASCADE,
+     foreign key (nameItem) references ITEM(name) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
