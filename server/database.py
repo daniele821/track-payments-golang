@@ -61,3 +61,16 @@ class Db:
 
     def insertItem(self, item):
         self.__insert__("INSERT INTO ITEM(name) values(?)", (item,))
+
+    def insertDetail(self, item, paymentId, quantity, unit_price):
+        self.__insert__(
+            "INSERT INTO DETAIL_ORDER(nameItem, paymentId, quantity, unit_price) values(?, ?, ?, ?)",
+            (item, paymentId, quantity, unit_price),
+        )
+
+    def insertPayment(self, date, city, shop, method):
+        self.__insert__(
+            "INSERT INTO PAYMENT(date, total_price, city, shop, payment_method) values(?,?,?,?,?)",
+            (date, 0, city, shop, method),
+        )
+        return self.__cursor__.lastrowid
