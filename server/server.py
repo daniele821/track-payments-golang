@@ -4,12 +4,12 @@ import sqlite3
 import os
 import tempfile
 
-FILE_NAME = __file__
-DIR_NAME = os.path.dirname(FILE_NAME)
-DB_FILE = DIR_NAME + "/.payments.db"
-SQL_FILE = os.path.dirname(DIR_NAME) + "/db/TRACK_PAYMENTS.sqlite.sql"
+DATA_DIR = os.path.normpath(os.path.dirname(__file__) + "/data")
+DB_FILE = os.path.normpath(DATA_DIR + "/payments.db")
+SQL_FILE = os.path.normpath(DATA_DIR + "/../../db/TRACK_PAYMENTS.sqlite.sql")
+
+os.makedirs(DATA_DIR, exist_ok=True)
 
 conn = sqlite3.connect(DB_FILE)
 cursor = conn.cursor()
-cursor.executescript(open(SQL_FILE,"r").read())
-
+cursor.executescript(open(SQL_FILE, "r").read())
