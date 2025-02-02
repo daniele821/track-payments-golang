@@ -130,3 +130,16 @@ class Db:
         query = "UPDATE ITEM SET date = ?, city = ?, shop = ?, payment_method = ? WHERE paymentId = ?"
         data = (newDate, newCity, newShop, newMethod, paymentId)
         return self.__execute__(query, data)
+
+    # deletion queries
+    def deleteDetail(self, item, paymentId):
+        query = "DELETE DETAIL_ORDER WHERE nameItem = ? AND paymentId = ?"
+        data = (item, paymentId)
+        res = self.__execute__(query, data)
+        self.__updateTotalPrice__(paymentId)
+        return res
+
+    def deletePayment(self, paymentId):
+        query = "DELETE PAYMENT WHERE paymentId = ?"
+        data = (paymentId, )
+        return self.__execute__(query, data)
