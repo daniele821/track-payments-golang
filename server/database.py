@@ -86,9 +86,9 @@ class Db:
         data = (item,)
         return self.__execute__(query, data)
 
-    def insertDetail(self, item, paymentId, quantity, unit_price):
+    def insertDetail(self, item, paymentId, quantity, unitPrice):
         query = "INSERT INTO DETAIL_ORDER(nameItem, paymentId, quantity, unit_price) values(?, ?, ?, ?)"
-        data = (item, paymentId, quantity, unit_price)
+        data = (item, paymentId, quantity, unitPrice)
         res = self.__execute__(query, data)
         self.__updateTotalPrice__(paymentId)
         return res
@@ -117,4 +117,16 @@ class Db:
     def updateItem(self, old, new):
         query = "UPDATE ITEM SET name = ? WHERE name = ?"
         data = (new, old)
+        return self.__execute__(query, data)
+
+    def updateDetail(self, item, paymentId, newQuantity, newUnitPrice):
+        query = "UPDATE DETAIL_ORDER SET quantity = ?, unit_price = ? WHERE nameItem = ? AND paymentId = ?"
+        data = (newQuantity, newUnitPrice, item, paymentId)
+        res = self.__execute__(query, data)
+        self.__updateTotalPrice__(paymentId)
+        return res
+
+    def updatePayment(self, paymentId, newDate, newCity, newShop, newMethod):
+        query = "UPDATE ITEM SET date = ?, city = ?, shop = ?, payment_method = ? WHERE paymentId = ?"
+        data = (newDate, newCity, newShop, newMethod, paymentId)
         return self.__execute__(query, data)
