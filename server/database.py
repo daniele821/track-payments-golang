@@ -133,13 +133,13 @@ class Db:
 
     # deletion queries
     def deleteDetail(self, item, paymentId):
-        query = "DELETE DETAIL_ORDER WHERE nameItem = ? AND paymentId = ?"
+        query = "DELETE FROM DETAIL_ORDER WHERE nameItem = ? AND paymentId = ?"
         data = (item, paymentId)
         res = self.__execute__(query, data)
         self.__updateTotalPrice__(paymentId)
         return res
 
     def deletePayment(self, paymentId):
-        query = "DELETE PAYMENT WHERE paymentId = ?"
+        query = "DELETE FROM PAYMENT WHERE paymentId = ?"
         data = (paymentId, )
         return self.__execute__(query, data)
