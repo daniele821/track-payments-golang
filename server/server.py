@@ -2,13 +2,13 @@
 
 from database import Db
 
-db = Db("payments")
+db = Db("test")
 print(db.getAllCities())
-print(db.getAllDetails())
 print(db.getAllItems())
+print(db.getAllShops())
 print(db.getAllMethods())
 print(db.getAllPayments())
-print(db.getAllShops())
+print(db.getAllDetails())
 print()
 for line in db.getAll():
     print(line)

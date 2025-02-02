@@ -44,3 +44,20 @@ class Db:
         WHERE P.paymentId = D.paymentId AND D.nameItem = I.name
         """
         return self.__cursor__.execute(query).fetchall()
+
+    # insertion queries
+    def __insert__(self, query, data):
+        self.__cursor__.execute(query, data)
+        self.__conn__.commit()
+
+    def insertCity(self, city):
+        self.__insert__("INSERT INTO CITY(name) values(?)", (city,))
+
+    def insertShop(self, shop):
+        self.__insert__("INSERT INTO SHOP(name) values(?)", (shop,))
+
+    def insertMethod(self, method):
+        self.__insert__("INSERT INTO PAYMENT_METHOD(method) values(?)", (method,))
+
+    def insertItem(self, item):
+        self.__insert__("INSERT INTO ITEM(name) values(?)", (item,))
