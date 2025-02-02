@@ -7,13 +7,17 @@ SQL_CREATION_FILE = os.path.normpath(DATA_DIR + "/../../db/TRACK_PAYMENTS.sqlite
 
 
 class Db:
-    def __init__(self, nameDb, resAsDict=True):
+    def __init__(self, nameDb):
         self.__dbpath__ = DATA_DIR + "/" + nameDb + ".db"
         os.makedirs(DATA_DIR, exist_ok=True)
         self.__conn__ = sqlite3.connect(self.__dbpath__)
         self.__conn__.execute("PRAGMA foreign_keys = ON")
         self.__cursor__ = self.__conn__.cursor()
         self.__cursor__.executescript(open(SQL_CREATION_FILE, "r").read())
+
+    # utility functions
+    def __updateTotalPrice__(self, paymentId):
+        pass
 
     # selector queries
     def getCity(self):
@@ -46,31 +50,33 @@ class Db:
         return self.__cursor__.execute(query).fetchall()
 
     # insertion queries
-    def __insert__(self, query, data):
-        self.__cursor__.execute(query, data)
+    def insertCity(self, city):
+        self.__cursor__.execute("INSERT INTO CITY(name) values(?)", (city,))
         self.__conn__.commit()
 
-    def insertCity(self, city):
-        self.__insert__("INSERT INTO CITY(name) values(?)", (city,))
-
     def insertShop(self, shop):
-        self.__insert__("INSERT INTO SHOP(name) values(?)", (shop,))
+        self.__cursor__.execute("INSERT INTO SHOP(name) values(?)", (shop,))
+        self.__conn__.commit()
 
     def insertMethod(self, method):
-        self.__insert__("INSERT INTO PAYMENT_METHOD(method) values(?)", (method,))
+        self.__cursor__.execute("INSERT INTO PAYMENT_METHOD(method) values(?)", (method,))
+        self.__conn__.commit()
 
     def insertItem(self, item):
-        self.__insert__("INSERT INTO ITEM(name) values(?)", (item,))
+        self.__cursor__.execute("INSERT INTO ITEM(name) values(?)", (item,))
+        self.__conn__.commit()
 
     def insertDetail(self, item, paymentId, quantity, unit_price):
-        self.__insert__(
+        self.__cursor__.execute(
             "INSERT INTO DETAIL_ORDER(nameItem, paymentId, quantity, unit_price) values(?, ?, ?, ?)",
             (item, paymentId, quantity, unit_price),
         )
+        self.__conn__.commit()
 
     def insertPayment(self, date, city, shop, method):
-        self.__insert__(
+        self.__cursor__.execute(
             "INSERT INTO PAYMENT(date, total_price, city, shop, payment_method) values(?,?,?,?,?)",
             (date, 0, city, shop, method),
         )
+        self.__conn__.commit()
         return self.__cursor__.lastrowid
