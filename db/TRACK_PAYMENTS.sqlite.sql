@@ -10,27 +10,27 @@
 
 PRAGMA foreign_keys = ON;
 
-create table CITY (
+create table if not exists CITY (
      name           TEXT    not null,
      constraint IDCITY primary key (name)
 );
 
-create table ITEM (
+create table if not exists ITEM (
      name           TEXT    not null,
      constraint IDITEM primary key (name)
 );
 
-create table PAYMENT_METHOD (
+create table if not exists PAYMENT_METHOD (
      method         TEXT    not null,
      constraint IDPAYMENT_METHOD primary key (method)
 );
 
-create table SHOP (
+create table if not exists SHOP (
      name           TEXT    not null,
      constraint IDSHOP primary key (name)
 );
 
-create table PAYMENT (
+create table if not exists PAYMENT (
      paymentId      INTEGER not null,
      date           TEXT    not null,
      total_price    INTEGER not null,
@@ -43,7 +43,7 @@ create table PAYMENT (
      foreign key (payment_method) references PAYMENT_METHOD(method)
 );
 
-create table DETAIL_ORDER (
+create table if not exists DETAIL_ORDER (
      nameItem       TEXT    not null,
      paymentId      INTEGER not null,
      quantity       INTEGER not null,
