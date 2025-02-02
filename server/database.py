@@ -23,9 +23,13 @@ class Db:
 
     def __updateTotalPrice__(self, paymentId):
         query = """
-        SELECT IFNULL( SUM(quantity * unit_price),0) from DETAIL_ORDER WHERE paymentId = ?
+        UPDATE PAYMENT
+        SET total_price = (
+            SELECT IFNULL( SUM(quantity * unit_price),0) from DETAIL_ORDER WHERE paymentId = ?
+        )
+        WHERE paymentId = ?
         """
-        data = (paymentId,)
+        data = (paymentId, paymentId)
         return self.__execute__(query, data)
 
     # selector queries
@@ -82,7 +86,9 @@ class Db:
     def insertDetail(self, item, paymentId, quantity, unit_price):
         query = "INSERT INTO DETAIL_ORDER(nameItem, paymentId, quantity, unit_price) values(?, ?, ?, ?)"
         data = (item, paymentId, quantity, unit_price)
-        return self.__execute__(query, data)
+        res = self.__execute__(query, data)
+        self.__updateTotalPrice__(paymentId)
+        return res
 
     def insertPayment(self, date, city, shop, method):
         query = "INSERT INTO PAYMENT(date, total_price, city, shop, payment_method) values(?,?,?,?,?)"
