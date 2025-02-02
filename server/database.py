@@ -16,27 +16,27 @@ class Db:
         self.__cursor__.executescript(open(SQL_CREATION_FILE, "r").read())
 
     # selector queries
-    def getAllCities(self):
+    def getCity(self):
         return self.__cursor__.execute("SELECT name FROM CITY").fetchall()
 
-    def getAllShops(self):
+    def getShop(self):
         return self.__cursor__.execute("SELECT name FROM SHOP").fetchall()
 
-    def getAllMethods(self):
+    def getMethod(self):
         return self.__cursor__.execute("SELECT method FROM PAYMENT_METHOD").fetchall()
 
-    def getAllItems(self):
+    def getItem(self):
         return self.__cursor__.execute("SELECT name FROM ITEM").fetchall()
 
-    def getAllDetails(self):
+    def getDetail(self):
         query = "SELECT nameItem, paymentId, quantity, unit_price FROM DETAIL_ORDER"
         return self.__cursor__.execute(query).fetchall()
 
-    def getAllPayments(self):
+    def getPayment(self):
         query = "SELECT paymentId, date, total_price, city, shop, payment_method FROM PAYMENT"
         return self.__cursor__.execute(query).fetchall()
 
-    def getAll(self):
+    def getFullDetail(self):
         query = """
         SELECT P.paymentId, D.nameItem, D.quantity, D.unit_price, P.date, P.total_price, 
             P.city, P.shop, P.payment_method 
