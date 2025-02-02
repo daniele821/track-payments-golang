@@ -15,20 +15,20 @@ class Db:
         self.__cursor__ = self.__conn__.cursor()
         self.__cursor__.executescript(open(SQL_CREATION_FILE, "r").read())
 
-    def getAllCities():
-        return CURSOR.execute("SELECT name FROM CITY").fetchall()
+    def getAllCities(self):
+        return self.__cursor__.execute("SELECT name FROM CITY").fetchall()
 
-    def getAllShops():
-        return CURSOR.execute("SELECT name FROM SHOP").fetchall()
+    def getAllShops(self):
+        return self.__cursor__.execute("SELECT name FROM SHOP").fetchall()
 
-    def getAllMethods():
-        return CURSOR.execute("SELECT method FROM PAYMENT_METHOD").fetchall()
+    def getAllMethods(self):
+        return self.__cursor__.execute("SELECT method FROM PAYMENT_METHOD").fetchall()
 
-    def getAllItems():
-        return CURSOR.execute("SELECT name FROM ITEM").fetchall()
+    def getAllItems(self):
+        return self.__cursor__.execute("SELECT name FROM ITEM").fetchall()
 
-    def getAllDetails():
-        return CURSOR.execute("SELECT * FROM DETAIL_ORDER").fetchall()
+    def getAllDetails(self):
+        return self.__cursor__.execute("SELECT * FROM DETAIL_ORDER").fetchall()
 
-    def getAllPayments():
-        return CURSOR.execute("SELECT * FROM PAYMENT").fetchall()
+    def getAllPayments(self):
+        return self.__cursor__.execute("SELECT * FROM PAYMENT").fetchall()
