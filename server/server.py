@@ -2,7 +2,7 @@
 
 from database import Db
 
-db = Db("test")
+db = Db("test", True)
 try:
     db.insertCity("Asti")
     db.insertCity("Cesena")
@@ -18,8 +18,7 @@ try:
     db.insertDetail("Pane", 1, 3, 100)
     db.insertDetail("Briosche", 1, 3, 100)
 except Exception as e:
-    print(f'\x1b[1;31mFAILURE ---> {e}\x1b[m')
-print(db.deletePayment(1))
+    print(f"\x1b[1;31mFAILURE ---> {e}\x1b[m")
 print(db.getCity())
 print(db.getItem())
 print(db.getShop())

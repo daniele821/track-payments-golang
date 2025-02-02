@@ -7,16 +7,25 @@ SQL_CREATION_FILE = os.path.normpath(DATA_DIR + "/../../db/TRACK_PAYMENTS.sqlite
 
 
 class Db:
-    def __init__(self, nameDb):
+    def __init__(self, nameDb, resAsDict=True):
         self.__dbpath__ = DATA_DIR + "/" + nameDb + ".db"
         os.makedirs(DATA_DIR, exist_ok=True)
         self.__conn__ = sqlite3.connect(self.__dbpath__)
         self.__conn__.execute("PRAGMA foreign_keys = ON")
+        if resAsDict:
+            self.__conn__.row_factory = sqlite3.Row
         self.__cursor__ = self.__conn__.cursor()
         self.__cursor__.executescript(open(SQL_CREATION_FILE, "r").read())
+        self.__resAsDict__ = resAsDict
 
     # utility functions
-    def __execute__(self, query, data):
+    def __select__(self, query, data=()):
+        res = self.__cursor__.execute(query, data).fetchall()
+        if self.__resAsDict__:
+            res = [dict(row) for row in res]
+        return res
+
+    def __execute__(self, query, data=()):
         self.__cursor__.execute(query, data)
         self.__conn__.commit()
         return self.__cursor__.lastrowid, self.__cursor__.rowcount
@@ -34,33 +43,36 @@ class Db:
 
     # selector queries
     def getCity(self):
-        return self.__cursor__.execute("SELECT name FROM CITY").fetchall()
+        query = "SELECT * FROM CITY"
+        return self.__select__(query)
 
     def getShop(self):
-        return self.__cursor__.execute("SELECT name FROM SHOP").fetchall()
+        query = "SELECT * FROM SHOP"
+        return self.__select__(query)
 
     def getMethod(self):
-        return self.__cursor__.execute("SELECT method FROM PAYMENT_METHOD").fetchall()
+        query = "SELECT * FROM PAYMENT_METHOD"
+        return self.__select__(query)
 
     def getItem(self):
-        return self.__cursor__.execute("SELECT name FROM ITEM").fetchall()
+        query = "SELECT * FROM ITEM"
+        return self.__select__(query)
 
     def getDetail(self):
-        query = "SELECT nameItem, paymentId, quantity, unit_price FROM DETAIL_ORDER"
-        return self.__cursor__.execute(query).fetchall()
+        query = "SELECT * FROM DETAIL_ORDER"
+        return self.__select__(query)
 
     def getPayment(self):
-        query = "SELECT paymentId, date, total_price, city, shop, payment_method FROM PAYMENT"
-        return self.__cursor__.execute(query).fetchall()
+        query = "SELECT * FROM PAYMENT"
+        return self.__select__(query)
 
     def getFullDetail(self):
         query = """
-        SELECT P.paymentId, D.nameItem, D.quantity, D.unit_price, P.date, P.total_price, 
-            P.city, P.shop, P.payment_method 
+        SELECT P.*, D.nameItem, D.quantity, D.unit_price
         FROM PAYMENT P, DETAIL_ORDER D, ITEM I
         WHERE P.paymentId = D.paymentId AND D.nameItem = I.name
         """
-        return self.__cursor__.execute(query).fetchall()
+        return self.__select__(query)
 
     # insertion queries
     def insertCity(self, city):
