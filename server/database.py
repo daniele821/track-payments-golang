@@ -15,6 +15,7 @@ class Db:
         self.__cursor__ = self.__conn__.cursor()
         self.__cursor__.executescript(open(SQL_CREATION_FILE, "r").read())
 
+    # selector queries
     def getAllCities(self):
         return self.__cursor__.execute("SELECT name FROM CITY").fetchall()
 
