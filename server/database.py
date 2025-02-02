@@ -16,8 +16,17 @@ class Db:
         self.__cursor__.executescript(open(SQL_CREATION_FILE, "r").read())
 
     # utility functions
+    def __execute__(self, query, data):
+        self.__cursor__.execute(query, data)
+        self.__conn__.commit()
+        return self.__cursor__.lastrowid, self.__cursor__.rowcount
+
     def __updateTotalPrice__(self, paymentId):
-        pass
+        query = """
+        SELECT IFNULL( SUM(quantity * unit_price),0) from DETAIL_ORDER WHERE paymentId = ?
+        """
+        data = (paymentId,)
+        return self.__execute__(query, data)
 
     # selector queries
     def getCity(self):
@@ -51,32 +60,31 @@ class Db:
 
     # insertion queries
     def insertCity(self, city):
-        self.__cursor__.execute("INSERT INTO CITY(name) values(?)", (city,))
-        self.__conn__.commit()
+        query = "INSERT INTO CITY(name) values(?)"
+        data = (city,)
+        return self.__execute__(query, data)
 
     def insertShop(self, shop):
-        self.__cursor__.execute("INSERT INTO SHOP(name) values(?)", (shop,))
-        self.__conn__.commit()
+        query = "INSERT INTO SHOP(name) values(?)"
+        data = (shop,)
+        return self.__execute__(query, data)
 
     def insertMethod(self, method):
-        self.__cursor__.execute("INSERT INTO PAYMENT_METHOD(method) values(?)", (method,))
-        self.__conn__.commit()
+        query = "INSERT INTO PAYMENT_METHOD(method) values(?)"
+        data = (method,)
+        return self.__execute__(query, data)
 
     def insertItem(self, item):
-        self.__cursor__.execute("INSERT INTO ITEM(name) values(?)", (item,))
-        self.__conn__.commit()
+        query = "INSERT INTO ITEM(name) values(?)"
+        data = (item,)
+        return self.__execute__(query, data)
 
     def insertDetail(self, item, paymentId, quantity, unit_price):
-        self.__cursor__.execute(
-            "INSERT INTO DETAIL_ORDER(nameItem, paymentId, quantity, unit_price) values(?, ?, ?, ?)",
-            (item, paymentId, quantity, unit_price),
-        )
-        self.__conn__.commit()
+        query = "INSERT INTO DETAIL_ORDER(nameItem, paymentId, quantity, unit_price) values(?, ?, ?, ?)"
+        data = (item, paymentId, quantity, unit_price)
+        return self.__execute__(query, data)
 
     def insertPayment(self, date, city, shop, method):
-        self.__cursor__.execute(
-            "INSERT INTO PAYMENT(date, total_price, city, shop, payment_method) values(?,?,?,?,?)",
-            (date, 0, city, shop, method),
-        )
-        self.__conn__.commit()
-        return self.__cursor__.lastrowid
+        query = "INSERT INTO PAYMENT(date, total_price, city, shop, payment_method) values(?,?,?,?,?)"
+        data = (date, 0, city, shop, method)
+        return self.__execute__(query, data)
