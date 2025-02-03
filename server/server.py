@@ -16,4 +16,5 @@ class CustomHTTPHandler(http.server.SimpleHTTPRequestHandler):
 def run_server():
     server = http.server.HTTPServer(("localhost", 0), CustomHTTPHandler)
     threading.Thread(target=server.serve_forever).start()
-    return str(server.server_address[0]) + ":" + str(server.server_address[1])
+    # http:// is necessary for termux-open to work
+    return "http://" + str(server.server_address[0]) + ":" + str(server.server_address[1])
