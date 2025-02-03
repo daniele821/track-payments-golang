@@ -5,6 +5,6 @@ import database
 import utils
 
 server_address = server.run_server()
-print(server_address)
+print("started server on " + server_address)
 utils.open_link(server_address)
-print("launched browser")
+print("launching browser to connect to the server...")

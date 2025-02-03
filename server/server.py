@@ -2,10 +2,15 @@
 
 import http.server
 import threading
+import configs
+
+
+WEBSITE_DIR = configs.WEBSITE_DIR
 
 
 class CustomHTTPHandler(http.server.SimpleHTTPRequestHandler):
-    pass
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, directory=WEBSITE_DIR, **kwargs)
 
 
 def run_server():

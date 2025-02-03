@@ -1,21 +1,24 @@
+#!/bin/python3
+
 import sqlite3
 import os
 import enum
+import configs
 
-DATA_DIR = os.path.normpath(os.path.dirname(__file__) + "/data")
-SQL_CREATION_FILE = os.path.normpath(DATA_DIR + "/../../db/TRACK_PAYMENTS.sqlite.sql")
+DATA_DIR = configs.DATA_DIR
+SQLGEN_FILE = configs.SQLGEN_FILE
 
 
 class Db:
     def __init__(self, nameDb, resAsDict=True):
-        self.__dbpath__ = DATA_DIR + "/" + nameDb + ".db"
+        self.__dbpath__ = os.path.join(DATA_DIR, nameDb + ".db")
         os.makedirs(DATA_DIR, exist_ok=True)
         self.__conn__ = sqlite3.connect(self.__dbpath__)
         self.__conn__.execute("PRAGMA foreign_keys = ON")
         if resAsDict:
             self.__conn__.row_factory = sqlite3.Row
         self.__cursor__ = self.__conn__.cursor()
-        self.__cursor__.executescript(open(SQL_CREATION_FILE, "r").read())
+        self.__cursor__.executescript(open(SQLGEN_FILE, "r").read())
         self.__resAsDict__ = resAsDict
 
     # utility functions
