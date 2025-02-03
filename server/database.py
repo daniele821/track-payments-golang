@@ -10,23 +10,19 @@ SQLGEN_FILE = configs.SQLGEN_FILE
 
 
 class Db:
-    def __init__(self, nameDb, resAsDict=True):
+    def __init__(self, nameDb):
         self.__dbpath__ = os.path.join(DATA_DIR, nameDb + ".db")
         os.makedirs(DATA_DIR, exist_ok=True)
         self.__conn__ = sqlite3.connect(self.__dbpath__)
         self.__conn__.execute("PRAGMA foreign_keys = ON")
-        if resAsDict:
-            self.__conn__.row_factory = sqlite3.Row
         self.__cursor__ = self.__conn__.cursor()
         self.__cursor__.executescript(open(SQLGEN_FILE, "r").read())
-        self.__resAsDict__ = resAsDict
 
     # utility functions
     def __select__(self, query, data=()):
         res = self.__cursor__.execute(query, data).fetchall()
-        if self.__resAsDict__:
-            res = [dict(row) for row in res]
-        return res
+        attr = [description[0] for description in self.__cursor__.description]
+        return res, attr
 
     def __execute__(self, query, data=()):
         self.__cursor__.execute(query, data)
