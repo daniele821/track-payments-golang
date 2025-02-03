@@ -22,6 +22,9 @@ def parse_args():
     p.add_argument(
         "-p", "--port", dest="port", type=int, default=8080, help="specify the port to use"
     )
+    p.add_argument(
+        "--no-server", dest="noserver", action="store_true", help="do not run the server"           
+    )
     return p.parse_args()
 
 
