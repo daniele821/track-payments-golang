@@ -2,17 +2,19 @@
 
 import sys
 import os
+import subprocess
 
 
 def open_link(link):
     if sys.platform == "linux":
         if "TERMUX_VERSION" in os.environ:
-            os.system(f"termux-open {link}")
+            subprocess.run(["termux-open", link])
         else:
-            os.system(f"xdg-open {link}")
+            subprocess.run(["xdg-open", link])
     elif sys.platform == "win32":
-        os.system(f"start {link}")
+        # `shell=True` is required on Windows!
+        subprocess.run(["start", link], shell=True)
     elif sys.platform == "darwin":
-        os.system(f"open {link}")
+        subprocess.run(["open", link])
     else:
         raise Exception("unable to open link: unknown platform!")
