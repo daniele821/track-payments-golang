@@ -20,7 +20,7 @@ def parse_args():
         "-g", "--gui", dest="gui", action="store_true", help="open server in a browser"
     )
     p.add_argument(
-        "-p", "--port", dest="port", type=int, default=0, help="specify the port to use"
+        "-p", "--port", dest="port", type=int, default=8080, help="specify the port to use"
     )
     return p.parse_args()
 
