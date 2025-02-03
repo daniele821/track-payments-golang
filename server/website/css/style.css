@@ -1,0 +1,7 @@
+/* Apply dark theme if the user prefers dark mode */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #121212;
+        color: white;
+    }
+}
