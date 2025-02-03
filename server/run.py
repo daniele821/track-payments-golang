@@ -13,4 +13,4 @@ if FLAGS.gui:
     utils.open_link(server_address)
     print("launching browser to connect to the server...")
 else:
-    print("SKIP: launching browser")
+    print("not launching browser!")
