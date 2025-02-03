@@ -13,13 +13,14 @@ SQLGEN_DIR = os.path.normpath(os.path.join(SCRIPT_DIR, "db"))
 SQLGEN_FILE = os.path.normpath(os.path.join(SQLGEN_DIR, "creation.sql"))
 
 
+# parse flags
 def parse_args():
     p = argparse.ArgumentParser(description="A program to track payments")
     p.add_argument(
-        "-p", "--port", dest="port", type=int, help="specify the port to utilize", default=0,
+        "-g", "--gui", dest="gui", action="store_true", help="open server in a browser"
     )
     p.add_argument(
-        "-s", "--server", dest="server", action="store_true", help="run only as server"
+        "-p", "--port", dest="port", type=int, default=0, help="specify the port to use"
     )
     return p.parse_args()
 
