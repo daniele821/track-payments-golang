@@ -17,4 +17,4 @@ def run_server():
     server = http.server.HTTPServer(("localhost", 0), CustomHTTPHandler)
     threading.Thread(target=server.serve_forever).start()
     # http:// is necessary for termux-open to work
-    return "http://" + str(server.server_address[0]) + ":" + str(server.server_address[1])
+    return "http://localhost:" + str(server.server_address[1])
