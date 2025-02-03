@@ -10,23 +10,32 @@ SQLGEN_FILE = configs.SQLGEN_FILE
 
 
 class Db:
-    def __init__(self, nameDb):
+    def __init__(self, nameDb, json=False):
         self.__dbpath__ = os.path.join(DATA_DIR, nameDb + ".db")
         os.makedirs(DATA_DIR, exist_ok=True)
         self.__conn__ = sqlite3.connect(self.__dbpath__)
         self.__conn__.execute("PRAGMA foreign_keys = ON")
         self.__cursor__ = self.__conn__.cursor()
         self.__cursor__.executescript(open(SQLGEN_FILE, "r").read())
+        self.__json__ = bool(json)
 
-    # utility functions
+    # public utility functions
+    def setJsonResults(self, jsonRes):
+        self.__json__ = bool(jsonRes)
+
+    # private utility functions
     def __select__(self, query, data=()):
         res = self.__cursor__.execute(query, data).fetchall()
         attr = [description[0] for description in self.__cursor__.description]
+        if self.__json__:
+            return {"query": res, "attributes": attr}
         return res, attr
 
     def __execute__(self, query, data=()):
         self.__cursor__.execute(query, data)
         self.__conn__.commit()
+        if self.__json__:
+            return {"id": self.__cursor__.lastrowid, "rows": self.__cursor__.rowcount}
         return self.__cursor__.lastrowid, self.__cursor__.rowcount
 
     def __updateTotalPrice__(self, paymentId):
