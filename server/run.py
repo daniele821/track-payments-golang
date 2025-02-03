@@ -3,8 +3,14 @@
 import server
 import database
 import utils
+import configs
+
+FLAGS = configs.FLAGS
 
 server_address = server.run_server()
 print("started server on " + server_address)
-utils.open_link(server_address)
-print("launching browser to connect to the server...")
+if not FLAGS.server:
+    utils.open_link(server_address)
+    print("launching browser to connect to the server...")
+else:
+    print("SKIP: launching browser")

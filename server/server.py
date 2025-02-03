@@ -6,6 +6,7 @@ import configs
 
 
 WEBSITE_DIR = configs.WEBSITE_DIR
+FLAGS = configs.FLAGS
 
 
 class CustomHTTPHandler(http.server.SimpleHTTPRequestHandler):
@@ -14,7 +15,7 @@ class CustomHTTPHandler(http.server.SimpleHTTPRequestHandler):
 
 
 def run_server():
-    server = http.server.HTTPServer(("localhost", 0), CustomHTTPHandler)
+    server = http.server.HTTPServer(("localhost", FLAGS.port), CustomHTTPHandler)
     threading.Thread(target=server.serve_forever).start()
     # http:// is necessary for termux-open to work
     return "http://localhost:" + str(server.server_address[1])
