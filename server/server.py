@@ -12,6 +12,7 @@ import subprocess
 
 DB = database.Db("payments")
 
+
 class CustomHTTPHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=configs.WEBSITE_DIR, **kwargs)
@@ -51,7 +52,7 @@ def run():
     port = configs.FLAGS.port
     addr_str = f"http://{ip}:{port}"
     if not configs.FLAGS.noserver:
-        # running server is a blocking call, thus if we want to avoid threads, it must be the 
+        # running server is a blocking call, thus if we want to avoid threads, it must be the
         # last function we call before ending the program...
         if configs.FLAGS.gui:
             open_link(addr_str)
