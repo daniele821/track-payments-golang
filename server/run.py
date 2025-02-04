@@ -5,12 +5,10 @@ import database
 import utils
 import configs
 
-FLAGS = configs.FLAGS
-
-if not FLAGS.noserver:
+if not configs.FLAGS.noserver:
     server_address = server.run_server()
     print("started server on " + server_address)
-    if FLAGS.gui:
+    if configs.FLAGS.gui:
         utils.open_link(server_address)
         print("launching browser to connect to the server...")
     else:

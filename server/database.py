@@ -5,18 +5,15 @@ import os
 import enum
 import configs
 
-DATA_DIR = configs.DATA_DIR
-SQLGEN_FILE = configs.SQLGEN_FILE
-
 
 class Db:
     def __init__(self, nameDb, dictRes=False):
-        self.__dbpath__ = os.path.join(DATA_DIR, nameDb + ".db")
-        os.makedirs(DATA_DIR, exist_ok=True)
+        self.__dbpath__ = os.path.join(configs.DATA_DIR, nameDb + ".db")
+        os.makedirs(configs.DATA_DIR, exist_ok=True)
         self.__conn__ = sqlite3.connect(self.__dbpath__)
         self.__conn__.execute("PRAGMA foreign_keys = ON")
         self.__cursor__ = self.__conn__.cursor()
-        self.__cursor__.executescript(open(SQLGEN_FILE, "r").read())
+        self.__cursor__.executescript(open(configs.SQLGEN_FILE, "r").read())
         self.__dictRes__ = bool(dictRes)
 
     # public utility functions
