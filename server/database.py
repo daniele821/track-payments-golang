@@ -174,9 +174,14 @@ class Db:
     def __err_typeMissingInJson_msg(self, typeKey):
         return self.__err_msg__(f"missing '{typeKey}' in the json request!")
 
-    def __query_msg__(self, query):
+    def __query_msg__(self, typesReq, requestData, method):
+        acc = []
+        for typeReq in typesReq:
+            if typeReq not in requestData:
+                return self.__err_typeMissingInJson_msg(f"data.{typeReq}")
+            acc.append(requestData[typeReq])
         try:
-            resDict = query()
+            resDict = method(*acc)
         except Exception as e:
             return self.__err_msg__(f"query failed with error: {type(e).__name__}: {e}")
         return 200, json.dumps({"status": "query was successful!", "res": resDict})
@@ -190,44 +195,34 @@ class Db:
         if "type" not in request:
             return self.__err_typeMissingInJson_msg("type")
 
+        if "data" not in request:
+            return self.__err_typeMissingInJson_msg("data")
+
+        requestType = request["type"]
+        requestData = request["data"]
+
         match request["type"]:
-            case "insert-city":
-                if "city" not in request:
-                    return self.__err_typeMissingInJson_msg("city")
-                return self.__query_msg__(lambda : self.insertCity(request["city"]))
-            case "insert-shop":
-                if "shop" not in request:
-                    return self.__err_typeMissingInJson_msg("shop")
-                return self.__query_msg__(lambda : self.insertShop(request["shop"]))
-            case "insert-method":
-                if "method" not in request:
-                    return self.__err_typeMissingInJson_msg("method")
-                return self.__query_msg__(lambda : self.insertMethod(request["method"]))
-            case "insert-item":
-                if "item" not in request:
-                    return self.__err_typeMissingInJson_msg("item")
-                return self.__query_msg__(lambda : self.insertItem(request["item"]))
-            case "insert-detail":
-                pass
-            case "insert-payment":
-                pass
-            case "update-city":
-                pass
-            case "update-shop":
-                pass
-            case "update-method":
-                pass
-            case "update-item":
-                pass
-            case "update-detail":
-                pass
-            case "update-payment":
-                pass
-            case "delete-detail":
-                pass
-            case "delete-payment":
-                pass
-            case _:
-                return self.__err_msg__("invalid 'type' value in json request!")
+            case "insert-city": return self.__query_msg__(["city"], requestData, self.insertCity)
+            case "insert-shop": return self.__query_msg__(["shop"], requestData, self.insertShop)
+            case "insert-method": return self.__query_msg__(["method"], requestData, self.insertMethod)
+            case "insert-item": return self.__query_msg__(["item"], requestData, self.insertItem)
+            case "insert-detail": return self.__query_msg__(["item, paymentId, quantity, unitPrice"], requestData, self.insertDetail)
+            case "insert-payment": return self.__query_msg__(["date", "city", "shop", "method"], requestData, self.insertPayment)
+            case "update-city": return self.__query_msg__(["city", "newCity"], requestData, self.updateCity)
+            case "update-shop": return self.__query_msg__(["shop", "newShop"], requestData, self.updateShop)
+            case "update-method": return self.__query_msg__(["method", "newMethod"], requestData, self.updateMethod)
+            case "update-item": return self.__query_msg__(["item", "newItem"], requestData, self.updateItem)
+            case "update-detail": return self.__query_msg__(["item", "paymentId", "newQuantity", "newUnitPrice"], requestData, self.updateDetail)
+            case "update-payment": return self.__query_msg__(["paymentId", "newDate", "newCity", "newShop", "newMethod"], requestData, self.updatePayment)
+            case "delete-detail": return self.__query_msg__(["item", "paymentId"], requestData, self.deleteDetail)
+            case "delete-payment": return self.__query_msg__(["paymentId"], requestData, self.deletePayment)
+            case "select-city": return self.__query_msg__([], requestData, self.getCity)
+            case "select-shop": return self.__query_msg__([], requestData, self.getShop)
+            case "select-method": return self.__query_msg__([], requestData, self.getMethod)
+            case "select-item": return self.__query_msg__([], requestData, self.getItem)
+            case "select-detail": return self.__query_msg__([], requestData, self.getDetail)
+            case "select-payment": return self.__query_msg__([], requestData, self.getPayment)
+            case "select-fulldetail": return self.__query_msg__([], requestData, self.getFullDetail)
+            case _: return self.__err_msg__("invalid 'type' value in json request!")
 
         return 200, json.dumps({"status": "TODO!"})
