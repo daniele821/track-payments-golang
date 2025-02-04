@@ -10,7 +10,7 @@ import os
 import subprocess
 
 
-DB = database.Db("payments")
+DB = database.Db("payments", dictRes=True)
 
 
 class CustomHTTPHandler(http.server.SimpleHTTPRequestHandler):

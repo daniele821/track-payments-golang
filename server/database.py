@@ -168,10 +168,66 @@ class Db:
         return self.__execute__(query, data)
 
     # interaction with server
+    def __err_msg__(self, msg, status_code=400):
+        return status_code, json.dumps({"status": msg})
+
+    def __err_typeMissingInJson_msg(self, typeKey):
+        return self.__err_msg__(f"missing '{typeKey}' in the json request!")
+
+    def __query_msg__(self, query):
+        try:
+            resDict = query()
+        except Exception as e:
+            return self.__err_msg__(f"query failed with error: {type(e).__name__}: {e}")
+        return 200, json.dumps({"status": "query was successful!", "res": resDict})
+
     def answerPostRequest(self, requestJson):
         try:
             request = json.loads(requestJson)
         except:
-            return 400, json.dumps({"status": "not valid json!"})
+            return self.__err_msg__("invalid json!")
+
+        if "type" not in request:
+            return self.__err_typeMissingInJson_msg("type")
+
+        match request["type"]:
+            case "insert-city":
+                if "city" not in request:
+                    return self.__err_typeMissingInJson_msg("city")
+                return self.__query_msg__(lambda : self.insertCity(request["city"]))
+            case "insert-shop":
+                if "shop" not in request:
+                    return self.__err_typeMissingInJson_msg("shop")
+                return self.__query_msg__(lambda : self.insertShop(request["shop"]))
+            case "insert-method":
+                if "method" not in request:
+                    return self.__err_typeMissingInJson_msg("method")
+                return self.__query_msg__(lambda : self.insertMethod(request["method"]))
+            case "insert-item":
+                if "item" not in request:
+                    return self.__err_typeMissingInJson_msg("item")
+                return self.__query_msg__(lambda : self.insertItem(request["item"]))
+            case "insert-detail":
+                pass
+            case "insert-payment":
+                pass
+            case "update-city":
+                pass
+            case "update-shop":
+                pass
+            case "update-method":
+                pass
+            case "update-item":
+                pass
+            case "update-detail":
+                pass
+            case "update-payment":
+                pass
+            case "delete-detail":
+                pass
+            case "delete-payment":
+                pass
+            case _:
+                return self.__err_msg__("invalid 'type' value in json request!")
 
         return 200, json.dumps({"status": "TODO!"})
