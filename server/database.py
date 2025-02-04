@@ -23,24 +23,20 @@ class Db:
         self.__conn__.execute("PRAGMA foreign_keys = ON")
         self.__cursor__ = self.__conn__.cursor()
         self.__cursor__.executescript(open(configs.SQLGEN_FILE, "r").read())
-        self.__dictRes__ = bool(dictRes)
-
-    # public utility functions
-    def setDictResults(self, dictRes):
-        self.__dictRes__ = bool(dictRes)
+        self.dictRes = bool(dictRes)
 
     # private utility functions
     def __select__(self, query, data=()):
         res = self.__cursor__.execute(query, data).fetchall()
         attr = [description[0] for description in self.__cursor__.description]
-        if self.__dictRes__:
+        if self.dictRes:
             return {"query": res, "attributes": attr}
         return res, attr
 
     def __execute__(self, query, data=()):
         self.__cursor__.execute(query, data)
         self.__conn__.commit()
-        if self.__dictRes__:
+        if self.dictRes:
             return {"id": self.__cursor__.lastrowid, "rows": self.__cursor__.rowcount}
         return self.__cursor__.lastrowid, self.__cursor__.rowcount
 
