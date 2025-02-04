@@ -12,3 +12,7 @@
     - NOTE: make python handle 2 servers: 1 for db interactions with js, and one to actually host html server (or compact the two into a single server)
 
 - find way to decrypt sqlite file when starting python server, and decrypting it when closing the server
+
+## how to use
+
+- run `./server/run.py -g` 
