@@ -25,7 +25,7 @@ class Db:
         self.__cursor__.executescript(open(configs.SQLGEN_FILE, "r").read())
 
     # private utility functions
-    def __execute__(self, queryAndData):
+    def __runTransaction__(self, queryAndData):
         acc = []
         self.__cursor__.execute("BEGIN TRANSACTION;")
         for query, data in queryAndData:
