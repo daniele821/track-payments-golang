@@ -160,3 +160,9 @@ class Db:
         query = "DELETE FROM PAYMENT WHERE paymentId = ?"
         data = (paymentId,)
         return self.__execute__(query, data)
+
+    # interaction with server
+    def answerPostRequest(requestJson):
+        status_code = 400
+        responseJson = {"test": 69}
+        return status_code, responseJson
