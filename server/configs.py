@@ -1,7 +1,6 @@
 #!/bin/python3
 
 import os
-import utils
 import argparse
 
 # paths
