@@ -4,10 +4,19 @@ import sqlite3
 import os
 import enum
 import configs
+import json
 
 
 class Db:
+    connections = []
+
     def __init__(self, nameDb, dictRes=False):
+        # disallow multiple connection to same database!
+        if nameDb in Db.connections:
+            raise ValueError(f"database {nameDb} already opened!")
+        else:
+            Db.connections.append(nameDb)
+
         self.__dbpath__ = os.path.join(configs.DATA_DIR, nameDb + ".db")
         os.makedirs(configs.DATA_DIR, exist_ok=True)
         self.__conn__ = sqlite3.connect(self.__dbpath__)
@@ -159,7 +168,7 @@ class Db:
         return self.__execute__(query, data)
 
     # interaction with server
-    def answerPostRequest(requestJson):
+    def answerPostRequest(self, requestJson):
         status_code = 400
-        responseJson = {"test": 69}
+        responseJson = json.dumps({})
         return status_code, responseJson
