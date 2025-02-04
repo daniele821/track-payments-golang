@@ -87,4 +87,10 @@ class Db:
         requestType = request["type"]
         requestData = request["data"]
 
+        # match request["type"]:
+        #     case "insert-city":
+        #         return self.__query_msg__(["city"], requestData, self.insertCity)
+        #     case _:
+        #         return self.__err_msg__("invalid 'type' value in json request!")
+
         return self.__err_msg__("nothing to do!")
