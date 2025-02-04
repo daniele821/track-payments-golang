@@ -169,6 +169,9 @@ class Db:
 
     # interaction with server
     def answerPostRequest(self, requestJson):
-        status_code = 400
-        responseJson = json.dumps({})
-        return status_code, responseJson
+        try:
+            request = json.loads(requestJson)
+        except:
+            return 400, json.dumps({"status": "not valid json!"})
+
+        return 200, json.dumps({"status": "TODO!"})
