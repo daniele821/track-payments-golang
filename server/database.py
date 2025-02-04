@@ -11,7 +11,6 @@ class Db:
     connections = []
 
     def __init__(self, nameDb):
-        # disallow multiple connection to same database!
         if nameDb in Db.connections:
             raise ValueError(f"database {nameDb} already opened!")
         else:
