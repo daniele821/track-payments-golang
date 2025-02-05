@@ -44,6 +44,26 @@ class Db:
         return acc
 
     # queries
+    def insertCity(self, city):
+        query = "INSERT INTO CITY(name) VALUES(?);"
+        data = (city,)
+        return self.__runTransaction__(query, data)
+
+    def insertShop(self, shop):
+        query = "INSERT INTO SHOP(name) VALUES(?);"
+        data = (shop,)
+        return self.__runTransaction__(query, data)
+
+    def insertMethod(self, method):
+        query = "INSERT INTO PAYMENT_METHOD(method) VALUES(?);"
+        data = (city,)
+        return self.__runTransaction__(query, data)
+
+    def insertItem(self, item):
+        query = "INSERT INTO ITEM(name) VALUES(?);"
+        data = (city,)
+        return self.__runTransaction__(query, data)
+
     def insertPayment(self, date, city, shop, payment_method):
         query = """
         INSERT INTO PAYMENT(date, total_price, city, shop, payment_method)
@@ -102,9 +122,15 @@ class Db:
         requestType = request["type"]
         requestData = request["data"]
 
+        # fmt: off
         match request["type"]:
+            case "insert-item":         return self.__query_msg__(["item"], requestData, self.insertItem)
+            case "insert-city":         return self.__query_msg__(["city"], requestData, self.insertCity)
+            case "insert-shop":         return self.__query_msg__(["shop"], requestData, self.insertShop)
+            case "insert-method":       return self.__query_msg__(["method"], requestData, self.insertMethod)
             case "insert-payment":      return self.__query_msg__(["date", "city", "shop", "method"], requestData, self.insertPayment)
             case "insert-detailorder":  return self.__query_msg__(["city"], requestData, self.insertDetailOrder)
             case _:                     return self.__msg__(400, "invalid 'type' value in json request!", error="invalid request")
+        # fmt: on
 
         return self.__msg__(400, "this code is unreachable!", error="unreachable code")
