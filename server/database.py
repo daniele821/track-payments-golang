@@ -86,7 +86,7 @@ class Db:
         """
         data1 = (nameItem, paymentId, quantity, unitPrice)
         data2 = (paymentId, paymentId)
-        return self.__runTransaction__(query, data)
+        return self.__runTransaction__(query1, data1, query2, data2)
 
     # interaction with server
     def __msg__(self, status_code, status, error=None, res=None):
