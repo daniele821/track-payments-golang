@@ -24,19 +24,27 @@ class Db:
         self.__cursor__.executescript(open(configs.SQLGEN_FILE, "r").read())
 
     # private utility functions
-    def __runTransaction__(self, queryAndData):
-        acc = []
-        self.__cursor__.execute("BEGIN TRANSACTION;")
-        for query, data in queryAndData:
-            self.__cursor__.execute(query, data)
-            dictRes = {
-                "result": self.__cursor__.fetchall(),
-                "attributes": [desc[0] for desc in self.__cursor__.description],
-                "id": self.__cursor__.lastrowid,
-                "rows": self.__cursor__.rowcount,
-            }
-            acc.append(dictRes)
-        self.__conn__.commit()
+    def __runTransaction__(self, *queryData):
+        try:
+            acc = []
+            self.__cursor__.execute("BEGIN TRANSACTION;")
+            for query, data in zip(queryData[::2], queryData[1::2]):
+                self.__cursor__.execute(query, data)
+                dictRes = {
+                    "result": self.__cursor__.fetchall(),
+                    "attributes": (
+                        [d[0] for d in self.__cursor__.description]
+                        if self.__cursor__.description
+                        else None
+                    ),
+                    "id": self.__cursor__.lastrowid,
+                    "rows": self.__cursor__.rowcount,
+                }
+                acc.append(dictRes)
+            self.__conn__.commit()
+        except BaseException as e:
+            self.__conn__.rollback()
+            raise
         return acc
 
     # query = """
