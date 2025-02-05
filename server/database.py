@@ -56,12 +56,12 @@ class Db:
 
     def insertMethod(self, method):
         query = "INSERT INTO PAYMENT_METHOD(method) VALUES(?);"
-        data = (city,)
+        data = (method,)
         return self.__runTransaction__(query, data)
 
     def insertItem(self, item):
         query = "INSERT INTO ITEM(name) VALUES(?);"
-        data = (city,)
+        data = (item,)
         return self.__runTransaction__(query, data)
 
     def insertPayment(self, date, city, shop, payment_method):
