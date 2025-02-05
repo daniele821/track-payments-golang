@@ -148,8 +148,10 @@ class Db:
             acc.append(requestData[typeReq])
         try:
             resDict = method(*acc)
-        except Exception as e:
+        except sqlite3.DatabaseError as e:
             return self.__msg__(500, f"query failed: {type(e).__name__}: {e}", error=f"{e}")
+        # except Exception as e:
+        #     return self.__msg__(500, f"internal error: {e}", error="internal error")
         return self.__msg__(200, "query was successful!", res=resDict)
 
     def answerPostRequest(self, requestJson):
