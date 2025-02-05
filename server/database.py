@@ -64,9 +64,14 @@ class Db:
         data = (method,)
         return self.__runTransaction__(query, data)
 
-    def insertItem(self, item):
-        query = "INSERT INTO ITEM(name) VALUES(?);"
-        data = (item,)
+    def insertCategory(self, category):
+        query = "INSERT INTO CATEGORY(name) VALUES(?);"
+        data = (category,)
+        return self.__runTransaction__(query, data)
+
+    def insertItem(self, item, category):
+        query = "INSERT INTO ITEM(name, category) VALUES(?, ?);"
+        data = (item, category)
         return self.__runTransaction__(query, data)
 
     def insertPayment(self, date, city, shop, payment_method):
@@ -171,10 +176,11 @@ class Db:
 
         # fmt: off
         match request["type"]:
-            case "insert-item":         return self.__query_msg__(["item"], requestData, self.insertItem)
             case "insert-city":         return self.__query_msg__(["city"], requestData, self.insertCity)
             case "insert-shop":         return self.__query_msg__(["shop"], requestData, self.insertShop)
             case "insert-method":       return self.__query_msg__(["method"], requestData, self.insertMethod)
+            case "insert-category":     return self.__query_msg__(["category"], requestData, self.insertCategory)
+            case "insert-item":         return self.__query_msg__(["item", "category"], requestData, self.insertItem)
             case "insert-payment":      return self.__query_msg__(["date", "city", "shop", "method"], requestData, self.insertPayment)
             case "insert-detailorder":  return self.__query_msg__(["nameItem", "paymentId", "quantity", "unitPrice"], requestData, self.insertDetailOrder)
             case "update-item":         return self.__query_msg__(["item", "newItem"], requestData, self.updateItem)
