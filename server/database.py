@@ -32,11 +32,7 @@ class Db:
                 self.__cursor__.execute(query, data)
                 dictRes = {
                     "result": self.__cursor__.fetchall(),
-                    "attributes": (
-                        [d[0] for d in self.__cursor__.description]
-                        if self.__cursor__.description
-                        else None
-                    ),
+                    "attributes": ([d[0] for d in self.__cursor__.description] if self.__cursor__.description else None),
                     "id": self.__cursor__.lastrowid,
                     "rows": self.__cursor__.rowcount,
                 }
@@ -48,22 +44,29 @@ class Db:
         return acc
 
     # queries
-    def insertPayment(date, city, shop, payment_method):
-        pass
+    def insertPayment(self, date, city, shop, payment_method):
+        query = """
+        INSERT INTO PAYMENT(date, total_price, city, shop, payment_method)
+        VALUES(?, 0, ?, ?, ?);
+        """
+        data = (date, city, shop, payment_method)
+        return self.__runTransaction__(query, data)
 
-    # query = """
-    # UPDATE PAYMENT
-    # SET total_price = (
-    #     SELECT IFNULL( SUM(quantity * unit_price),0) from DETAIL_ORDER WHERE paymentId = ?
-    # )
-    # WHERE paymentId = ?
-    # """
-
-    # query = """
-    # SELECT P.*, D.nameItem, D.quantity, D.unit_price
-    # FROM PAYMENT P, DETAIL_ORDER D, ITEM I
-    # WHERE P.paymentId = D.paymentId AND D.nameItem = I.name
-    # """
+    def insertDetailOrder(self, nameItem, paymentId, quantity, unitPrice):
+        query1 = """
+        INSERT INTO DETAIL_ORDER(nameItem, paymentId, quantity, unit_price)
+        VALUES(?, ?, ?, ?);
+        """
+        query2 = """
+        UPDATE PAYMENT
+        SET total_price = (
+            SELECT IFNULL( SUM(quantity * unit_price),0 ) from DETAIL_ORDER WHERE paymentId = ?
+        )
+        WHERE paymentId = ?;
+        """
+        data1 = (nameItem, paymentId, quantity, unitPrice)
+        data2 = (paymentId, paymentId)
+        return self.__runTransaction__(query, data)
 
     # interaction with server
     def __msg__(self, status_code, status, error=None, res=None):
@@ -88,7 +91,7 @@ class Db:
         try:
             request = json.loads(requestJson)
         except Exception as e:
-            return self.__msg__(f"invalid json: {type(e).__name__}: {e}")
+            return self.__msg__(400, f"invalid json: {type(e).__name__}: {e}", "invalid request")
 
         if "type" not in request:
             return self.__err_typeMissingInJson_msg("type")
@@ -99,10 +102,9 @@ class Db:
         requestType = request["type"]
         requestData = request["data"]
 
-        # match request["type"]:
-        #     case "insert-city":
-        #         return self.__query_msg__(["city"], requestData, self.insertCity)
-        #     case _:
-        #         return self.__err_msg__("invalid 'type' value in json request!")
+        match request["type"]:
+            case "insert-payment":      return self.__query_msg__(["date", "city", "shop", "method"], requestData, self.insertPayment)
+            case "insert-detailorder":  return self.__query_msg__(["city"], requestData, self.insertDetailOrder)
+            case _:                     return self.__msg__(400, "invalid 'type' value in json request!", error="invalid request")
 
         return self.__msg__(400, "this code is unreachable!", error="unreachable code")
