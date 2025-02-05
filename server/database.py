@@ -67,7 +67,7 @@ class Db:
 
     # interaction with server
     def __msg__(self, status_code, status, error=None, res=None):
-        return status_code, json.dumps({"status": msg, "error": error, "res": res})
+        return status_code, json.dumps({"status": status, "error": error, "res": res})
 
     def __err_typeMissingInJson_msg(self, typeKey):
         return self.__msg__(400, f"missing '{typeKey}' in the json request!", error="invalid request")
@@ -105,4 +105,4 @@ class Db:
         #     case _:
         #         return self.__err_msg__("invalid 'type' value in json request!")
 
-        return self.__msg__("nothing to do!")
+        return self.__msg__(400, "this code is unreachable!", error="unreachable code")
