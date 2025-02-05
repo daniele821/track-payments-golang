@@ -149,7 +149,7 @@ class Db:
         try:
             resDict = method(*acc)
         except Exception as e:
-            return self.__msg__(400, f"query failed: {type(e).__name__}: {e}", error=f"{e}")
+            return self.__msg__(500, f"query failed: {type(e).__name__}: {e}", error=f"{e}")
         return self.__msg__(200, "query was successful!", res=resDict)
 
     def answerPostRequest(self, requestJson):
