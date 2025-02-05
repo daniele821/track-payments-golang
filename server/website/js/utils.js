@@ -1,4 +1,4 @@
-async function makeRequest(typeField, dataField) {
+export async function makeRequest(typeField, dataField) {
     return fetch("", {
         method: "POST",
         headers: {
