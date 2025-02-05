@@ -41,7 +41,12 @@ class Db:
         except BaseException as e:
             self.__conn__.rollback()
             raise
-        return acc
+        # fmt: off
+        match len(acc):
+            case 0: return None
+            case 1: return acc[0]
+            case _: return acc
+        # fmt: on
 
     # queries
     def insertCity(self, city):
@@ -86,7 +91,47 @@ class Db:
         """
         data1 = (nameItem, paymentId, quantity, unitPrice)
         data2 = (paymentId, paymentId)
-        return self.__runTransaction__(query1, data1, query2, data2)
+        return self.__runTransaction__(query1, data1, query2, data2)[0]
+
+    def updateCity(self, city, newCity):
+        query = "UPDATE CITY SET name = ? WHERE name = ?;"
+        data = (newCity, city)
+        return self.__runTransaction__(query, data)
+
+    def updateShop(self, shop, newShop):
+        query = "UPDATE SHOP SET name = ? WHERE name = ?;"
+        data = (newShop, shop)
+        return self.__runTransaction__(query, data)
+
+    def updateMethod(self, method, newMethod):
+        query = "UPDATE PAYMENT_METHOD SET method = ? WHERE method = ?;"
+        data = (newMethod, method)
+        return self.__runTransaction__(query, data)
+
+    def updateItem(self, item, newItem):
+        query = "UPDATE ITEM SET name = ? WHERE name = ?;"
+        data = (newItem, item)
+        return self.__runTransaction__(query, data)
+
+    def updatePayment(self, paymentId, newDate, newCity, newShop, newPayment_method):
+        query = "UPDATE PAYMENT SET date = ?, city = ?, shop = ?, method = ? WHERE paymentId = ?;"
+        data = (date, city, shop, payment_method, paymentId)
+        return self.__runTransaction__(query, data)
+
+    def updateDetailOrder(self, nameItem, paymentId, newQuantity, newUnitPrice):
+        query1 = """
+        UPDATE DETAIL_ORDER SET quantity = ?, unit_price = ? WHERE nameItem = ? AND paymentId = ?
+        """
+        query2 = """
+        UPDATE PAYMENT
+        SET total_price = (
+            SELECT IFNULL( SUM(quantity * unit_price),0 ) from DETAIL_ORDER WHERE paymentId = ?
+        )
+        WHERE paymentId = ?;
+        """
+        data1 = (newQuantity, newUnitPrice, nameItem, paymentId)
+        data2 = (paymentId, paymentId)
+        return self.__runTransaction__(query1, data1, query2, data2)[0]
 
     # interaction with server
     def __msg__(self, status_code, status, error=None, res=None):
@@ -129,7 +174,13 @@ class Db:
             case "insert-shop":         return self.__query_msg__(["shop"], requestData, self.insertShop)
             case "insert-method":       return self.__query_msg__(["method"], requestData, self.insertMethod)
             case "insert-payment":      return self.__query_msg__(["date", "city", "shop", "method"], requestData, self.insertPayment)
-            case "insert-detailorder":  return self.__query_msg__(["city"], requestData, self.insertDetailOrder)
+            case "insert-detailorder":  return self.__query_msg__(["nameItem", "paymentId", "quantity", "unitPrice"], requestData, self.insertDetailOrder)
+            case "update-item":         return self.__query_msg__(["item", "newItem"], requestData, self.insertItem)
+            case "update-city":         return self.__query_msg__(["city", "newCity"], requestData, self.insertCity)
+            case "update-shop":         return self.__query_msg__(["shop", "newShop"], requestData, self.insertShop)
+            case "update-method":       return self.__query_msg__(["method", "newMethod"], requestData, self.insertMethod)
+            case "update-payment":      return self.__query_msg__(["paymentId", "newDate", "newCity", "newShop", "newMethod"], requestData, self.insertPayment)
+            case "update-detailorder":  return self.__query_msg__(["nameItem", "paymentId", "newQuantity", "newUnitPrice"], requestData, self.insertDetailOrder)
             case _:                     return self.__msg__(400, "invalid 'type' value in json request!", error="invalid request")
         # fmt: on
 
