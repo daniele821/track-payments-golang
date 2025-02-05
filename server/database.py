@@ -175,12 +175,12 @@ class Db:
             case "insert-method":       return self.__query_msg__(["method"], requestData, self.insertMethod)
             case "insert-payment":      return self.__query_msg__(["date", "city", "shop", "method"], requestData, self.insertPayment)
             case "insert-detailorder":  return self.__query_msg__(["nameItem", "paymentId", "quantity", "unitPrice"], requestData, self.insertDetailOrder)
-            case "update-item":         return self.__query_msg__(["item", "newItem"], requestData, self.insertItem)
-            case "update-city":         return self.__query_msg__(["city", "newCity"], requestData, self.insertCity)
-            case "update-shop":         return self.__query_msg__(["shop", "newShop"], requestData, self.insertShop)
-            case "update-method":       return self.__query_msg__(["method", "newMethod"], requestData, self.insertMethod)
-            case "update-payment":      return self.__query_msg__(["paymentId", "newDate", "newCity", "newShop", "newMethod"], requestData, self.insertPayment)
-            case "update-detailorder":  return self.__query_msg__(["nameItem", "paymentId", "newQuantity", "newUnitPrice"], requestData, self.insertDetailOrder)
+            case "update-item":         return self.__query_msg__(["item", "newItem"], requestData, self.updateItem)
+            case "update-city":         return self.__query_msg__(["city", "newCity"], requestData, self.updateCity)
+            case "update-shop":         return self.__query_msg__(["shop", "newShop"], requestData, self.updateShop)
+            case "update-method":       return self.__query_msg__(["method", "newMethod"], requestData, self.updateMethod)
+            case "update-payment":      return self.__query_msg__(["paymentId", "newDate", "newCity", "newShop", "newMethod"], requestData, self.updatePayment)
+            case "update-detailorder":  return self.__query_msg__(["nameItem", "paymentId", "newQuantity", "newUnitPrice"], requestData, self.updateDetailOrder)
             case _:                     return self.__msg__(400, "invalid 'type' value in json request!", error="invalid request")
         # fmt: on
 
