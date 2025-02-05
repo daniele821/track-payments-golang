@@ -47,6 +47,10 @@ class Db:
             raise
         return acc
 
+    # queries
+    def insertPayment(date, city, shop, payment_method):
+        pass
+
     # query = """
     # UPDATE PAYMENT
     # SET total_price = (
@@ -62,11 +66,11 @@ class Db:
     # """
 
     # interaction with server
-    def __err_msg__(self, msg, status_code=400):
-        return status_code, json.dumps({"status": msg})
+    def __msg__(self, status_code, status, error=None, res=None):
+        return status_code, json.dumps({"status": msg, "error": error, "res": res})
 
     def __err_typeMissingInJson_msg(self, typeKey):
-        return self.__err_msg__(f"missing '{typeKey}' in the json request!")
+        return self.__msg__(400, f"missing '{typeKey}' in the json request!", error="invalid request")
 
     def __query_msg__(self, typesReq, requestData, method):
         acc = []
@@ -77,14 +81,14 @@ class Db:
         try:
             resDict = method(*acc)
         except Exception as e:
-            return self.__err_msg__(f"query failed with error: {type(e).__name__}: {e}")
-        return 200, json.dumps({"status": "query was successful!", "res": resDict})
+            return self.__msg__(400, f"query failed: {type(e).__name__}: {e}", error=f"{e}")
+        return self.__msg__(200, "query was successful!", res=resDict)
 
     def answerPostRequest(self, requestJson):
         try:
             request = json.loads(requestJson)
         except Exception as e:
-            return self.__err_msg__(f"invalid json: {type(e).__name__}: {e}")
+            return self.__msg__(f"invalid json: {type(e).__name__}: {e}")
 
         if "type" not in request:
             return self.__err_typeMissingInJson_msg("type")
@@ -101,4 +105,4 @@ class Db:
         #     case _:
         #         return self.__err_msg__("invalid 'type' value in json request!")
 
-        return self.__err_msg__("nothing to do!")
+        return self.__msg__("nothing to do!")
