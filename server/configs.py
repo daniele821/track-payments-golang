@@ -7,7 +7,7 @@ import argparse
 SCRIPT_DIR = os.path.normpath(os.path.dirname(__file__))
 DATA_DIR = os.path.normpath(os.path.join(SCRIPT_DIR, "data"))
 WEBSITE_DIR = os.path.normpath(os.path.join(SCRIPT_DIR, "website"))
-SQLGEN_FILE = os.path.normpath(os.path.join(os.path.dirname(SCRIPT_DIR), "db", "TRACK_PAYMENTS.sqlite.sql"))
+SQLGEN_FILE = os.path.normpath(os.path.join(os.path.dirname(SCRIPT_DIR), "db", "TRACK_PAYMENTS2.sqlite.sql"))
 
 
 # parse flags
