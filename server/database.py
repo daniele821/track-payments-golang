@@ -69,6 +69,23 @@ class Db:
         query = "SELECT * FROM ITEM;"
         return self.__runTransaction__(query, ())
 
+    def selectPayment(self, monthDate):
+        query = """
+        SELECT * FROM PAYMENT 
+        WHERE strftime('%Y-%m', date) = strftime('%Y-%m', datetime(?))
+        ORDER BY date;
+        """
+        data = (monthDate,)
+        return self.__runTransaction__(query, data)
+
+    def selectDetailOrder(self, paymentId):
+        query = """
+        SELECT * FROM DETAIL_ORDER
+        WHERE paymentId = ?;
+        """
+        data = (paymentId,)
+        return self.__runTransaction__(query, data)
+
     def insertCity(self, city):
         query = "INSERT INTO CITY(name) VALUES(?);"
         data = (city,)
@@ -226,6 +243,8 @@ class Db:
             case "select-method":       return self.__query_msg__([], requestData, self.selectMethod)
             case "select-category":     return self.__query_msg__([], requestData, self.selectCategory)
             case "select-item":         return self.__query_msg__([], requestData, self.selectItem)
+            case "select-payment":      return self.__query_msg__(["monthDate"], requestData, self.selectPayment)
+            case "select-detailorder":  return self.__query_msg__(["paymentId"], requestData, self.selectDetailOrder)
             case "insert-city":         return self.__query_msg__(["city"], requestData, self.insertCity)
             case "insert-shop":         return self.__query_msg__(["shop"], requestData, self.insertShop)
             case "insert-method":       return self.__query_msg__(["method"], requestData, self.insertMethod)
