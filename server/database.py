@@ -97,7 +97,7 @@ class Db:
     def insertPayment(self, date, city, shop, payment_method):
         query = """
         INSERT INTO PAYMENT(date, total_price, city, shop, payment_method)
-        VALUES(?, 0, ?, ?, ?);
+        VALUES(datetime(?), 0, ?, ?, ?);
         """
         data = (date, city, shop, payment_method)
         return self.__runTransaction__(query, data)
@@ -144,7 +144,7 @@ class Db:
         return self.__runTransaction__(query, data)
 
     def updatePayment(self, paymentId, newDate, newCity, newShop, newPayment_method):
-        query = "UPDATE PAYMENT SET date = ?, city = ?, shop = ?, method = ? WHERE paymentId = ?;"
+        query = "UPDATE PAYMENT SET date = datetime(?), city = ?, shop = ?, method = ? WHERE paymentId = ?;"
         data = (date, city, shop, payment_method, paymentId)
         return self.__runTransaction__(query, data)
 
