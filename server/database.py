@@ -82,9 +82,9 @@ class Db:
         data = (date, city, shop, payment_method)
         return self.__runTransaction__(query, data)
 
-    def insertDetailOrder(self, nameItem, paymentId, quantity, unitPrice):
+    def insertDetailOrder(self, item, paymentId, quantity, unitPrice):
         query1 = """
-        INSERT INTO DETAIL_ORDER(nameItem, paymentId, quantity, unit_price)
+        INSERT INTO DETAIL_ORDER(item, paymentId, quantity, unit_price)
         VALUES(?, ?, ?, ?);
         """
         query2 = """
@@ -94,7 +94,7 @@ class Db:
         )
         WHERE paymentId = ?;
         """
-        data1 = (nameItem, paymentId, quantity, unitPrice)
+        data1 = (item, paymentId, quantity, unitPrice)
         data2 = (paymentId, paymentId)
         return self.__runTransaction__(query1, data1, query2, data2)[0]
 
@@ -128,9 +128,9 @@ class Db:
         data = (date, city, shop, payment_method, paymentId)
         return self.__runTransaction__(query, data)
 
-    def updateDetailOrder(self, nameItem, paymentId, newQuantity, newUnitPrice):
+    def updateDetailOrder(self, item, paymentId, newQuantity, newUnitPrice):
         query1 = """
-        UPDATE DETAIL_ORDER SET quantity = ?, unit_price = ? WHERE nameItem = ? AND paymentId = ?
+        UPDATE DETAIL_ORDER SET quantity = ?, unit_price = ? WHERE item = ? AND paymentId = ?;
         """
         query2 = """
         UPDATE PAYMENT
@@ -139,7 +139,27 @@ class Db:
         )
         WHERE paymentId = ?;
         """
-        data1 = (newQuantity, newUnitPrice, nameItem, paymentId)
+        data1 = (newQuantity, newUnitPrice, item, paymentId)
+        data2 = (paymentId, paymentId)
+        return self.__runTransaction__(query1, data1, query2, data2)[0]
+
+    def deletePayment(self, paymentId):
+        query = "DELETE FROM PAYMENT WHERE paymentId = ?;"
+        data = (paymentId,)
+        return self.__runTransaction__(query, data)
+
+    def deleteDetailOrder(self, item, paymentId):
+        query1 = """
+        DELETE FROM DETAIL_ORDER WHERE item = ? AND paymentId = ?;
+        """
+        query2 = """
+        UPDATE PAYMENT
+        SET total_price = (
+            SELECT IFNULL( SUM(quantity * unit_price),0 ) from DETAIL_ORDER WHERE paymentId = ?
+        )
+        WHERE paymentId = ?;
+        """
+        data1 = (item, paymentId)
         data2 = (paymentId, paymentId)
         return self.__runTransaction__(query1, data1, query2, data2)[0]
 
@@ -187,14 +207,16 @@ class Db:
             case "insert-category":     return self.__query_msg__(["category"], requestData, self.insertCategory)
             case "insert-item":         return self.__query_msg__(["item", "category"], requestData, self.insertItem)
             case "insert-payment":      return self.__query_msg__(["date", "city", "shop", "method"], requestData, self.insertPayment)
-            case "insert-detailorder":  return self.__query_msg__(["nameItem", "paymentId", "quantity", "unitPrice"], requestData, self.insertDetailOrder)
+            case "insert-detailorder":  return self.__query_msg__(["item", "paymentId", "quantity", "unitPrice"], requestData, self.insertDetailOrder)
             case "update-city":         return self.__query_msg__(["city", "newCity"], requestData, self.updateCity)
             case "update-shop":         return self.__query_msg__(["shop", "newShop"], requestData, self.updateShop)
             case "update-method":       return self.__query_msg__(["method", "newMethod"], requestData, self.updateMethod)
             case "update-category":     return self.__query_msg__(["category", "newCategory"], requestData, self.updateItem)
             case "update-item":         return self.__query_msg__(["item", "newItem", "newCategory"], requestData, self.updateItem)
             case "update-payment":      return self.__query_msg__(["paymentId", "newDate", "newCity", "newShop", "newMethod"], requestData, self.updatePayment)
-            case "update-detailorder":  return self.__query_msg__(["nameItem", "paymentId", "newQuantity", "newUnitPrice"], requestData, self.updateDetailOrder)
+            case "update-detailorder":  return self.__query_msg__(["item", "paymentId", "newQuantity", "newUnitPrice"], requestData, self.updateDetailOrder)
+            case "delete-payment":      return self.__query_msg__(["paymentId", "newDate", "newCity", "newShop", "newMethod"], requestData, self.deletePayment)
+            case "delete-detailorder":  return self.__query_msg__(["item", "paymentId", "newQuantity", "newUnitPrice"], requestData, self.deleteDetailOrder)
             case _:                     return self.__msg__(400, "invalid 'type' value in json request!", error="invalid request")
         # fmt: on
 
