@@ -57,8 +57,7 @@ def run(nameDb, ip, port, noServer=False, openGui=False):
 
     if not noServer:
         print(f"starting server on {addr_str}")
-        serverThread = threading.Thread(target=server_worker, args=[nameDb, ip, port])
-        serverThread.start()
+        threading.Thread(target=server_worker, args=[nameDb, ip, port]).start()
 
         if openGui:
             open_link(addr_str)
