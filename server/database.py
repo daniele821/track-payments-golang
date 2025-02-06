@@ -49,6 +49,26 @@ class Db:
         # fmt: on
 
     # queries
+    def selectCity(self):
+        query = "SELECT * FROM CITY;"
+        return self.__runTransaction__(query, ())
+
+    def selectShop(self):
+        query = "SELECT * FROM SHOP;"
+        return self.__runTransaction__(query, ())
+
+    def selectMethod(self):
+        query = "SELECT * FROM PAYMENT_METHOD;"
+        return self.__runTransaction__(query, ())
+
+    def selectCategory(self):
+        query = "SELECT * FROM CATEGORY;"
+        return self.__runTransaction__(query, ())
+
+    def selectItem(self):
+        query = "SELECT * FROM ITEM;"
+        return self.__runTransaction__(query, ())
+
     def insertCity(self, city):
         query = "INSERT INTO CITY(name) VALUES(?);"
         data = (city,)
@@ -201,6 +221,11 @@ class Db:
 
         # fmt: off
         match request["type"]:
+            case "select-city":         return self.__query_msg__([], requestData, self.selectCity)
+            case "select-shop":         return self.__query_msg__([], requestData, self.selectShop)
+            case "select-method":       return self.__query_msg__([], requestData, self.selectMethod)
+            case "select-category":     return self.__query_msg__([], requestData, self.selectCategory)
+            case "select-item":         return self.__query_msg__([], requestData, self.selectItem)
             case "insert-city":         return self.__query_msg__(["city"], requestData, self.insertCity)
             case "insert-shop":         return self.__query_msg__(["shop"], requestData, self.insertShop)
             case "insert-method":       return self.__query_msg__(["method"], requestData, self.insertMethod)
