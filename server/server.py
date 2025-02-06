@@ -10,7 +10,7 @@ import os
 import subprocess
 
 
-DB = database.Db("payments")
+THREAD_LOCAL = threading.local()
 
 
 class CustomHTTPHandler(http.server.SimpleHTTPRequestHandler):
@@ -23,7 +23,7 @@ class CustomHTTPHandler(http.server.SimpleHTTPRequestHandler):
         post_data = self.rfile.read(content_length).decode("utf-8")
 
         # execute query requested by json
-        status_code, responseJson = DB.answerPostRequest(post_data)
+        status_code, responseJson = THREAD_LOCAL.db.answerPostRequest(post_data)
 
         # Send a simple response
         self.send_response(status_code)
@@ -47,17 +47,21 @@ def open_link(link):
         raise Exception("unable to open link: unknown platform!")
 
 
-def run():
-    ip = "localhost"
-    port = configs.FLAGS.port
+def server_worker(nameDb, ip, port):
+    THREAD_LOCAL.db = database.Db(nameDb)
+    http.server.HTTPServer((ip, port), CustomHTTPHandler).serve_forever()
+
+
+def run(nameDb, ip, port, noServer=False, openGui=False):
     addr_str = f"http://{ip}:{port}"
-    if not configs.FLAGS.noserver:
-        # running server is a blocking call, thus if we want to avoid threads, it must be the
-        # last function we call before ending the program...
-        if configs.FLAGS.gui:
+
+    if not noServer:
+        print(f"starting server on {addr_str}")
+        serverThread = threading.Thread(target=server_worker, args=[nameDb, ip, port])
+        serverThread.start()
+
+        if openGui:
             open_link(addr_str)
             print("launching browser to connect to the server...")
         else:
             print("not launching browser!")
-        print(f"starting server on {addr_str}")
-        http.server.HTTPServer((ip, port), CustomHTTPHandler).serve_forever()

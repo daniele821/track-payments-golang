@@ -13,15 +13,9 @@ SQLGEN_FILE = os.path.normpath(os.path.join(os.path.dirname(SCRIPT_DIR), "db", "
 # parse flags
 def parse_args():
     p = argparse.ArgumentParser(description="A program to track payments")
-    p.add_argument(
-        "-g", "--gui", dest="gui", action="store_true", help="open server in a browser"
-    )
-    p.add_argument(
-        "-p", "--port", dest="port", type=int, default=8080, help="specify the port to use"
-    )
-    p.add_argument(
-        "--no-server", dest="noserver", action="store_true", help="do not run the server"           
-    )
+    p.add_argument("-g", "--gui", dest="gui", action="store_true", help="open server in a browser")
+    p.add_argument("-p", "--port", dest="port", type=int, default=8080, help="specify the port to use")
+    p.add_argument("-s", "--no-server", dest="noserver", action="store_true", help="do not run the server")
     return p.parse_args()
 
 
