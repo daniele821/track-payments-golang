@@ -83,7 +83,3 @@ func (payments *allPayments) addOrder(paymentIndex, quantity, unitPrice int, ite
 	})
 	return nil
 }
-
-func (payment allPayments) listPayments() []payment {
-	return payment.payments
-}
