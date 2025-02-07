@@ -11,7 +11,7 @@ type valueSet struct {
 	shops          []string
 	paymentMethods []string
 	categories     []string
-	itemCat        map[string]string
+	items          map[string]string
 }
 
 type order struct {
@@ -39,7 +39,7 @@ func newValueSet(cities, shops, methods, categories []string, itemCat map[string
 		shops:          shops,
 		paymentMethods: methods,
 		categories:     categories,
-		itemCat:        itemCat,
+		items:          itemCat,
 	}
 	for _, category := range itemCat {
 		if !slices.Contains(categories, category) {
@@ -56,7 +56,7 @@ func newAllPayments(valueSet valueSet) allPayments {
 }
 
 func (allPayments *allPayments) addCity(city string) error {
-	if !slices.Contains(allPayments.valueSet.cities, city) {
+	if slices.Contains(allPayments.valueSet.cities, city) {
 		return errors.New("invalid city: already present in the valueset!")
 	}
 	allPayments.valueSet.cities = append(allPayments.valueSet.cities, city)
@@ -64,7 +64,7 @@ func (allPayments *allPayments) addCity(city string) error {
 }
 
 func (allPayments *allPayments) addShop(shop string) error {
-	if !slices.Contains(allPayments.valueSet.cities, shop) {
+	if slices.Contains(allPayments.valueSet.shops, shop) {
 		return errors.New("invalid shop: already present in the valueset!")
 	}
 	allPayments.valueSet.shops = append(allPayments.valueSet.shops, shop)
@@ -72,7 +72,7 @@ func (allPayments *allPayments) addShop(shop string) error {
 }
 
 func (allPayments *allPayments) addPaymentMethod(paymentMethod string) error {
-	if !slices.Contains(allPayments.valueSet.cities, paymentMethod) {
+	if slices.Contains(allPayments.valueSet.paymentMethods, paymentMethod) {
 		return errors.New("invalid payment method: already present in the valueset!")
 	}
 	allPayments.valueSet.paymentMethods = append(allPayments.valueSet.paymentMethods, paymentMethod)
@@ -80,10 +80,21 @@ func (allPayments *allPayments) addPaymentMethod(paymentMethod string) error {
 }
 
 func (allPayments *allPayments) addCategory(category string) error {
-	if !slices.Contains(allPayments.valueSet.cities, category) {
+	if slices.Contains(allPayments.valueSet.categories, category) {
 		return errors.New("invalid category: already present in the valueset!")
 	}
 	allPayments.valueSet.categories = append(allPayments.valueSet.categories, category)
+	return nil
+}
+
+func (allPayments *allPayments) addItem(item, category string) error {
+	if _, ok := allPayments.valueSet.items[item]; ok {
+		return errors.New("invalid item: already present in the valueset!")
+	}
+	if !slices.Contains(allPayments.valueSet.categories, category) {
+		return errors.New("invalid category: not in the valueset!")
+	}
+	allPayments.valueSet.items[item] = category
 	return nil
 }
 
@@ -115,7 +126,7 @@ func (allPayments *allPayments) removePayment(paymentIndex int) error {
 }
 
 func (allPayments *allPayments) addOrder(paymentIndex, quantity, unitPrice int, item string) error {
-	if _, ok := allPayments.valueSet.itemCat[item]; !ok {
+	if _, ok := allPayments.valueSet.items[item]; !ok {
 		return errors.New("invalid item: not in the valueset!")
 	}
 	if paymentIndex < 0 || paymentIndex >= len(allPayments.payments) {
