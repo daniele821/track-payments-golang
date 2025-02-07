@@ -1,6 +1,7 @@
 package payments
 
 import (
+	"encoding/json"
 	"errors"
 	"slices"
 	"time"
@@ -31,6 +32,34 @@ type payment struct {
 type allPayments struct {
 	Payments []payment `json:"payments"`
 	ValueSet valueSet  `json:"valueSet"`
+}
+
+func newAllPaymentsFromJson(paymentsJson string) (allPayments, error) {
+	var payments allPayments
+	err := json.Unmarshal([]byte(paymentsJson), &payments)
+	if err != nil {
+		return allPayments{}, err
+	}
+
+	// do checks
+	return payments, errors.New("REMEMBER TO ADD INTEGRITY CHECKS!")
+
+	return payments, nil
+}
+
+func (allPayments allPayments) generateJson(indent bool) (string, error) {
+	if indent {
+		paymentJson, err := json.MarshalIndent(allPayments, "", "  ")
+		if err != nil {
+			return "", err
+		}
+		return string(paymentJson), nil
+	}
+	paymentJson, err := json.Marshal(allPayments)
+	if err != nil {
+		return "", err
+	}
+	return string(paymentJson), nil
 }
 
 func newValueSet(cities, shops, methods, categories []string, itemCat map[string]string) (valueSet, error) {

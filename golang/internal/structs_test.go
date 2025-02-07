@@ -72,3 +72,28 @@ func TestAllPayments(t *testing.T) {
 	}
 	fmt.Println(allPayments.Payments)
 }
+
+func TestJson(t *testing.T) {
+	valueSet, _ := newValueSet(
+		[]string{"Asti", "Cesena", "Milano", "Roma"},
+		[]string{"Coop", "Paninaro", "Conad", "Ristorante Indiano"},
+		[]string{"Contante", "Postepay", "San Paolo"},
+		[]string{"Cibo", "Viaggio"},
+		map[string]string{"Pasta": "Cibo", "Biglietto Treno": "Viaggio"},
+	)
+	allPayments := newAllPayments(valueSet)
+	allPayments.addPayment("Asti", "Coop", "Contante", time.Now())
+	allPayments.addOrder(0, 12, 1245, "Pasta")
+
+	paymentsJson, err := allPayments.generateJson(false)
+	if err != nil {
+		t.Fatalf("conversion to json failed (%s)!", err)
+	}
+	fmt.Println(paymentsJson)
+
+	allPayments2, err := newAllPaymentsFromJson(paymentsJson)
+	if err != nil {
+		t.Fatalf("conversion to json failed (%s)!", err)
+	}
+	fmt.Println(allPayments2)
+}
