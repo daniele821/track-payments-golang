@@ -3,6 +3,7 @@ package payments
 import (
 	"encoding/json"
 	"errors"
+	"payment/internal/utils"
 	"slices"
 	"time"
 )
@@ -84,6 +85,18 @@ func newValueSet(cities, shops, methods, categories []string, itemCat map[string
 		PaymentMethods: methods,
 		Categories:     categories,
 		Items:          itemCat,
+	}
+	if utils.HasDuplicates(cities) {
+		return valueSet, errors.New("invalid cities: there are duplicated values!")
+	}
+	if utils.HasDuplicates(shops) {
+		return valueSet, errors.New("invalid shops: there are duplicated values!")
+	}
+	if utils.HasDuplicates(methods) {
+		return valueSet, errors.New("invalid methods: there are duplicated values!")
+	}
+	if utils.HasDuplicates(categories) {
+		return valueSet, errors.New("invalid categories: there are duplicated values!")
 	}
 	for _, category := range itemCat {
 		if !slices.Contains(categories, category) {
