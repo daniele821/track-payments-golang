@@ -72,7 +72,7 @@ func (allPayments *allPayments) addPayment(city, shop, paymentMethod string, dat
 }
 
 func (allPayments *allPayments) removePayment(paymentIndex int) error {
-	if paymentIndex <= 0 || paymentIndex >= len(allPayments.payments) {
+	if paymentIndex < 0 || paymentIndex >= len(allPayments.payments) {
 		return errors.New("invalid index!")
 	}
 	allPayments.payments = slices.Delete(allPayments.payments, paymentIndex, paymentIndex+1)
@@ -83,7 +83,7 @@ func (allPayments *allPayments) addOrder(paymentIndex, quantity, unitPrice int, 
 	if _, ok := allPayments.valueSet.itemCat[item]; !ok {
 		return errors.New("invalid item!")
 	}
-	if paymentIndex <= 0 || paymentIndex >= len(allPayments.payments) {
+	if paymentIndex < 0 || paymentIndex >= len(allPayments.payments) {
 		return errors.New("invalid index!")
 	}
 	for _, order := range allPayments.payments[paymentIndex].orders {
@@ -98,7 +98,7 @@ func (allPayments *allPayments) addOrder(paymentIndex, quantity, unitPrice int, 
 }
 
 func (allPayments *allPayments) removeOrder(paymentIndex int, item string) error {
-	if paymentIndex <= 0 || paymentIndex >= len(allPayments.payments) {
+	if paymentIndex < 0 || paymentIndex >= len(allPayments.payments) {
 		return errors.New("invalid index!")
 	}
 	allPayments.payments[paymentIndex].orders = slices.DeleteFunc(allPayments.payments[paymentIndex].orders, func(elem order) bool { return elem.item == item })
