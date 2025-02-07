@@ -94,6 +94,9 @@ func (allPayments *allPayments) addItem(item, category string) error {
 	if !slices.Contains(allPayments.valueSet.categories, category) {
 		return errors.New("invalid category: not in the valueset!")
 	}
+	if allPayments.valueSet.items == nil {
+		allPayments.valueSet.items = map[string]string{}
+	}
 	allPayments.valueSet.items[item] = category
 	return nil
 }
