@@ -7,11 +7,11 @@ import (
 )
 
 type valueSet struct {
-	cities        []string
-	shops         []string
-	paymentMethod []string
-	categories    []string
-	itemCat       map[string]string
+	cities         []string
+	shops          []string
+	paymentMethods []string
+	categories     []string
+	itemCat        map[string]string
 }
 
 type order struct {
@@ -35,11 +35,11 @@ type allPayments struct {
 
 func newValueSet(cities, shops, methods, categories []string, itemCat map[string]string) (valueSet, error) {
 	valueSet := valueSet{
-		cities:        cities,
-		shops:         shops,
-		paymentMethod: methods,
-		categories:    categories,
-		itemCat:       itemCat,
+		cities:         cities,
+		shops:          shops,
+		paymentMethods: methods,
+		categories:     categories,
+		itemCat:        itemCat,
 	}
 	for _, category := range itemCat {
 		if !slices.Contains(categories, category) {
@@ -55,7 +55,35 @@ func newAllPayments(valueSet valueSet) allPayments {
 	}
 }
 
-func (allPayments *allPayments) addCity() error {
+func (allPayments *allPayments) addCity(city string) error {
+	if !slices.Contains(allPayments.valueSet.cities, city) {
+		return errors.New("invalid city: already present in the valueset!")
+	}
+	allPayments.valueSet.cities = append(allPayments.valueSet.cities, city)
+	return nil
+}
+
+func (allPayments *allPayments) addShop(shop string) error {
+	if !slices.Contains(allPayments.valueSet.cities, shop) {
+		return errors.New("invalid shop: already present in the valueset!")
+	}
+	allPayments.valueSet.shops = append(allPayments.valueSet.shops, shop)
+	return nil
+}
+
+func (allPayments *allPayments) addPaymentMethod(paymentMethod string) error {
+	if !slices.Contains(allPayments.valueSet.cities, paymentMethod) {
+		return errors.New("invalid payment method: already present in the valueset!")
+	}
+	allPayments.valueSet.paymentMethods = append(allPayments.valueSet.paymentMethods, paymentMethod)
+	return nil
+}
+
+func (allPayments *allPayments) addCategory(category string) error {
+	if !slices.Contains(allPayments.valueSet.cities, category) {
+		return errors.New("invalid category: already present in the valueset!")
+	}
+	allPayments.valueSet.categories = append(allPayments.valueSet.categories, category)
 	return nil
 }
 
@@ -66,8 +94,8 @@ func (allPayments *allPayments) addPayment(city, shop, paymentMethod string, dat
 	if !slices.Contains(allPayments.valueSet.shops, shop) {
 		return errors.New("invalid shop: not in the valueset!")
 	}
-	if !slices.Contains(allPayments.valueSet.paymentMethod, paymentMethod) {
-		return errors.New("invalid payment method: not in the valueset!")
+	if !slices.Contains(allPayments.valueSet.paymentMethods, paymentMethod) {
+		return errors.New("invalid payment payment method: not in the valueset!")
 	}
 	if date.After(time.Now()) {
 		return errors.New("invalid date: date in the future!")
