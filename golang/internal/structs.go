@@ -1,11 +1,15 @@
 package payments
 
+import (
+	"errors"
+	"slices"
+)
+
 type valueSet struct {
 	cities        []string
 	shops         []string
 	paymentMethod []string
-	items         []string
-	category      []string
+	categories    []string
 	itemCat       map[string]string
 }
 
@@ -23,4 +27,20 @@ type payment struct {
 	paymentMethod string
 	orders        []order
 	valueSet      valueSet
+}
+
+func newValueSet(cities, shops, methods, categories []string, itemCat map[string]string) (*valueSet, error) {
+	valueSet := valueSet{
+		cities:        cities,
+		shops:         shops,
+		paymentMethod: methods,
+		categories:    categories,
+		itemCat:       itemCat,
+	}
+	for _, category := range itemCat {
+		if !slices.Contains(categories, category) {
+			return nil, errors.New("invalid category!")
+		}
+	}
+	return &valueSet, nil
 }
