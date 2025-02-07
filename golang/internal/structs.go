@@ -35,14 +35,29 @@ type allPayments struct {
 }
 
 func newAllPaymentsFromJson(paymentsJson string) (allPayments, error) {
-	var payments allPayments
-	err := json.Unmarshal([]byte(paymentsJson), &payments)
+	var tmpPayments allPayments
+	err := json.Unmarshal([]byte(paymentsJson), &tmpPayments)
 	if err != nil {
 		return allPayments{}, err
 	}
 
-	// do checks
-	return payments, errors.New("REMEMBER TO ADD INTEGRITY CHECKS!")
+	// do checks: manually rebuild the allPayments, to have automagical checks!
+	tmpVal := tmpPayments.ValueSet
+	valueSet, err := newValueSet(tmpVal.Cities, tmpVal.Shops, tmpVal.PaymentMethods, tmpVal.Categories, tmpVal.Items)
+	if err != nil {
+		return allPayments{}, err
+	}
+	payments := newAllPayments(valueSet)
+	for indexPayment, payment := range tmpPayments.Payments {
+		if err := payments.addPayment(payment.City, payment.Shop, payment.PaymentMethod, payment.Date); err != nil {
+			return payments, err
+		}
+		for _, order := range tmpPayments.Payments[indexPayment].Orders {
+			if err := payments.addOrder(indexPayment, order.Quantity, order.UnitPrice, order.Item); err != nil {
+				return payments, err
+			}
+		}
+	}
 
 	return payments, nil
 }
@@ -144,7 +159,7 @@ func (allPayments *allPayments) addPayment(city, shop, paymentMethod string, dat
 		return errors.New("invalid date: date in the future!")
 	}
 	allPayments.Payments = append(allPayments.Payments, payment{
-		City: city, Shop: shop, PaymentMethod: paymentMethod, Date: date, Orders: []order{},
+		City: city, Shop: shop, PaymentMethod: paymentMethod, Date: date.UTC(), Orders: []order{},
 	})
 	return nil
 }

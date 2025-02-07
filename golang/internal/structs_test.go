@@ -2,6 +2,7 @@ package payments
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
 	"time"
 )
@@ -96,4 +97,8 @@ func TestJson(t *testing.T) {
 		t.Fatalf("conversion to json failed (%s)!", err)
 	}
 	fmt.Println(allPayments2)
+
+	if !reflect.DeepEqual(allPayments, allPayments2) {
+		t.Fatal("conversion from struct to json to struct has modified the struct!")
+	}
 }
