@@ -9,32 +9,32 @@ import (
 func TestConstructors(t *testing.T) {
 	valueSet := valueSet{}
 	allPayments := newAllPayments(valueSet)
-	fmt.Println(allPayments)
-
-	if err := allPayments.addShop("Coop"); err != nil {
-		t.Fatalf("insertion on new shop failed (%s)!", err)
-	}
-	fmt.Println(allPayments)
-
-	if err := allPayments.addCategory("Cibo"); err != nil {
-		t.Fatalf("insertion on new category failed (%s)!", err)
-	}
-	fmt.Println(allPayments)
+	fmt.Println(allPayments.valueSet)
 
 	if err := allPayments.addCity("Milano"); err != nil {
 		t.Fatalf("insertion on new city failed (%s)!", err)
 	}
-	fmt.Println(allPayments)
+	fmt.Println(allPayments.valueSet)
+
+	if err := allPayments.addShop("Coop"); err != nil {
+		t.Fatalf("insertion on new shop failed (%s)!", err)
+	}
+	fmt.Println(allPayments.valueSet)
 
 	if err := allPayments.addPaymentMethod("Contante"); err != nil {
 		t.Fatalf("insertion on new payment method failed (%s)!", err)
 	}
-	fmt.Println(allPayments)
+	fmt.Println(allPayments.valueSet)
+
+	if err := allPayments.addCategory("Cibo"); err != nil {
+		t.Fatalf("insertion on new category failed (%s)!", err)
+	}
+	fmt.Println(allPayments.valueSet)
 
 	if err := allPayments.addItem("Briosche", "Cibo"); err != nil {
 		t.Fatalf("insertion on new item failed (%s)!", err)
 	}
-	fmt.Println(allPayments)
+	fmt.Println(allPayments.valueSet)
 
 }
 
