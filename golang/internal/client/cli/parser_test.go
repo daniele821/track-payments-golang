@@ -37,7 +37,7 @@ func TestParser(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			actual, err := cli.Parser(test.args)
+			actual, err := cli.ParseFlags(test.args)
 			if test.shouldFail {
 				if err == nil {
 					t.Fatalf("parser should have failed!\n")

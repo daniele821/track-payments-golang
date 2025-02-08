@@ -7,7 +7,7 @@ import (
 
 type Flags map[string]string
 
-func Parser(args []string) (Flags, error) {
+func ParseFlags(args []string) (Flags, error) {
 	flags := Flags{}
 	lastFlag := "--"
 	lastValue := []string{}
