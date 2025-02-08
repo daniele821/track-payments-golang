@@ -71,10 +71,7 @@ func (allPayments AllPayments) GenerateJson(indent bool) (string, error) {
 	} else {
 		paymentJson, err = json.Marshal(allPayments)
 	}
-	if err != nil {
-		return string(paymentJson), err
-	}
-	return string(paymentJson), nil
+	return string(paymentJson), err
 }
 
 func NewValueSet(cities, shops, methods, categories []string, itemCat map[string]string) (ValueSet, error) {
