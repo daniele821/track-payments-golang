@@ -15,7 +15,7 @@ func TestHasDuplicates(t *testing.T) {
 	})
 
 	t.Run("CheckNoDuplicates", func(t *testing.T) {
-		testSlice := []int{1, 2, 3, 4, 4}
+		testSlice := []int{1, 2, 3, 4}
 		if utils.HasDuplicates(testSlice) {
 			t.Fatalf("the slice has no duplicate: %v", testSlice)
 		}
