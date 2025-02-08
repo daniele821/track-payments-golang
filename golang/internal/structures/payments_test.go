@@ -1,14 +1,15 @@
-package structures
+package structures_test
 
 import (
+	"payment/internal/structures"
 	"reflect"
 	"testing"
 	"time"
 )
 
 func TestConstructors(t *testing.T) {
-	valueSet := ValueSet{}
-	allPayments := NewAllPayments(valueSet)
+	valueSet := structures.ValueSet{}
+	allPayments := structures.NewAllPayments(valueSet)
 
 	if err := allPayments.AddCity("Milano"); err != nil {
 		t.Fatalf("insertion on new city failed (%s)!", err)
@@ -33,14 +34,14 @@ func TestConstructors(t *testing.T) {
 }
 
 func TestAllPayments(t *testing.T) {
-	valueSet, _ := NewValueSet(
+	valueSet, _ := structures.NewValueSet(
 		[]string{"Asti", "Cesena", "Milano", "Roma"},
 		[]string{"Coop", "Paninaro", "Conad", "Ristorante Indiano"},
 		[]string{"Contante", "Postepay", "San Paolo"},
 		[]string{"Cibo", "Viaggio"},
 		map[string]string{"Pasta": "Cibo", "Biglietto Treno": "Viaggio"},
 	)
-	allPayments := NewAllPayments(valueSet)
+	allPayments := structures.NewAllPayments(valueSet)
 	if len(allPayments.Payments) != 0 {
 		t.Fatal("there shoul not be any payments!")
 	}
@@ -63,14 +64,14 @@ func TestAllPayments(t *testing.T) {
 }
 
 func TestJson(t *testing.T) {
-	valueSet, _ := NewValueSet(
+	valueSet, _ := structures.NewValueSet(
 		[]string{"Asti", "Cesena", "Milano", "Roma"},
 		[]string{"Coop", "Paninaro", "Conad", "Ristorante Indiano"},
 		[]string{"Contante", "Postepay", "San Paolo"},
 		[]string{"Cibo", "Viaggio"},
 		map[string]string{"Pasta": "Cibo", "Biglietto Treno": "Viaggio"},
 	)
-	allPayments := NewAllPayments(valueSet)
+	allPayments := structures.NewAllPayments(valueSet)
 	allPayments.AddPayment("Asti", "Coop", "Contante", time.Now())
 	allPayments.AddOrder(0, 12, 1245, "Pasta")
 
@@ -79,7 +80,7 @@ func TestJson(t *testing.T) {
 		t.Fatalf("conversion to json failed (%s)!", err)
 	}
 
-	allPayments2, err := NewAllPaymentsFromJson(paymentsJson)
+	allPayments2, err := structures.NewAllPaymentsFromJson(paymentsJson)
 	if err != nil {
 		t.Fatalf("conversion to json failed (%s)!", err)
 	}
