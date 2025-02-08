@@ -64,16 +64,15 @@ func NewAllPaymentsFromJson(paymentsJson string) (AllPayments, error) {
 }
 
 func (allPayments AllPayments) GenerateJson(indent bool) (string, error) {
+	var paymentJson []byte
+	var err error
 	if indent {
-		paymentJson, err := json.MarshalIndent(allPayments, "", "  ")
-		if err != nil {
-			return "", err
-		}
-		return string(paymentJson), nil
+		paymentJson, err = json.MarshalIndent(allPayments, "", "  ")
+	} else {
+		paymentJson, err = json.Marshal(allPayments)
 	}
-	paymentJson, err := json.Marshal(allPayments)
 	if err != nil {
-		return "", err
+		return string(paymentJson), err
 	}
 	return string(paymentJson), nil
 }
