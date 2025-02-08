@@ -1,7 +1,7 @@
 package structures_test
 
 import (
-	"payment/internal/structures"
+	"payment/internal/server/structures"
 	"reflect"
 	"testing"
 	"time"
