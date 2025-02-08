@@ -1,4 +1,4 @@
-package payments
+package structures
 
 import (
 	"encoding/json"
@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-type valueSet struct {
+type ValueSet struct {
 	Cities         []string          `json:"cities"`
 	Shops          []string          `json:"shops"`
 	PaymentMethods []string          `json:"paymentMethods"`
@@ -16,45 +16,45 @@ type valueSet struct {
 	Items          map[string]string `json:"items"`
 }
 
-type order struct {
+type Order struct {
 	Quantity  int    `json:"quantity"`
 	UnitPrice int    `json:"unitPrice"`
 	Item      string `json:"item"`
 }
 
-type payment struct {
+type Payment struct {
 	City          string    `json:"city"`
 	Shop          string    `json:"shop"`
 	PaymentMethod string    `json:"paymentMethod"`
 	Date          time.Time `json:"date"`
-	Orders        []order   `json:"orders"`
+	Orders        []Order   `json:"orders"`
 }
 
-type allPayments struct {
-	Payments []payment `json:"payments"`
-	ValueSet valueSet  `json:"valueSet"`
+type AllPayments struct {
+	Payments []Payment `json:"payments"`
+	ValueSet ValueSet  `json:"valueSet"`
 }
 
-func newAllPaymentsFromJson(paymentsJson string) (allPayments, error) {
-	var tmpPayments allPayments
+func NewAllPaymentsFromJson(paymentsJson string) (AllPayments, error) {
+	var tmpPayments AllPayments
 	err := json.Unmarshal([]byte(paymentsJson), &tmpPayments)
 	if err != nil {
-		return allPayments{}, err
+		return AllPayments{}, err
 	}
 
 	// do checks: manually rebuild the allPayments, to have automagical checks!
 	tmpVal := tmpPayments.ValueSet
-	valueSet, err := newValueSet(tmpVal.Cities, tmpVal.Shops, tmpVal.PaymentMethods, tmpVal.Categories, tmpVal.Items)
+	valueSet, err := NewValueSet(tmpVal.Cities, tmpVal.Shops, tmpVal.PaymentMethods, tmpVal.Categories, tmpVal.Items)
 	if err != nil {
-		return allPayments{}, err
+		return AllPayments{}, err
 	}
-	payments := newAllPayments(valueSet)
+	payments := NewAllPayments(valueSet)
 	for indexPayment, payment := range tmpPayments.Payments {
-		if err := payments.addPayment(payment.City, payment.Shop, payment.PaymentMethod, payment.Date); err != nil {
+		if err := payments.AddPayment(payment.City, payment.Shop, payment.PaymentMethod, payment.Date); err != nil {
 			return payments, err
 		}
 		for _, order := range tmpPayments.Payments[indexPayment].Orders {
-			if err := payments.addOrder(indexPayment, order.Quantity, order.UnitPrice, order.Item); err != nil {
+			if err := payments.AddOrder(indexPayment, order.Quantity, order.UnitPrice, order.Item); err != nil {
 				return payments, err
 			}
 		}
@@ -63,7 +63,7 @@ func newAllPaymentsFromJson(paymentsJson string) (allPayments, error) {
 	return payments, nil
 }
 
-func (allPayments allPayments) generateJson(indent bool) (string, error) {
+func (allPayments AllPayments) GenerateJson(indent bool) (string, error) {
 	if indent {
 		paymentJson, err := json.MarshalIndent(allPayments, "", "  ")
 		if err != nil {
@@ -78,8 +78,8 @@ func (allPayments allPayments) generateJson(indent bool) (string, error) {
 	return string(paymentJson), nil
 }
 
-func newValueSet(cities, shops, methods, categories []string, itemCat map[string]string) (valueSet, error) {
-	valueSet := valueSet{
+func NewValueSet(cities, shops, methods, categories []string, itemCat map[string]string) (ValueSet, error) {
+	valueSet := ValueSet{
 		Cities:         cities,
 		Shops:          shops,
 		PaymentMethods: methods,
@@ -106,13 +106,13 @@ func newValueSet(cities, shops, methods, categories []string, itemCat map[string
 	return valueSet, nil
 }
 
-func newAllPayments(valueSet valueSet) allPayments {
-	return allPayments{
+func NewAllPayments(valueSet ValueSet) AllPayments {
+	return AllPayments{
 		ValueSet: valueSet,
 	}
 }
 
-func (allPayments *allPayments) addCity(city string) error {
+func (allPayments *AllPayments) AddCity(city string) error {
 	if slices.Contains(allPayments.ValueSet.Cities, city) {
 		return errors.New("invalid city: already present in the valueset!")
 	}
@@ -120,7 +120,7 @@ func (allPayments *allPayments) addCity(city string) error {
 	return nil
 }
 
-func (allPayments *allPayments) addShop(shop string) error {
+func (allPayments *AllPayments) AddShop(shop string) error {
 	if slices.Contains(allPayments.ValueSet.Shops, shop) {
 		return errors.New("invalid shop: already present in the valueset!")
 	}
@@ -128,7 +128,7 @@ func (allPayments *allPayments) addShop(shop string) error {
 	return nil
 }
 
-func (allPayments *allPayments) addPaymentMethod(paymentMethod string) error {
+func (allPayments *AllPayments) AddPaymentMethod(paymentMethod string) error {
 	if slices.Contains(allPayments.ValueSet.PaymentMethods, paymentMethod) {
 		return errors.New("invalid payment method: already present in the valueset!")
 	}
@@ -136,7 +136,7 @@ func (allPayments *allPayments) addPaymentMethod(paymentMethod string) error {
 	return nil
 }
 
-func (allPayments *allPayments) addCategory(category string) error {
+func (allPayments *AllPayments) AddCategory(category string) error {
 	if slices.Contains(allPayments.ValueSet.Categories, category) {
 		return errors.New("invalid category: already present in the valueset!")
 	}
@@ -144,7 +144,7 @@ func (allPayments *allPayments) addCategory(category string) error {
 	return nil
 }
 
-func (allPayments *allPayments) addItem(item, category string) error {
+func (allPayments *AllPayments) AddItem(item, category string) error {
 	if _, ok := allPayments.ValueSet.Items[item]; ok {
 		return errors.New("invalid item: already present in the valueset!")
 	}
@@ -158,7 +158,7 @@ func (allPayments *allPayments) addItem(item, category string) error {
 	return nil
 }
 
-func (allPayments *allPayments) addPayment(city, shop, paymentMethod string, date time.Time) error {
+func (allPayments *AllPayments) AddPayment(city, shop, paymentMethod string, date time.Time) error {
 	if !slices.Contains(allPayments.ValueSet.Cities, city) {
 		return errors.New("invalid city: not in the valueset!")
 	}
@@ -171,13 +171,13 @@ func (allPayments *allPayments) addPayment(city, shop, paymentMethod string, dat
 	if date.After(time.Now()) {
 		return errors.New("invalid date: date in the future!")
 	}
-	allPayments.Payments = append(allPayments.Payments, payment{
-		City: city, Shop: shop, PaymentMethod: paymentMethod, Date: date.UTC(), Orders: []order{},
+	allPayments.Payments = append(allPayments.Payments, Payment{
+		City: city, Shop: shop, PaymentMethod: paymentMethod, Date: date.UTC(), Orders: []Order{},
 	})
 	return nil
 }
 
-func (allPayments *allPayments) removePayment(paymentIndex int) error {
+func (allPayments *AllPayments) RemovePayment(paymentIndex int) error {
 	if paymentIndex < 0 || paymentIndex >= len(allPayments.Payments) {
 		return errors.New("invalid index: out of bound!")
 	}
@@ -185,7 +185,7 @@ func (allPayments *allPayments) removePayment(paymentIndex int) error {
 	return nil
 }
 
-func (allPayments *allPayments) addOrder(paymentIndex, quantity, unitPrice int, item string) error {
+func (allPayments *AllPayments) AddOrder(paymentIndex, quantity, unitPrice int, item string) error {
 	if _, ok := allPayments.ValueSet.Items[item]; !ok {
 		return errors.New("invalid item: not in the valueset!")
 	}
@@ -197,16 +197,16 @@ func (allPayments *allPayments) addOrder(paymentIndex, quantity, unitPrice int, 
 			return errors.New("invalid item: duplicate value!")
 		}
 	}
-	allPayments.Payments[paymentIndex].Orders = append(allPayments.Payments[paymentIndex].Orders, order{
+	allPayments.Payments[paymentIndex].Orders = append(allPayments.Payments[paymentIndex].Orders, Order{
 		Quantity: quantity, UnitPrice: unitPrice, Item: item,
 	})
 	return nil
 }
 
-func (allPayments *allPayments) removeOrder(paymentIndex int, item string) error {
+func (allPayments *AllPayments) RemoveOrder(paymentIndex int, item string) error {
 	if paymentIndex < 0 || paymentIndex >= len(allPayments.Payments) {
 		return errors.New("invalid index: out of bounds!")
 	}
-	allPayments.Payments[paymentIndex].Orders = slices.DeleteFunc(allPayments.Payments[paymentIndex].Orders, func(elem order) bool { return elem.Item == item })
+	allPayments.Payments[paymentIndex].Orders = slices.DeleteFunc(allPayments.Payments[paymentIndex].Orders, func(elem Order) bool { return elem.Item == item })
 	return nil
 }

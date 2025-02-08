@@ -1,4 +1,4 @@
-package payments
+package structures
 
 import (
 	"reflect"
@@ -7,79 +7,79 @@ import (
 )
 
 func TestConstructors(t *testing.T) {
-	valueSet := valueSet{}
-	allPayments := newAllPayments(valueSet)
+	valueSet := ValueSet{}
+	allPayments := NewAllPayments(valueSet)
 
-	if err := allPayments.addCity("Milano"); err != nil {
+	if err := allPayments.AddCity("Milano"); err != nil {
 		t.Fatalf("insertion on new city failed (%s)!", err)
 	}
 
-	if err := allPayments.addShop("Coop"); err != nil {
+	if err := allPayments.AddShop("Coop"); err != nil {
 		t.Fatalf("insertion on new shop failed (%s)!", err)
 	}
 
-	if err := allPayments.addPaymentMethod("Contante"); err != nil {
+	if err := allPayments.AddPaymentMethod("Contante"); err != nil {
 		t.Fatalf("insertion on new payment method failed (%s)!", err)
 	}
 
-	if err := allPayments.addCategory("Cibo"); err != nil {
+	if err := allPayments.AddCategory("Cibo"); err != nil {
 		t.Fatalf("insertion on new category failed (%s)!", err)
 	}
 
-	if err := allPayments.addItem("Briosche", "Cibo"); err != nil {
+	if err := allPayments.AddItem("Briosche", "Cibo"); err != nil {
 		t.Fatalf("insertion on new item failed (%s)!", err)
 	}
 
 }
 
 func TestAllPayments(t *testing.T) {
-	valueSet, _ := newValueSet(
+	valueSet, _ := NewValueSet(
 		[]string{"Asti", "Cesena", "Milano", "Roma"},
 		[]string{"Coop", "Paninaro", "Conad", "Ristorante Indiano"},
 		[]string{"Contante", "Postepay", "San Paolo"},
 		[]string{"Cibo", "Viaggio"},
 		map[string]string{"Pasta": "Cibo", "Biglietto Treno": "Viaggio"},
 	)
-	allPayments := newAllPayments(valueSet)
+	allPayments := NewAllPayments(valueSet)
 	if len(allPayments.Payments) != 0 {
 		t.Fatal("there shoul not be any payments!")
 	}
 
-	if err := allPayments.addPayment("Asti", "Coop", "Contante", time.Now()); err != nil || len(allPayments.Payments) != 1 {
+	if err := allPayments.AddPayment("Asti", "Coop", "Contante", time.Now()); err != nil || len(allPayments.Payments) != 1 {
 		t.Fatalf("insertion of new payment failed (%s)!", err)
 	}
 
-	if err := allPayments.addOrder(0, 12, 1245, "Pasta"); err != nil || len(allPayments.Payments[0].Orders) != 1 {
+	if err := allPayments.AddOrder(0, 12, 1245, "Pasta"); err != nil || len(allPayments.Payments[0].Orders) != 1 {
 		t.Fatalf("insertion of new order failed (%s)!", err)
 	}
 
-	if err := allPayments.removeOrder(0, "Pasta"); err != nil || len(allPayments.Payments[0].Orders) != 0 {
+	if err := allPayments.RemoveOrder(0, "Pasta"); err != nil || len(allPayments.Payments[0].Orders) != 0 {
 		t.Fatalf("deletion of order failed (%s)!", err)
 	}
 
-	if err := allPayments.removePayment(0); err != nil || len(allPayments.Payments) != 0 {
+	if err := allPayments.RemovePayment(0); err != nil || len(allPayments.Payments) != 0 {
 		t.Fatalf("deletion of payment failed (%s)!", err)
 	}
 }
 
 func TestJson(t *testing.T) {
-	valueSet, _ := newValueSet(
+	valueSet, _ := NewValueSet(
 		[]string{"Asti", "Cesena", "Milano", "Roma"},
 		[]string{"Coop", "Paninaro", "Conad", "Ristorante Indiano"},
 		[]string{"Contante", "Postepay", "San Paolo"},
 		[]string{"Cibo", "Viaggio"},
 		map[string]string{"Pasta": "Cibo", "Biglietto Treno": "Viaggio"},
 	)
-	allPayments := newAllPayments(valueSet)
-	allPayments.addPayment("Asti", "Coop", "Contante", time.Now())
-	allPayments.addOrder(0, 12, 1245, "Pasta")
+	allPayments := NewAllPayments(valueSet)
+	allPayments.AddPayment("Asti", "Coop", "Contante", time.Now())
+	allPayments.AddOrder(0, 12, 1245, "Pasta")
 
-	paymentsJson, err := allPayments.generateJson(false)
+	paymentsJson, err := allPayments.GenerateJson(false)
 	if err != nil {
 		t.Fatalf("conversion to json failed (%s)!", err)
 	}
 
-	allPayments2, err := newAllPaymentsFromJson(paymentsJson)
+	allPayments2, err := NewAllPaymentsFromJson(paymentsJson)
 	if err != nil {
 		t.Fatalf("conversion to json failed (%s)!", err)
 	}
