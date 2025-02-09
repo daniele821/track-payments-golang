@@ -12,19 +12,19 @@ type ValueSet struct {
 type Order struct {
 	quantity  int
 	unitPrice int
-	item      btree.BTreeG[string]
+	item      string
 }
 
 type Payment struct {
 	city          string
 	shop          string
 	paymentMethod string
-	date          btree.BTreeG[string]
+	date          string
 	description   string
-	orders        []Order
+	orders        *btree.BTreeG[Order]
 }
 
 type AllPayments struct {
-	payments []Payment
+	payments *btree.BTreeG[Payment]
 	valueSet ValueSet
 }
