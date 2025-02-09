@@ -41,7 +41,7 @@ func (order Order) GreaterThan(otherOrder Order) bool {
 	return order.item > otherOrder.item
 }
 
-func NewPayment() AllPayments {
+func NewAllPayment() AllPayments {
 	return AllPayments{
 		valueSet: ValueSet{
 			cities:         btree.NewG(3, func(a, b string) bool { return a < b }),
