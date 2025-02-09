@@ -1,4 +1,4 @@
-package cli
+package utils
 
 import (
 	"errors"
@@ -15,7 +15,7 @@ func ParseFlags(args []string) (Flags, error) {
 		if strings.HasPrefix(arg, "--") {
 
 			if _, ok := flags[lastFlag]; ok {
-				return flags, errors.New("duplicated flags are not valid!")
+				return flags, errors.New("duplicated flags are not valid")
 			}
 			flags[lastFlag] = strings.Join(lastValue, "")
 			lastFlag = arg

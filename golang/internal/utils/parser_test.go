@@ -1,7 +1,7 @@
-package cli_test
+package utils_test
 
 import (
-	"payment/internal/client/cli"
+	"payment/internal/utils"
 	"reflect"
 	"testing"
 )
@@ -10,23 +10,23 @@ func TestParser(t *testing.T) {
 	tests := []struct {
 		name       string
 		args       []string
-		expect     cli.Flags
+		expect     utils.Flags
 		shouldFail bool
 	}{
 		{
 			name:   "TestParserEmpty",
 			args:   []string{},
-			expect: cli.Flags{"--": ""},
+			expect: utils.Flags{"--": ""},
 		},
 		{
 			name:   "TestParserVarious",
 			args:   []string{"--date", "2025-01-02", "--debug"},
-			expect: cli.Flags{"--date": "2025-01-02", "--debug": "", "--": ""},
+			expect: utils.Flags{"--date": "2025-01-02", "--debug": "", "--": ""},
 		},
 		{
 			name:   "TestParserInitVals",
 			args:   []string{"2025-01-02"},
-			expect: cli.Flags{"--": "2025-01-02"},
+			expect: utils.Flags{"--": "2025-01-02"},
 		},
 		{
 			name:       "TestParserFailure",
@@ -37,7 +37,7 @@ func TestParser(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			actual, err := cli.ParseFlags(test.args)
+			actual, err := utils.ParseFlags(test.args)
 			if test.shouldFail {
 				if err == nil {
 					t.Fatalf("parser should have failed!\n")
