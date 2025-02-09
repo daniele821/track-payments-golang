@@ -37,3 +37,7 @@ func TestHasDuplicates(t *testing.T) {
 		})
 	}
 }
+
+func TestSortedSlice(t *testing.T) {
+
+}

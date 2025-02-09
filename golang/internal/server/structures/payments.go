@@ -3,6 +3,7 @@ package structures
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"payment/internal/utils"
 	"slices"
 	"time"
@@ -23,11 +24,11 @@ type Order struct {
 }
 
 type Payment struct {
-	City          string    `json:"city"`
-	Shop          string    `json:"shop"`
-	PaymentMethod string    `json:"paymentMethod"`
-	Date          time.Time `json:"date"`
-	Orders        []Order   `json:"orders"`
+	City          string  `json:"city"`
+	Shop          string  `json:"shop"`
+	PaymentMethod string  `json:"paymentMethod"`
+	Date          string  `json:"date"`
+	Orders        []Order `json:"orders"`
 }
 
 type AllPayments struct {
@@ -154,7 +155,7 @@ func (allPayments *AllPayments) AddItem(item, category string) error {
 	return nil
 }
 
-func (allPayments *AllPayments) AddPayment(city, shop, paymentMethod string, date time.Time) error {
+func (allPayments *AllPayments) AddPayment(city, shop, paymentMethod string, date string) error {
 	if !slices.Contains(allPayments.ValueSet.Cities, city) {
 		return errors.New("invalid city: not in the valueset!")
 	}
@@ -164,45 +165,51 @@ func (allPayments *AllPayments) AddPayment(city, shop, paymentMethod string, dat
 	if !slices.Contains(allPayments.ValueSet.PaymentMethods, paymentMethod) {
 		return errors.New("invalid payment payment method: not in the valueset!")
 	}
-	if date.After(time.Now()) {
+	if dateTime, err := time.Parse("2026/01/02 15:04", date); err != nil {
+		return errors.New(fmt.Sprintf("invalide date format: %s", err))
+	} else if dateTime.After(time.Now()) {
 		return errors.New("invalid date: date in the future!")
 	}
+	// add check date is unique
 	allPayments.Payments = append(allPayments.Payments, Payment{
-		City: city, Shop: shop, PaymentMethod: paymentMethod, Date: date.UTC(), Orders: []Order{},
+		City: city, Shop: shop, PaymentMethod: paymentMethod, Date: date, Orders: []Order{},
 	})
 	return nil
 }
 
-func (allPayments *AllPayments) RemovePayment(paymentIndex int) error {
-	if paymentIndex < 0 || paymentIndex >= len(allPayments.Payments) {
-		return errors.New("invalid index: out of bound!")
-	}
-	allPayments.Payments = slices.Delete(allPayments.Payments, paymentIndex, paymentIndex+1)
+func (allPayments *AllPayments) RemovePayment(date string) error {
+	// use the date as the ID
+	// if paymentIndex < 0 || paymentIndex >= len(allPayments.Payments) {
+	// 	return errors.New("invalid index: out of bound!")
+	// }
+	// allPayments.Payments = slices.Delete(allPayments.Payments, paymentIndex, paymentIndex+1)
 	return nil
 }
 
-func (allPayments *AllPayments) AddOrder(paymentIndex, quantity, unitPrice int, item string) error {
-	if _, ok := allPayments.ValueSet.Items[item]; !ok {
-		return errors.New("invalid item: not in the valueset!")
-	}
-	if paymentIndex < 0 || paymentIndex >= len(allPayments.Payments) {
-		return errors.New("invalid index: out of bound!")
-	}
-	for _, order := range allPayments.Payments[paymentIndex].Orders {
-		if order.Item == item {
-			return errors.New("invalid item: duplicate value!")
-		}
-	}
-	allPayments.Payments[paymentIndex].Orders = append(allPayments.Payments[paymentIndex].Orders, Order{
-		Quantity: quantity, UnitPrice: unitPrice, Item: item,
-	})
+func (allPayments *AllPayments) AddOrder(quantity, unitPrice int, date, item string) error {
+	// search by date
+	// if _, ok := allPayments.ValueSet.Items[item]; !ok {
+	// 	return errors.New("invalid item: not in the valueset!")
+	// }
+	// if paymentIndex < 0 || paymentIndex >= len(allPayments.Payments) {
+	// 	return errors.New("invalid index: out of bound!")
+	// }
+	// for _, order := range allPayments.Payments[paymentIndex].Orders {
+	// 	if order.Item == item {
+	// 		return errors.New("invalid item: duplicate value!")
+	// 	}
+	// }
+	// allPayments.Payments[paymentIndex].Orders = append(allPayments.Payments[paymentIndex].Orders, Order{
+	// 	Quantity: quantity, UnitPrice: unitPrice, Item: item,
+	// })
 	return nil
 }
 
-func (allPayments *AllPayments) RemoveOrder(paymentIndex int, item string) error {
-	if paymentIndex < 0 || paymentIndex >= len(allPayments.Payments) {
-		return errors.New("invalid index: out of bounds!")
-	}
-	allPayments.Payments[paymentIndex].Orders = slices.DeleteFunc(allPayments.Payments[paymentIndex].Orders, func(elem Order) bool { return elem.Item == item })
+func (allPayments *AllPayments) RemoveOrder(date, item string) error {
+	// search by date
+	// if paymentIndex < 0 || paymentIndex >= len(allPayments.Payments) {
+	// 	return errors.New("invalid index: out of bounds!")
+	// }
+	// allPayments.Payments[paymentIndex].Orders = slices.DeleteFunc(allPayments.Payments[paymentIndex].Orders, func(elem Order) bool { return elem.Item == item })
 	return nil
 }
