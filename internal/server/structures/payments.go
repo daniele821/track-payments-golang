@@ -1,6 +1,7 @@
 package structures
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/google/btree"
@@ -33,14 +34,29 @@ type AllPayments struct {
 	valueSet ValueSet
 }
 
+// COMPARISON METHODS
 func (payment Payment) GreaterThan(otherPayment Payment) bool {
 	return payment.date.After(otherPayment.date)
 }
-
 func (order Order) GreaterThan(otherOrder Order) bool {
 	return order.item > otherOrder.item
 }
 
+// STRING METHODS
+func (valueSet ValueSet) String() string {
+	return "TODO"
+}
+func (order Order) String() string {
+	return fmt.Sprintf("item: %s, quantity: %d, unitPrice: %d", order.item, order.quantity, order.unitPrice)
+}
+func (payment Payment) String() string {
+	return "TODO"
+}
+func (allPayments AllPayments) String() string {
+	return "TODO"
+}
+
+// CONSTRUCTORS
 func NewAllPayment() AllPayments {
 	return AllPayments{
 		valueSet: ValueSet{
