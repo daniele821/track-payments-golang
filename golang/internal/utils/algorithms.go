@@ -12,7 +12,7 @@ func HasDuplicatesMapped[S ~[]E, E any, M comparable](slice S, mapFunc func(inde
 	return false
 }
 
-func HasDuplicates[T comparable](slice []T) bool {
+func HasDuplicates[S ~[]T, T comparable](slice S) bool {
 	return HasDuplicatesMapped(slice, func(index int, item T) T {
 		return item
 	})
