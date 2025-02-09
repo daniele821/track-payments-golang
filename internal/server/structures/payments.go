@@ -33,12 +33,22 @@ type AllPayments struct {
 	valueSet ValueSet
 }
 
-func NewValueSet() ValueSet {
-	valueSet := ValueSet{
-		cities:         btree.NewG(3, func(a, b string) bool { return a < b }),
-		shops:          btree.NewG(3, func(a, b string) bool { return a < b }),
-		paymentMethods: btree.NewG(3, func(a, b string) bool { return a < b }),
-		items:          btree.NewG(3, func(a, b string) bool { return a < b }),
+func (payment Payment) GreaterThan(otherPayment Payment) bool {
+	return payment.date.After(otherPayment.date)
+}
+
+func (order Order) GreaterThan(otherOrder Order) bool {
+	return order.item > otherOrder.item
+}
+
+func NewPayment() AllPayments {
+	return AllPayments{
+		valueSet: ValueSet{
+			cities:         btree.NewG(3, func(a, b string) bool { return a < b }),
+			shops:          btree.NewG(3, func(a, b string) bool { return a < b }),
+			paymentMethods: btree.NewG(3, func(a, b string) bool { return a < b }),
+			items:          btree.NewG(3, func(a, b string) bool { return a < b }),
+		},
+		payments: btree.NewG(3, func(a, b Payment) bool { return a.GreaterThan(b) }),
 	}
-	return valueSet
 }
