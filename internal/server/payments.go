@@ -85,20 +85,15 @@ func NewAllPayment() *AllPayments {
 
 func insertAll(elem string, valueSet *btree.BTreeG[string], elems ...string) error {
 	duplicates := []string{}
-	for _, elem := range elems {
-		if valueSet.Has(elem) {
-			duplicates = append(duplicates, elem)
+	for _, elems := range elems {
+		if old, replaced := valueSet.ReplaceOrInsert(elems); replaced {
+			duplicates = append(duplicates, old)
 		}
 	}
-	if len(duplicates) != 0 {
-		return errors.New("duplicated " + elem + ": " + strings.Join(duplicates, ", "))
+	if len(duplicates) == 0 {
+		return nil
 	}
-	for _, elem := range elems {
-		if _, dup := valueSet.ReplaceOrInsert(elem); dup {
-			panic("UNREACHABLE CODE: duplicate shouldn't be possible!")
-		}
-	}
-	return nil
+	return errors.New("duplicated " + elem + ": " + strings.Join(duplicates, ", "))
 }
 
 func (allPayments *AllPayments) AddCities(cities ...string) error {
