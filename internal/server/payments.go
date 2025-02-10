@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/google/btree"
 )
@@ -35,7 +36,11 @@ type AllPayments struct {
 	valueSet *ValueSet
 }
 
-// COMPARISON METHODS
+// UTILITY METHODS
+
+func parseDate(date string) (time.Time, error) {
+	return time.ParseInLocation("2006/01/02 15:04", date, time.UTC)
+}
 
 func (payment *Payment) LessThan(otherPayment *Payment) bool {
 	return payment.date < otherPayment.date
@@ -64,6 +69,9 @@ func newOrder(quantity, unitPrice int, item string) *Order {
 	}
 }
 
+func newOrderForSearches(item string) *Order {
+	return newOrder(420_420_420_420, 69_69_69_69, item)
+}
 func newPayment(city, shop, paymentMethod, date, description string) *Payment {
 	return &Payment{
 		city:          city,
@@ -71,7 +79,12 @@ func newPayment(city, shop, paymentMethod, date, description string) *Payment {
 		paymentMethod: paymentMethod,
 		date:          date,
 		description:   description,
+		orders:        btree.NewG(3, func(a, b *Order) bool { return a.LessThan(b) }),
 	}
+}
+
+func newPaymentForSearches(date string) *Payment {
+	return newPayment("DO NOT USE!", "DO NOT USE!", "DO NOT USE!", date, "DO NOT USE!")
 }
 
 func NewAllPayment() *AllPayments {
@@ -83,33 +96,70 @@ func NewAllPayment() *AllPayments {
 
 // INSERT/DELETE METHODS
 
-func insertAll(elem string, valueSet *btree.BTreeG[string], elems ...string) error {
-	duplicates := []string{}
-	for _, elems := range elems {
-		if old, replaced := valueSet.ReplaceOrInsert(elems); replaced {
+func insertAll(valueSet *btree.BTreeG[string], elems ...string) (duplicates []string) {
+	for _, elem := range elems {
+		if old, replaced := valueSet.ReplaceOrInsert(elem); replaced {
 			duplicates = append(duplicates, old)
 		}
 	}
 	if len(duplicates) == 0 {
 		return nil
 	}
-	return errors.New("duplicated " + elem + ": " + strings.Join(duplicates, ", "))
+	return duplicates
 }
 
-func (allPayments *AllPayments) AddCities(cities ...string) error {
-	return insertAll("cities", allPayments.valueSet.cities, cities...)
+func (allPayments *AllPayments) AddCities(cities ...string) (duplicates []string) {
+	return insertAll(allPayments.valueSet.cities, cities...)
 }
 
-func (allPayments *AllPayments) AddShops(shops ...string) error {
-	return insertAll("shops", allPayments.valueSet.shops, shops...)
+func (allPayments *AllPayments) AddShops(shops ...string) (duplicates []string) {
+	return insertAll(allPayments.valueSet.shops, shops...)
 }
 
-func (allPayments *AllPayments) AddPaymentMethods(paymentMethods ...string) error {
-	return insertAll("paymentMethods", allPayments.valueSet.paymentMethods, paymentMethods...)
+func (allPayments *AllPayments) AddPaymentMethods(paymentMethods ...string) (duplicates []string) {
+	return insertAll(allPayments.valueSet.paymentMethods, paymentMethods...)
 }
 
-func (allPayments *AllPayments) AddItems(items ...string) error {
-	return insertAll("items", allPayments.valueSet.items, items...)
+func (allPayments *AllPayments) AddItems(items ...string) (duplicates []string) {
+	return insertAll(allPayments.valueSet.items, items...)
+}
+
+func (allPayments *AllPayments) AddPayment(city, shop, paymentMethod, date, description string) error {
+	payment := newPayment(city, shop, paymentMethod, date, description)
+	if !allPayments.valueSet.cities.Has(city) {
+		return errors.New("invalid city: " + city)
+	}
+	if !allPayments.valueSet.shops.Has(shop) {
+		return errors.New("invalid shop: " + shop)
+	}
+	if !allPayments.valueSet.paymentMethods.Has(paymentMethod) {
+		return errors.New("invalid paymentMethod: " + paymentMethod)
+	}
+	if _, err := parseDate(date); err != nil {
+		return errors.New(fmt.Sprintf("invalid date: %s", err))
+	}
+	if allPayments.payments.Has(payment) {
+		return errors.New("invalid date: already exists")
+	}
+	if _, replaced := allPayments.payments.ReplaceOrInsert(payment); replaced {
+		panic("UNREACHABLE CODE: already check payment wasn't already inserted!")
+	}
+	return nil
+}
+
+func (allPayments *AllPayments) AddOrder(quantity, unitPrice int, item, date string) error {
+	order := newOrder(quantity, unitPrice, item)
+	oldPayment, found := allPayments.payments.Get(newPaymentForSearches(date))
+	if !found {
+		return errors.New("payment to insert order into was not found")
+	}
+	if oldPayment.orders.Has(newOrderForSearches(item)) {
+		return errors.New("order item was already inserted")
+	}
+	if _, replaced := oldPayment.orders.ReplaceOrInsert(order); replaced {
+		panic("UNREACHABLE CODE: already checked order wasn't already inserted!")
+	}
+	return nil
 }
 
 // STRING METHODS
