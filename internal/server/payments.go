@@ -70,7 +70,7 @@ func newOrder(quantity, unitPrice int, item string) *Order {
 }
 
 func newOrderForSearches(item string) *Order {
-	return newOrder(420_420_420_420, 69_69_69_69, item)
+	return &Order{item: item}
 }
 func newPayment(city, shop, paymentMethod, date, description string) *Payment {
 	return &Payment{
@@ -84,7 +84,7 @@ func newPayment(city, shop, paymentMethod, date, description string) *Payment {
 }
 
 func newPaymentForSearches(date string) *Payment {
-	return newPayment("DO NOT USE!", "DO NOT USE!", "DO NOT USE!", date, "DO NOT USE!")
+	return &Payment{date: date}
 }
 
 func NewAllPayment() *AllPayments {
@@ -94,7 +94,7 @@ func NewAllPayment() *AllPayments {
 	}
 }
 
-// INSERT/DELETE METHODS
+// INSERT METHODS
 
 func insertAll(valueSet *btree.BTreeG[string], elems ...string) (duplicates []string) {
 	for _, elem := range elems {
@@ -158,6 +158,28 @@ func (allPayments *AllPayments) AddOrder(quantity, unitPrice int, item, date str
 	}
 	if _, replaced := oldPayment.orders.ReplaceOrInsert(order); replaced {
 		panic("UNREACHABLE CODE: already checked order wasn't already inserted!")
+	}
+	return nil
+}
+
+// DELETE METHODS
+
+func (allPayments *AllPayments) RemovePayment(date string) error {
+	_, found := allPayments.payments.Delete(newPaymentForSearches(date))
+	if !found {
+		return errors.New("payment was not found")
+	}
+	return nil
+}
+
+func (allPayments *AllPayments) RemoveOrder(date, item string) error {
+	payment, foundPayment := allPayments.payments.Get(newPaymentForSearches(date))
+	if !foundPayment {
+		return errors.New("payment related to the order was not found")
+	}
+	_, foundOrder := payment.orders.Delete(newOrderForSearches(item))
+	if !foundOrder {
+		return errors.New("order was not found")
 	}
 	return nil
 }
