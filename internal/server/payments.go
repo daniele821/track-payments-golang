@@ -46,14 +46,36 @@ func (order *Order) LessThan(otherOrder *Order) bool {
 
 // CONSTRUCTORS
 
+func newValueSet() *ValueSet {
+	return &ValueSet{
+		cities:         btree.NewG(3, func(a, b string) bool { return a < b }),
+		shops:          btree.NewG(3, func(a, b string) bool { return a < b }),
+		paymentMethods: btree.NewG(3, func(a, b string) bool { return a < b }),
+		items:          btree.NewG(3, func(a, b string) bool { return a < b }),
+	}
+}
+
+func newOrder(quantity, unitPrice int, item string) *Order {
+	return &Order{
+		quantity:  quantity,
+		unitPrice: unitPrice,
+		item:      item,
+	}
+}
+
+func newPayment(city, shop, paymentMethod, date, description string) *Payment {
+	return &Payment{
+		city:          city,
+		shop:          shop,
+		paymentMethod: paymentMethod,
+		date:          date,
+		description:   description,
+	}
+}
+
 func NewAllPayment() *AllPayments {
 	return &AllPayments{
-		valueSet: &ValueSet{
-			cities:         btree.NewG(3, func(a, b string) bool { return a < b }),
-			shops:          btree.NewG(3, func(a, b string) bool { return a < b }),
-			paymentMethods: btree.NewG(3, func(a, b string) bool { return a < b }),
-			items:          btree.NewG(3, func(a, b string) bool { return a < b }),
-		},
+		valueSet: newValueSet(),
 		payments: btree.NewG(3, func(a, b *Payment) bool { return a.LessThan(b) }),
 	}
 }
