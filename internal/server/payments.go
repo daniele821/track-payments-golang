@@ -1,6 +1,7 @@
 package server
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -78,6 +79,34 @@ func NewAllPayment() *AllPayments {
 		valueSet: newValueSet(),
 		payments: btree.NewG(3, func(a, b *Payment) bool { return a.LessThan(b) }),
 	}
+}
+
+// INSERT/DELETE METHODS
+
+func insertAll(elem string, valueSet *btree.BTreeG[string], elems ...string) error {
+	duplicates := []string{}
+	for _, elems := range elems {
+		if old, replaced := valueSet.ReplaceOrInsert(elems); replaced {
+			duplicates = append(duplicates, old)
+		}
+	}
+	return errors.New("duplicated " + elem + ": " + strings.Join(duplicates, ", "))
+}
+
+func (allPayments *AllPayments) AddCities(cities ...string) error {
+	return insertAll("cities", allPayments.valueSet.cities, cities...)
+}
+
+func (allPayments *AllPayments) AddShops(shops ...string) error {
+	return insertAll("shops", allPayments.valueSet.shops, shops...)
+}
+
+func (allPayments *AllPayments) AddPaymentMethods(paymentMethods ...string) error {
+	return insertAll("paymentMethods", allPayments.valueSet.paymentMethods, paymentMethods...)
+}
+
+func (allPayments *AllPayments) AddItems(items ...string) error {
+	return insertAll("items", allPayments.valueSet.items, items...)
 }
 
 // STRING METHODS
