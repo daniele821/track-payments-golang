@@ -16,7 +16,7 @@ type ValueSet struct {
 
 type Order struct {
 	quantity  int
-	unitPrice int
+	unitPrice int // is the price in euro cents (2.40 euro => 240)
 	item      string
 }
 
@@ -36,12 +36,12 @@ type AllPayments struct {
 
 // COMPARISON METHODS
 
-func (payment *Payment) GreaterThan(otherPayment *Payment) bool {
-	return payment.date > otherPayment.date
+func (payment *Payment) LessThan(otherPayment *Payment) bool {
+	return payment.date < otherPayment.date
 }
 
-func (order *Order) GreaterThan(otherOrder *Order) bool {
-	return order.item > otherOrder.item
+func (order *Order) LessThan(otherOrder *Order) bool {
+	return order.item < otherOrder.item
 }
 
 // CONSTRUCTORS
@@ -54,7 +54,7 @@ func NewAllPayment() *AllPayments {
 			paymentMethods: btree.NewG(3, func(a, b string) bool { return a < b }),
 			items:          btree.NewG(3, func(a, b string) bool { return a < b }),
 		},
-		payments: btree.NewG(3, func(a, b *Payment) bool { return a.GreaterThan(b) }),
+		payments: btree.NewG(3, func(a, b *Payment) bool { return a.LessThan(b) }),
 	}
 }
 
