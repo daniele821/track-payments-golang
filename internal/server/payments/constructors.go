@@ -37,7 +37,7 @@ func newPaymentForSearches(date string) *Payment {
 	return &Payment{date: date}
 }
 
-func NewAllPayment() *AllPayments {
+func NewAllPayments() *AllPayments {
 	return &AllPayments{
 		valueSet: newValueSet(),
 		payments: btree.NewG(3, func(a, b *Payment) bool { return a.date < b.date }),
