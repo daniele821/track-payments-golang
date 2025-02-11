@@ -18,6 +18,10 @@ func (readOnlyBTree *ReadOnlyBTree[T]) Max() (T, bool) {
 	return readOnlyBTree.btree.Max()
 }
 
+func (readOnlyBTree *ReadOnlyBTree[T]) Get(key T) (T, bool) {
+	return readOnlyBTree.btree.Get(key)
+}
+
 func (readOnlyBTree *ReadOnlyBTree[T]) Ascend(iterator btree.ItemIteratorG[T], first, last *T) {
 	switch {
 	case first == nil && last == nil:
