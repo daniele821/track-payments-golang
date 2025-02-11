@@ -5,14 +5,6 @@ import (
 	"time"
 )
 
-func (payment *Payment) lessThan(otherPayment *Payment) bool {
-	return payment.date < otherPayment.date
-}
-
-func (order *Order) lessThan(otherOrder *Order) bool {
-	return order.item < otherOrder.item
-}
-
 func parseDate(date string) (time.Time, error) {
 	return time.ParseInLocation("2006/01/02 15:04", date, time.UTC)
 }

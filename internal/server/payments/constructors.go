@@ -29,7 +29,7 @@ func newPayment(city, shop, paymentMethod, date, description string) *Payment {
 		paymentMethod: paymentMethod,
 		date:          date,
 		description:   description,
-		orders:        btree.NewG(3, func(a, b *Order) bool { return a.lessThan(b) }),
+		orders:        btree.NewG(3, func(a, b *Order) bool { return a.item < b.item }),
 	}
 }
 
@@ -40,6 +40,6 @@ func newPaymentForSearches(date string) *Payment {
 func NewAllPayment() *AllPayments {
 	return &AllPayments{
 		valueSet: newValueSet(),
-		payments: btree.NewG(3, func(a, b *Payment) bool { return a.lessThan(b) }),
+		payments: btree.NewG(3, func(a, b *Payment) bool { return a.date < b.date }),
 	}
 }
