@@ -22,6 +22,7 @@ func newOrder(quantity, unitPrice uint, item string) *Order {
 func newOrderForSearches(item string) *Order {
 	return &Order{item: item}
 }
+
 func newPayment(city, shop, paymentMethod, date, description string) *Payment {
 	return &Payment{
 		city:          city,
