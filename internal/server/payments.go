@@ -17,8 +17,8 @@ type ValueSet struct {
 }
 
 type Order struct {
-	quantity  int
-	unitPrice int // is the price in euro cents (2.40 euro => 240)
+	quantity  uint
+	unitPrice uint // is the price in euro cents (2.40 euro => 240)
 	item      string
 }
 
@@ -90,7 +90,7 @@ func newValueSet() *ValueSet {
 	}
 }
 
-func newOrder(quantity, unitPrice int, item string) *Order {
+func newOrder(quantity, unitPrice uint, item string) *Order {
 	return &Order{
 		quantity:  quantity,
 		unitPrice: unitPrice,
@@ -167,7 +167,7 @@ func (allPayments *AllPayments) AddPayment(city, shop, paymentMethod, date, desc
 	return nil
 }
 
-func (allPayments *AllPayments) AddOrder(quantity, unitPrice int, item, date string) error {
+func (allPayments *AllPayments) AddOrder(quantity, unitPrice uint, item, date string) error {
 	if err := allPayments.checks(&date, nil, nil, nil, &item); err != nil {
 		return err
 	}
