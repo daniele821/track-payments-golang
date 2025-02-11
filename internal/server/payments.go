@@ -125,7 +125,7 @@ func NewAllPayment() *AllPayments {
 
 // GETTET METHODS
 
-func (allPayments *AllPayments) getPayment(date string) (*Payment, error) {
+func (allPayments *AllPayments) GetPayment(date string) (*Payment, error) {
 	if err := allPayments.checks(&date, nil, nil, nil, nil); err != nil {
 		return nil, err
 	}
@@ -136,11 +136,11 @@ func (allPayments *AllPayments) getPayment(date string) (*Payment, error) {
 	return payment, nil
 }
 
-func (allPayments *AllPayments) getOrder(date, item string) (*Order, error) {
+func (allPayments *AllPayments) GetOrder(date, item string) (*Order, error) {
 	if err := allPayments.checks(&date, nil, nil, nil, &item); err != nil {
 		return nil, err
 	}
-	payment, err := allPayments.getPayment(date)
+	payment, err := allPayments.GetPayment(date)
 	if err != nil {
 		return nil, err
 	}
@@ -200,7 +200,7 @@ func (allPayments *AllPayments) AddOrder(quantity, unitPrice uint, item, date st
 		return err
 	}
 	order := newOrder(quantity, unitPrice, item)
-	payment, err := allPayments.getPayment(date)
+	payment, err := allPayments.GetPayment(date)
 	if err != nil {
 		return err
 	}
@@ -230,7 +230,7 @@ func (allPayments *AllPayments) RemoveOrder(date, item string) error {
 	if err := allPayments.checks(&date, nil, nil, nil, &item); err != nil {
 		return err
 	}
-	payment, err := allPayments.getPayment(date)
+	payment, err := allPayments.GetPayment(date)
 	if err != nil {
 		return err
 	}
