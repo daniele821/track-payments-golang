@@ -2,6 +2,7 @@ package payments
 
 import (
 	"errors"
+	"fmt"
 )
 
 func (allPayments *AllPayments) RemovePayment(date string) error {
@@ -10,7 +11,7 @@ func (allPayments *AllPayments) RemovePayment(date string) error {
 	}
 	_, found := allPayments.payments.Delete(newPaymentForSearches(date))
 	if !found {
-		return errors.New("payment was not found")
+		return errors.New(fmt.Sprintf("payment (%s) was not found", date))
 	}
 	return nil
 }
@@ -25,7 +26,7 @@ func (allPayments *AllPayments) RemoveOrder(date, item string) error {
 	}
 	_, foundOrder := payment.orders.Delete(newOrderForSearches(item))
 	if !foundOrder {
-		return errors.New("order not found")
+		return errors.New(fmt.Sprintf("order (%s, %s) was not found", date, item))
 	}
 	return nil
 }
