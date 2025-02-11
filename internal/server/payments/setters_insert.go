@@ -10,13 +10,22 @@ import (
 
 func insertAll(typeData string, valueSet *btree.BTreeG[string], elems ...string) error {
 	duplicates := []string{}
+	inserted := []string{}
 	for _, elem := range elems {
-		if old, replaced := valueSet.ReplaceOrInsert(elem); replaced {
-			duplicates = append(duplicates, old)
+		if _, replaced := valueSet.ReplaceOrInsert(elem); replaced {
+			duplicates = append(duplicates, elem)
+		} else {
+			inserted = append(inserted, elem)
 		}
 	}
 	if len(duplicates) == 0 {
 		return nil
+	}
+	// revert changes on error
+	for _, elem := range inserted {
+		if _, found := valueSet.Delete(elem); !found {
+			panic("UNREACHABLE CODE: an element though to be present, was actually not!")
+		}
 	}
 	return errors.New(fmt.Sprintf("invalid %s: there are duplicates (%s)", typeData, strings.Join(duplicates, ", ")))
 }
