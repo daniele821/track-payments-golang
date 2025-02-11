@@ -2,6 +2,10 @@ package payments
 
 import "github.com/google/btree"
 
+type ReadOnlyBTree[T any] struct {
+	btree *btree.BTreeG[T]
+}
+
 type ValueSet struct {
 	cities         *btree.BTreeG[string]
 	shops          *btree.BTreeG[string]
