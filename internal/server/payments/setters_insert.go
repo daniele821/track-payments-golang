@@ -3,31 +3,22 @@ package payments
 import (
 	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/google/btree"
 )
 
 func insertAll(typeData string, valueSet *btree.BTreeG[string], elems ...string) error {
-	duplicates := []string{}
-	inserted := []string{}
+	for _, elem := range elems {
+		if valueSet.Has(elem) {
+			return errors.New(fmt.Sprintf("invalid %s: duplicated value found (%s)", typeData, elem))
+		}
+	}
 	for _, elem := range elems {
 		if _, replaced := valueSet.ReplaceOrInsert(elem); replaced {
-			duplicates = append(duplicates, elem)
-		} else {
-			inserted = append(inserted, elem)
+			panic("UNREACHABLE CODE: should have already checked no duplicates were present!")
 		}
 	}
-	if len(duplicates) == 0 {
-		return nil
-	}
-	// revert changes on error
-	for _, elem := range inserted {
-		if _, found := valueSet.Delete(elem); !found {
-			panic("UNREACHABLE CODE: an element though to be present, was actually not!")
-		}
-	}
-	return errors.New(fmt.Sprintf("invalid %s: there are duplicates (%s)", typeData, strings.Join(duplicates, ", ")))
+	return nil
 }
 
 func (allPayments *AllPayments) AddCities(cities ...string) error {
