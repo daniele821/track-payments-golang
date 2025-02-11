@@ -31,8 +31,8 @@ func (allPayments *AllPayments) checks(date, city, shop, paymentMethod, item *st
 		}
 	}
 	if item != nil {
-		if !allPayments.valueSet.paymentMethods.Has(*item) {
-			return errors.New("invalid paymentMethod: " + *item)
+		if !allPayments.valueSet.items.Has(*item) {
+			return errors.New("invalid item: " + *item)
 		}
 	}
 	return nil
