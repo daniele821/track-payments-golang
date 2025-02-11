@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (allPayments *AllPayments) GetPayment(date string) (*Payment, error) {
+func (allPayments *AllPayments) Payment(date string) (*Payment, error) {
 	if err := allPayments.checks(&date, nil, nil, nil, nil); err != nil {
 		return nil, err
 	}
@@ -16,11 +16,11 @@ func (allPayments *AllPayments) GetPayment(date string) (*Payment, error) {
 	return payment, nil
 }
 
-func (allPayments *AllPayments) GetOrder(date, item string) (*Order, error) {
+func (allPayments *AllPayments) Order(date, item string) (*Order, error) {
 	if err := allPayments.checks(&date, nil, nil, nil, &item); err != nil {
 		return nil, err
 	}
-	payment, err := allPayments.GetPayment(date)
+	payment, err := allPayments.Payment(date)
 	if err != nil {
 		return nil, err
 	}
