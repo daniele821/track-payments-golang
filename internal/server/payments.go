@@ -184,6 +184,46 @@ func (allPayments *AllPayments) RemoveOrder(date, item string) error {
 	return nil
 }
 
+// UPDATE METHODS
+
+func (allPayments *AllPayments) UpdatePayment(date string, newCity, newShop, newPaymentMethod, newDescription *string) error {
+	payment, foundPayment := allPayments.payments.Get(newPaymentForSearches(date))
+	if !foundPayment {
+		return errors.New("payment related to the order was not found")
+	}
+	if newCity != nil {
+		payment.city = *newCity
+	}
+	if newShop != nil {
+		payment.shop = *newShop
+	}
+	if newPaymentMethod != nil {
+		payment.paymentMethod = *newPaymentMethod
+	}
+	if newDescription != nil {
+		payment.description = *newDescription
+	}
+	return nil
+}
+
+func (allPayments *AllPayments) UpdateOrder(date, item string, newQuantity, newUnitPrice *int) error {
+	payment, foundPayment := allPayments.payments.Get(newPaymentForSearches(date))
+	if !foundPayment {
+		return errors.New("payment related to the order was not found")
+	}
+	order, foundOrder := payment.orders.Get(newOrderForSearches(item))
+	if !foundOrder {
+		return errors.New("order was not found")
+	}
+	if newQuantity != nil {
+		order.quantity = *newQuantity
+	}
+	if newUnitPrice != nil {
+		order.unitPrice = *newUnitPrice
+	}
+	return nil
+}
+
 // STRING METHODS
 
 func fmtBtree[T any](btree *btree.BTreeG[T], strconv func(item T) string) string {
