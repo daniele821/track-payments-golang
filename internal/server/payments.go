@@ -38,16 +38,45 @@ type AllPayments struct {
 
 // UTILITY METHODS
 
-func parseDate(date string) (time.Time, error) {
-	return time.ParseInLocation("2006/01/02 15:04", date, time.UTC)
-}
-
 func (payment *Payment) lessThan(otherPayment *Payment) bool {
 	return payment.date < otherPayment.date
 }
 
 func (order *Order) lessThan(otherOrder *Order) bool {
 	return order.item < otherOrder.item
+}
+
+func parseDate(date string) (time.Time, error) {
+	return time.ParseInLocation("2006/01/02 15:04", date, time.UTC)
+}
+
+func (allPayments *AllPayments) checks(date, city, shop, paymentMethod, item *string) error {
+	if date != nil {
+		if _, err := parseDate(*date); err != nil {
+			return errors.New("invalid date: " + err.Error())
+		}
+	}
+	if city != nil {
+		if !allPayments.valueSet.cities.Has(*city) {
+			return errors.New("invalid city: " + *city)
+		}
+	}
+	if shop != nil {
+		if !allPayments.valueSet.shops.Has(*shop) {
+			return errors.New("invalid shop: " + *shop)
+		}
+	}
+	if paymentMethod != nil {
+		if !allPayments.valueSet.paymentMethods.Has(*paymentMethod) {
+			return errors.New("invalid paymentMethod: " + *paymentMethod)
+		}
+	}
+	if item != nil {
+		if !allPayments.valueSet.paymentMethods.Has(*item) {
+			return errors.New("invalid paymentMethod: " + *item)
+		}
+	}
+	return nil
 }
 
 // CONSTRUCTORS
@@ -125,19 +154,10 @@ func (allPayments *AllPayments) AddItems(items ...string) (duplicates []string) 
 }
 
 func (allPayments *AllPayments) AddPayment(city, shop, paymentMethod, date, description string) error {
+	if err := allPayments.checks(&date, &city, &shop, &paymentMethod, nil); err != nil {
+		return err
+	}
 	payment := newPayment(city, shop, paymentMethod, date, description)
-	if !allPayments.valueSet.cities.Has(city) {
-		return errors.New("invalid city: " + city)
-	}
-	if !allPayments.valueSet.shops.Has(shop) {
-		return errors.New("invalid shop: " + shop)
-	}
-	if !allPayments.valueSet.paymentMethods.Has(paymentMethod) {
-		return errors.New("invalid paymentMethod: " + paymentMethod)
-	}
-	if _, err := parseDate(date); err != nil {
-		return errors.New(fmt.Sprintf("invalid date: %s", err))
-	}
 	if allPayments.payments.Has(payment) {
 		return errors.New("invalid date: already exists")
 	}
@@ -148,6 +168,9 @@ func (allPayments *AllPayments) AddPayment(city, shop, paymentMethod, date, desc
 }
 
 func (allPayments *AllPayments) AddOrder(quantity, unitPrice int, item, date string) error {
+	if err := allPayments.checks(&date, nil, nil, nil, &item); err != nil {
+		return err
+	}
 	order := newOrder(quantity, unitPrice, item)
 	oldPayment, found := allPayments.payments.Get(newPaymentForSearches(date))
 	if !found {
@@ -165,6 +188,9 @@ func (allPayments *AllPayments) AddOrder(quantity, unitPrice int, item, date str
 // DELETE METHODS
 
 func (allPayments *AllPayments) RemovePayment(date string) error {
+	if err := allPayments.checks(&date, nil, nil, nil, nil); err != nil {
+		return err
+	}
 	_, found := allPayments.payments.Delete(newPaymentForSearches(date))
 	if !found {
 		return errors.New("payment was not found")
@@ -173,53 +199,16 @@ func (allPayments *AllPayments) RemovePayment(date string) error {
 }
 
 func (allPayments *AllPayments) RemoveOrder(date, item string) error {
+	if err := allPayments.checks(&date, nil, nil, nil, &item); err != nil {
+		return err
+	}
 	payment, foundPayment := allPayments.payments.Get(newPaymentForSearches(date))
 	if !foundPayment {
-		return errors.New("payment related to the order was not found")
+		return errors.New("payment not found")
 	}
 	_, foundOrder := payment.orders.Delete(newOrderForSearches(item))
 	if !foundOrder {
-		return errors.New("order was not found")
-	}
-	return nil
-}
-
-// UPDATE METHODS
-
-func (allPayments *AllPayments) UpdatePayment(date string, newCity, newShop, newPaymentMethod, newDescription *string) error {
-	payment, foundPayment := allPayments.payments.Get(newPaymentForSearches(date))
-	if !foundPayment {
-		return errors.New("payment related to the order was not found")
-	}
-	if newCity != nil {
-		payment.city = *newCity
-	}
-	if newShop != nil {
-		payment.shop = *newShop
-	}
-	if newPaymentMethod != nil {
-		payment.paymentMethod = *newPaymentMethod
-	}
-	if newDescription != nil {
-		payment.description = *newDescription
-	}
-	return nil
-}
-
-func (allPayments *AllPayments) UpdateOrder(date, item string, newQuantity, newUnitPrice *int) error {
-	payment, foundPayment := allPayments.payments.Get(newPaymentForSearches(date))
-	if !foundPayment {
-		return errors.New("payment related to the order was not found")
-	}
-	order, foundOrder := payment.orders.Get(newOrderForSearches(item))
-	if !foundOrder {
-		return errors.New("order was not found")
-	}
-	if newQuantity != nil {
-		order.quantity = *newQuantity
-	}
-	if newUnitPrice != nil {
-		order.unitPrice = *newUnitPrice
+		return errors.New("order not found")
 	}
 	return nil
 }
