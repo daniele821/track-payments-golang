@@ -44,18 +44,38 @@ func (allPayments *AllPayments) GetOrder(date, item string) (*Order, error) {
 	return order, nil
 }
 
-func (allPayments *AllPayments) GetAllCities() []string {
-	return compactBtreeToSlice(allPayments.valueSet.cities)
+func (payment *Payment) City() string {
+	return payment.city
 }
 
-func (allPayments *AllPayments) GetAllShops() []string {
-	return compactBtreeToSlice(allPayments.valueSet.shops)
+func (payment *Payment) Shop() string {
+	return payment.shop
 }
 
-func (allPayments *AllPayments) getAllPaymentMethods() []string {
-	return compactBtreeToSlice(allPayments.valueSet.paymentMethods)
+func (payment *Payment) PaymentMethod() string {
+	return payment.paymentMethod
 }
 
-func (allPayments *AllPayments) GetAllItems() []string {
-	return compactBtreeToSlice(allPayments.valueSet.items)
+func (payment *Payment) Date() string {
+	return payment.date
+}
+
+func (payment *Payment) Description() string {
+	return payment.description
+}
+
+func (payment *Payment) Orders() []*Order {
+	return compactBtreeToSlice(payment.orders)
+}
+
+func (order *Order) Quantity() uint {
+	return order.quantity
+}
+
+func (order *Order) UnitPrice() uint {
+	return order.unitPrice
+}
+
+func (order *Order) Item() string {
+	return order.item
 }
