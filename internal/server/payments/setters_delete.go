@@ -19,7 +19,7 @@ func (allPayments *AllPayments) RemoveOrder(date, item string) error {
 	if err := allPayments.checks(&date, nil, nil, nil, &item); err != nil {
 		return err
 	}
-	payment, err := allPayments.GetPayment(date)
+	payment, err := allPayments.Payment(date)
 	if err != nil {
 		return err
 	}

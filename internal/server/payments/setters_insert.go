@@ -2,11 +2,14 @@ package payments
 
 import (
 	"errors"
+	"fmt"
+	"strings"
 
 	"github.com/google/btree"
 )
 
-func insertAll(valueSet *btree.BTreeG[string], elems ...string) (duplicates []string) {
+func insertAll(typeData string, valueSet *btree.BTreeG[string], elems ...string) error {
+	duplicates := []string{}
 	for _, elem := range elems {
 		if old, replaced := valueSet.ReplaceOrInsert(elem); replaced {
 			duplicates = append(duplicates, old)
@@ -15,23 +18,23 @@ func insertAll(valueSet *btree.BTreeG[string], elems ...string) (duplicates []st
 	if len(duplicates) == 0 {
 		return nil
 	}
-	return duplicates
+	return errors.New(fmt.Sprintf("invalid %s: there are duplicates (%s)", typeData, strings.Join(duplicates, ", ")))
 }
 
-func (allPayments *AllPayments) AddCities(cities ...string) (duplicates []string) {
-	return insertAll(allPayments.valueSet.cities, cities...)
+func (allPayments *AllPayments) AddCities(cities ...string) error {
+	return insertAll("cities", allPayments.valueSet.cities, cities...)
 }
 
-func (allPayments *AllPayments) AddShops(shops ...string) (duplicates []string) {
-	return insertAll(allPayments.valueSet.shops, shops...)
+func (allPayments *AllPayments) AddShops(shops ...string) error {
+	return insertAll("shops", allPayments.valueSet.shops, shops...)
 }
 
-func (allPayments *AllPayments) AddPaymentMethods(paymentMethods ...string) (duplicates []string) {
-	return insertAll(allPayments.valueSet.paymentMethods, paymentMethods...)
+func (allPayments *AllPayments) AddPaymentMethods(paymentMethods ...string) error {
+	return insertAll("paymentMethods", allPayments.valueSet.paymentMethods, paymentMethods...)
 }
 
-func (allPayments *AllPayments) AddItems(items ...string) (duplicates []string) {
-	return insertAll(allPayments.valueSet.items, items...)
+func (allPayments *AllPayments) AddItems(items ...string) error {
+	return insertAll("items", allPayments.valueSet.items, items...)
 }
 
 func (allPayments *AllPayments) AddPayment(city, shop, paymentMethod, date, description string) error {
@@ -53,7 +56,7 @@ func (allPayments *AllPayments) AddOrder(quantity, unitPrice uint, item, date st
 		return err
 	}
 	order := newOrder(quantity, unitPrice, item)
-	payment, err := allPayments.GetPayment(date)
+	payment, err := allPayments.Payment(date)
 	if err != nil {
 		return err
 	}
