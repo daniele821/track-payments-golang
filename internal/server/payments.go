@@ -42,11 +42,11 @@ func parseDate(date string) (time.Time, error) {
 	return time.ParseInLocation("2006/01/02 15:04", date, time.UTC)
 }
 
-func (payment *Payment) LessThan(otherPayment *Payment) bool {
+func (payment *Payment) lessThan(otherPayment *Payment) bool {
 	return payment.date < otherPayment.date
 }
 
-func (order *Order) LessThan(otherOrder *Order) bool {
+func (order *Order) lessThan(otherOrder *Order) bool {
 	return order.item < otherOrder.item
 }
 
@@ -79,7 +79,7 @@ func newPayment(city, shop, paymentMethod, date, description string) *Payment {
 		paymentMethod: paymentMethod,
 		date:          date,
 		description:   description,
-		orders:        btree.NewG(3, func(a, b *Order) bool { return a.LessThan(b) }),
+		orders:        btree.NewG(3, func(a, b *Order) bool { return a.lessThan(b) }),
 	}
 }
 
@@ -90,7 +90,7 @@ func newPaymentForSearches(date string) *Payment {
 func NewAllPayment() *AllPayments {
 	return &AllPayments{
 		valueSet: newValueSet(),
-		payments: btree.NewG(3, func(a, b *Payment) bool { return a.LessThan(b) }),
+		payments: btree.NewG(3, func(a, b *Payment) bool { return a.lessThan(b) }),
 	}
 }
 
