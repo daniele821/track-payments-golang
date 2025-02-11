@@ -123,6 +123,34 @@ func NewAllPayment() *AllPayments {
 	}
 }
 
+// GETTET METHODS
+
+func (allPayments *AllPayments) getPayment(date string) (*Payment, error) {
+	if err := allPayments.checks(&date, nil, nil, nil, nil); err != nil {
+		return nil, err
+	}
+	payment, foundPayment := allPayments.payments.Get(newPaymentForSearches(date))
+	if !foundPayment {
+		return nil, errors.New(fmt.Sprintf("payment (%s) not found", date))
+	}
+	return payment, nil
+}
+
+func (allPayments *AllPayments) getOrder(date, item string) (*Order, error) {
+	if err := allPayments.checks(&date, nil, nil, nil, &item); err != nil {
+		return nil, err
+	}
+	payment, err := allPayments.getPayment(date)
+	if err != nil {
+		return nil, err
+	}
+	order, foundOrder := payment.orders.Get(newOrderForSearches(item))
+	if !foundOrder {
+		return nil, errors.New(fmt.Sprintf("order (%s, %s) not found", date, item))
+	}
+	return order, nil
+}
+
 // INSERT METHODS
 
 func insertAll(valueSet *btree.BTreeG[string], elems ...string) (duplicates []string) {
@@ -172,14 +200,14 @@ func (allPayments *AllPayments) AddOrder(quantity, unitPrice uint, item, date st
 		return err
 	}
 	order := newOrder(quantity, unitPrice, item)
-	oldPayment, found := allPayments.payments.Get(newPaymentForSearches(date))
-	if !found {
-		return errors.New("payment to insert order into was not found")
+	payment, err := allPayments.getPayment(date)
+	if err != nil {
+		return err
 	}
-	if oldPayment.orders.Has(newOrderForSearches(item)) {
+	if payment.orders.Has(newOrderForSearches(item)) {
 		return errors.New("order item was already inserted")
 	}
-	if _, replaced := oldPayment.orders.ReplaceOrInsert(order); replaced {
+	if _, replaced := payment.orders.ReplaceOrInsert(order); replaced {
 		panic("UNREACHABLE CODE: already checked order wasn't already inserted!")
 	}
 	return nil
@@ -202,9 +230,9 @@ func (allPayments *AllPayments) RemoveOrder(date, item string) error {
 	if err := allPayments.checks(&date, nil, nil, nil, &item); err != nil {
 		return err
 	}
-	payment, foundPayment := allPayments.payments.Get(newPaymentForSearches(date))
-	if !foundPayment {
-		return errors.New("payment not found")
+	payment, err := allPayments.getPayment(date)
+	if err != nil {
+		return err
 	}
 	_, foundOrder := payment.orders.Delete(newOrderForSearches(item))
 	if !foundOrder {
