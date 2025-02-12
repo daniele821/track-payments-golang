@@ -6,31 +6,31 @@ import (
 	"github.com/google/btree"
 )
 
-type valueSetJson struct {
+type ValueSetJson struct {
 	Cities         []string `json:"cities"`
 	Shops          []string `json:"shops"`
 	PaymentMethods []string `json:"paymentMethods"`
 	Items          []string `json:"items"`
 }
 
-type orderJson struct {
+type OrderJson struct {
 	Quantity  uint   `json:"quantity"`
 	UnitPrice uint   `json:"unitPrice"`
 	Item      string `json:"item"`
 }
 
-type paymentJson struct {
+type PaymentJson struct {
 	City          string      `json:"city"`
 	Shop          string      `json:"shop"`
 	PaymentMethod string      `json:"paymentMethod"`
 	Date          string      `json:"date"`
 	Description   string      `json:"description"`
-	Orders        []orderJson `json:"orders"`
+	Orders        []OrderJson `json:"orders"`
 }
 
-type allPaymentsJson struct {
-	Payments []paymentJson `json:"payments"`
-	ValueSet valueSetJson  `json:"valueSet"`
+type AllPaymentsJson struct {
+	Payments []PaymentJson `json:"payments"`
+	ValueSet ValueSetJson  `json:"valueSet"`
 }
 
 func btreeToSlice[T, S any](data *btree.BTreeG[T], mapper func(item T) S) []S {
@@ -47,15 +47,15 @@ func btreeToSlice[T, S any](data *btree.BTreeG[T], mapper func(item T) S) []S {
 func mapperIdentity[T any](item T) T {
 	return item
 }
-func mapperOrderJson(item Order) orderJson {
-	return orderJson{
+func mapperOrderJson(item Order) OrderJson {
+	return OrderJson{
 		Quantity:  item.Quantity(),
 		UnitPrice: item.UnitPrice(),
 		Item:      item.Item(),
 	}
 }
-func mapperPaymentJson(item Payment) paymentJson {
-	return paymentJson{
+func mapperPaymentJson(item Payment) PaymentJson {
+	return PaymentJson{
 		City:          item.City(),
 		Shop:          item.Shop(),
 		PaymentMethod: item.PaymentMethod(),
@@ -67,9 +67,9 @@ func mapperPaymentJson(item Payment) paymentJson {
 
 // TO JSON
 
-func convertToJsonData(input AllPayments) allPaymentsJson {
-	return allPaymentsJson{
-		ValueSet: valueSetJson{
+func ConvertToJsonData(input AllPayments) AllPaymentsJson {
+	return AllPaymentsJson{
+		ValueSet: ValueSetJson{
 			Cities:         btreeToSlice(input.p.valueSet.p.cities, mapperIdentity),
 			Shops:          btreeToSlice(input.p.valueSet.p.shops, mapperIdentity),
 			PaymentMethods: btreeToSlice(input.p.valueSet.p.paymentMethods, mapperIdentity),
@@ -79,7 +79,7 @@ func convertToJsonData(input AllPayments) allPaymentsJson {
 	}
 }
 func (allPayments AllPayments) DumpJson(indent bool) (string, error) {
-	allPaymentsJson := convertToJsonData(allPayments)
+	allPaymentsJson := ConvertToJsonData(allPayments)
 	var jsonRes []byte
 	var err error
 	if indent {
@@ -95,7 +95,7 @@ func (allPayments AllPayments) DumpJson(indent bool) (string, error) {
 
 // FROM JSON
 
-func convertFromJsonData(input allPaymentsJson) (AllPayments, error) {
+func ConvertFromJsonData(input AllPaymentsJson) (AllPayments, error) {
 	output := NewAllPayments()
 	outputEmpty := NewAllPayments()
 	if err := output.AddCities(input.ValueSet.Cities...); err != nil {
@@ -124,12 +124,12 @@ func convertFromJsonData(input allPaymentsJson) (AllPayments, error) {
 	return output, nil
 }
 func NewAllPaymentsFromJson(input string) (AllPayments, error) {
-	data := allPaymentsJson{}
+	data := AllPaymentsJson{}
 	outputEmpty := NewAllPayments()
 	if err := json.Unmarshal([]byte(input), &data); err != nil {
 		return outputEmpty, err
 	}
-	output, err := convertFromJsonData(data)
+	output, err := ConvertFromJsonData(data)
 	if err != nil {
 		return outputEmpty, err
 	}
