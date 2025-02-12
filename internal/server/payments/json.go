@@ -1,5 +1,7 @@
 package payments
 
+import "github.com/google/btree"
+
 type valueSetJson struct {
 	Cities         []string `json:"cities"`
 	Shops          []string `json:"shops"`
@@ -14,21 +16,63 @@ type orderJson struct {
 }
 
 type paymentJson struct {
-	City          string  `json:"city"`
-	Shop          string  `json:"shop"`
-	PaymentMethod string  `json:"paymentMethod"`
-	Date          string  `json:"date"`
-	Description   string  `json:"description"`
-	Orders        []Order `json:"orders"`
+	City          string      `json:"city"`
+	Shop          string      `json:"shop"`
+	PaymentMethod string      `json:"paymentMethod"`
+	Date          string      `json:"date"`
+	Description   string      `json:"description"`
+	Orders        []orderJson `json:"orders"`
 }
 
 type allPaymentsJson struct {
-	Payments []Payment `json:"payments"`
-	ValueSet ValueSet  `json:"valueSet"`
+	Payments []paymentJson `json:"payments"`
+	ValueSet valueSetJson  `json:"valueSet"`
 }
 
-func convertToJsonData(input AllPayments) (output allPaymentsJson) {
-	return output
+func btreeToSlice[T, S any](data *btree.BTreeG[T], mapper func(item T) S) []S {
+	acc := make([]S, data.Len())
+	index := 0
+	data.Ascend(func(item T) bool {
+		acc[index] = mapper(item)
+		index += 1
+		return true
+	})
+	return nil
+}
+
+func mapperIdentity[T any](item T) T {
+	return item
+}
+
+func mapperOrderJson(item Order) orderJson {
+	return orderJson{
+		Quantity:  item.Quantity(),
+		UnitPrice: item.Quantity(),
+		Item:      item.Item(),
+	}
+}
+
+func mapperPaymentJson(item Payment) paymentJson {
+	return paymentJson{
+		City:          item.City(),
+		Shop:          item.Shop(),
+		PaymentMethod: item.PaymentMethod(),
+		Date:          item.Date(),
+		Description:   item.Description(),
+		Orders:        btreeToSlice(item.pointer.orders, mapperOrderJson),
+	}
+}
+
+func convertToJsonData(input AllPayments) allPaymentsJson {
+	return allPaymentsJson{
+		ValueSet: valueSetJson{
+			Cities:         btreeToSlice(input.pointer.valueSet.pointer.cities, mapperIdentity),
+			Shops:          btreeToSlice(input.pointer.valueSet.pointer.shops, mapperIdentity),
+			PaymentMethods: btreeToSlice(input.pointer.valueSet.pointer.paymentMethods, mapperIdentity),
+			Items:          btreeToSlice(input.pointer.valueSet.pointer.items, mapperIdentity),
+		},
+		Payments: btreeToSlice(input.pointer.payments, mapperPaymentJson),
+	}
 }
 
 func convertFromJsonData(input allPaymentsJson) (output AllPayments, err error) {
