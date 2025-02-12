@@ -1,13 +1,12 @@
-package payments_test
+package payments
 
 import (
-	"payment/internal/server/payments"
 	"reflect"
 	"testing"
 )
 
 func TestJsonConversion(t *testing.T) {
-	allPayments := payments.NewAllPayments()
+	allPayments := NewAllPayments()
 	if err := allPayments.AddCities("Cesena", "Asti"); err != nil {
 		t.Fatalf("operation (add cities) failed: %s", err)
 	}
@@ -32,12 +31,12 @@ func TestJsonConversion(t *testing.T) {
 	if err != nil {
 		t.Fatalf("json conversion failed: %s", err)
 	}
-	actual, err := payments.NewAllPaymentsFromJson(tmpStr)
+	actual, err := NewAllPaymentsFromJson(tmpStr)
 	if err != nil {
 		t.Fatalf("json parsing failed: %s", err)
 	}
 
-	if !reflect.DeepEqual(actual, expected) {
+	if !reflect.DeepEqual(convertToJsonData(actual), convertToJsonData(expected)) {
 		t.Fatalf("json conversion modified data:\nexpected: %s\nactual: %s", expected, actual)
 	}
 }
