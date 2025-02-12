@@ -41,7 +41,7 @@ func btreeToSlice[T, S any](data *btree.BTreeG[T], mapper func(item T) S) []S {
 		index += 1
 		return true
 	})
-	return nil
+	return acc
 }
 
 func mapperIdentity[T any](item T) T {
