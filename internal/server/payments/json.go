@@ -123,6 +123,15 @@ func convertFromJsonData(input allPaymentsJson) (AllPayments, error) {
 	}
 	return output, nil
 }
-func NewAllPaymentsFromJson(allPaymentsJson string) (AllPayments, error) {
-	panic("TODO: convert map to allPayments")
+func NewAllPaymentsFromJson(input string) (AllPayments, error) {
+	data := allPaymentsJson{}
+	outputEmpty := NewAllPayments()
+	if err := json.Unmarshal([]byte(input), &data); err != nil {
+		return outputEmpty, err
+	}
+	output, err := convertFromJsonData(data)
+	if err != nil {
+		return outputEmpty, err
+	}
+	return output, nil
 }
