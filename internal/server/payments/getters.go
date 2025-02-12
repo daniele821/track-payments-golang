@@ -10,7 +10,7 @@ func (allPayments *AllPayments) Payment(date string) (Payment, error) {
 	if err := allPayments.checks(&date, nil, nil, nil, nil); err != nil {
 		return paymentEmpty, err
 	}
-	payment, foundPayment := allPayments.payments.Get(newPaymentForSearches(date))
+	payment, foundPayment := allPayments.payments.Get(NewPaymentForSearches(date))
 	if !foundPayment {
 		return paymentEmpty, errors.New(fmt.Sprintf("payment (%s) not found", date))
 	}
@@ -26,7 +26,7 @@ func (allPayments *AllPayments) Order(date, item string) (Order, error) {
 	if err != nil {
 		return orderEmpty, err
 	}
-	order, foundOrder := payment.pointer.orders.Get(newOrderForSearches(item))
+	order, foundOrder := payment.pointer.orders.Get(NewOrderForSearches(item))
 	if !foundOrder {
 		return orderEmpty, errors.New(fmt.Sprintf("order (%s, %s) not found", date, item))
 	}

@@ -19,7 +19,7 @@ func newOrder(quantity, unitPrice uint, item string) Order {
 	}}
 }
 
-func newOrderForSearches(item string) Order {
+func NewOrderForSearches(item string) Order {
 	return Order{&order{item: item}}
 }
 
@@ -34,7 +34,7 @@ func newPayment(city, shop, paymentMethod, date, description string) Payment {
 	}}
 }
 
-func newPaymentForSearches(date string) Payment {
+func NewPaymentForSearches(date string) Payment {
 	return Payment{&payment{date: date}}
 }
 
