@@ -1,6 +1,8 @@
 package payments
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 func NewAllPaymentsFromJson(allPaymentsJson string) (*AllPayments, error) {
 	var jsonParsed map[string]any
@@ -8,9 +10,25 @@ func NewAllPaymentsFromJson(allPaymentsJson string) (*AllPayments, error) {
 	if err != nil {
 		return nil, err
 	}
-	panic("TODO")
+	panic("TODO: convert map to allPayments")
 }
 
-func (AllPayments *AllPayments) DumpJson(indent bool) string {
-	panic("TODO")
+func (AllPayments *AllPayments) DumpJson(indent bool) (string, error) {
+	var simplifiedData map[string]any
+	simplifiedData["valueSet"] = map[string]any{}
+	simplifiedData["payments"] = map[string]any{}
+
+	panic("TODO: convert allPayments to map")
+
+	var jsonRes []byte
+	var err error
+	if indent {
+		jsonRes, err = json.MarshalIndent(simplifiedData, "", "  ")
+	} else {
+		jsonRes, err = json.Marshal(simplifiedData)
+	}
+	if err != nil {
+		return "", err
+	}
+	return string(jsonRes), nil
 }

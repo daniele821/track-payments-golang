@@ -28,9 +28,13 @@ func TestJsonConversion(t *testing.T) {
 	}
 
 	expected := allPayments
-	actual, err := payments.NewAllPaymentsFromJson(allPayments.DumpJson(false))
+	tmpStr, err := allPayments.DumpJson(false)
 	if err != nil {
 		t.Fatalf("json conversion failed: %s", err)
+	}
+	actual, err := payments.NewAllPaymentsFromJson(tmpStr)
+	if err != nil {
+		t.Fatalf("json parsing failed: %s", err)
 	}
 
 	if !reflect.DeepEqual(actual, expected) {
