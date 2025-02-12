@@ -14,7 +14,7 @@ func NewAllPaymentsFromJson(allPaymentsJson string) (*AllPayments, error) {
 }
 
 func (AllPayments *AllPayments) DumpJson(indent bool) (string, error) {
-	var simplifiedData map[string]any
+	simplifiedData := map[string]any{}
 	simplifiedData["valueSet"] = map[string]any{}
 	simplifiedData["payments"] = map[string]any{}
 
