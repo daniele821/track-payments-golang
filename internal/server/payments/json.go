@@ -95,7 +95,32 @@ func (allPayments AllPayments) DumpJson(indent bool) (string, error) {
 
 // FROM JSON
 
-func convertFromJsonData(input allPaymentsJson) (output AllPayments, err error) {
+func convertFromJsonData(input allPaymentsJson) (AllPayments, error) {
+	output := NewAllPayments()
+	outputEmpty := NewAllPayments()
+	if err := output.AddCities(input.ValueSet.Cities...); err != nil {
+		return outputEmpty, err
+	}
+	if err := output.AddShops(input.ValueSet.Shops...); err != nil {
+		return outputEmpty, err
+	}
+	if err := output.AddPaymentMethods(input.ValueSet.PaymentMethods...); err != nil {
+		return outputEmpty, err
+	}
+	if err := output.AddItems(input.ValueSet.Items...); err != nil {
+		return outputEmpty, err
+	}
+	for _, payment := range input.Payments {
+		date := payment.Date
+		if err := output.AddPayment(payment.City, payment.Shop, payment.PaymentMethod, date, payment.Description); err != nil {
+			return outputEmpty, err
+		}
+		for _, order := range payment.Orders {
+			if err := output.AddOrder(order.Quantity, order.UnitPrice, order.Item, date); err != nil {
+				return outputEmpty, err
+			}
+		}
+	}
 	return output, nil
 }
 func NewAllPaymentsFromJson(allPaymentsJson string) (AllPayments, error) {
