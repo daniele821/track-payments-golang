@@ -17,6 +17,25 @@ func btreeToSlice[T, E any](data *btree.BTreeG[T], mapper func(item T) E) []E {
 	return acc
 }
 
+func convertOrder(item Order) map[string]any {
+	res := map[string]any{}
+	res["quantity"] = item.Quantity()
+	res["item"] = item.Item()
+	res["unitPrice"] = item.UnitPrice()
+	return res
+}
+
+func convertPayment(item Payment) map[string]any {
+	res := map[string]any{}
+	res["city"] = item.City()
+	res["shop"] = item.Shop()
+	res["paymentMethod"] = item.PaymentMethod()
+	res["date"] = item.Date()
+	res["description"] = item.Description()
+	res["orders"] = btreeToSlice(item.pointer.orders, convertOrder)
+	return res
+}
+
 func NewAllPaymentsFromJson(allPaymentsJson string) (*AllPayments, error) {
 	var jsonParsed map[string]any
 	err := json.Unmarshal([]byte(allPaymentsJson), &jsonParsed)
@@ -34,7 +53,7 @@ func (AllPayments *AllPayments) DumpJson(indent bool) (string, error) {
 		"paymentMethods": btreeToSlice(AllPayments.valueSet.paymentMethods, func(item string) string { return item }),
 		"items":          btreeToSlice(AllPayments.valueSet.items, func(item string) string { return item }),
 	}
-	simplifiedData["payments"] = map[string]any{}
+	simplifiedData["payments"] = btreeToSlice(AllPayments.payments, convertPayment)
 
 	// panic("TODO: convert allPayments to map")
 
