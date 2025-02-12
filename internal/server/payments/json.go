@@ -2,7 +2,20 @@ package payments
 
 import (
 	"encoding/json"
+
+	"github.com/google/btree"
 )
+
+func btreeToSlice[T, E any](data *btree.BTreeG[T], mapper func(item T) E) []E {
+	acc := make([]E, data.Len())
+	index := 0
+	data.Ascend(func(item T) bool {
+		acc[index] = mapper(item)
+		index += 1
+		return true
+	})
+	return acc
+}
 
 func NewAllPaymentsFromJson(allPaymentsJson string) (*AllPayments, error) {
 	var jsonParsed map[string]any
@@ -15,10 +28,15 @@ func NewAllPaymentsFromJson(allPaymentsJson string) (*AllPayments, error) {
 
 func (AllPayments *AllPayments) DumpJson(indent bool) (string, error) {
 	simplifiedData := map[string]any{}
-	simplifiedData["valueSet"] = map[string]any{}
+	simplifiedData["valueSet"] = map[string]any{
+		"cities":         btreeToSlice(AllPayments.valueSet.cities, func(item string) string { return item }),
+		"shops":          btreeToSlice(AllPayments.valueSet.shops, func(item string) string { return item }),
+		"paymentMethods": btreeToSlice(AllPayments.valueSet.paymentMethods, func(item string) string { return item }),
+		"items":          btreeToSlice(AllPayments.valueSet.items, func(item string) string { return item }),
+	}
 	simplifiedData["payments"] = map[string]any{}
 
-	panic("TODO: convert allPayments to map")
+	// panic("TODO: convert allPayments to map")
 
 	var jsonRes []byte
 	var err error
