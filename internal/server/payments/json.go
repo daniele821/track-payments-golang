@@ -37,7 +37,7 @@ func convertPayment(item Payment) map[string]any {
 }
 
 func NewAllPaymentsFromJson(allPaymentsJson string) (*AllPayments, error) {
-	var jsonParsed map[string]any
+	var jsonParsed any
 	err := json.Unmarshal([]byte(allPaymentsJson), &jsonParsed)
 	if err != nil {
 		return nil, err
