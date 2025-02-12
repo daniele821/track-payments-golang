@@ -14,6 +14,9 @@ type order struct {
 	unitPrice uint // is the price in euro cents (2.40 euro => 240)
 	item      string
 }
+type Order struct {
+	pointer *order
+}
 
 type payment struct {
 	city          string
@@ -21,10 +24,13 @@ type payment struct {
 	paymentMethod string
 	date          string // note: i will consider every date inserted as is, without any conversions!
 	description   string
-	orders        *btree.BTreeG[*order]
+	orders        *btree.BTreeG[Order]
+}
+type Payment struct {
+	pointer *payment
 }
 
 type AllPayments struct {
-	payments *btree.BTreeG[*payment]
+	payments *btree.BTreeG[Payment]
 	valueSet *ValueSet
 }

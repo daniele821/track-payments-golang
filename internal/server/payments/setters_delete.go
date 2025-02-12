@@ -24,7 +24,7 @@ func (allPayments *AllPayments) RemoveOrder(date, item string) error {
 	if err != nil {
 		return err
 	}
-	_, foundOrder := payment.orders.Delete(newOrderForSearches(item))
+	_, foundOrder := payment.pointer.orders.Delete(newOrderForSearches(item))
 	if !foundOrder {
 		return errors.New(fmt.Sprintf("order (%s, %s) was not found", date, item))
 	}

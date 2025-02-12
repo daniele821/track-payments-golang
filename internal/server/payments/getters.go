@@ -5,28 +5,30 @@ import (
 	"fmt"
 )
 
-func (allPayments *AllPayments) Payment(date string) (*payment, error) {
+func (allPayments *AllPayments) Payment(date string) (Payment, error) {
+	var paymentEmpty Payment
 	if err := allPayments.checks(&date, nil, nil, nil, nil); err != nil {
-		return nil, err
+		return paymentEmpty, err
 	}
 	payment, foundPayment := allPayments.payments.Get(newPaymentForSearches(date))
 	if !foundPayment {
-		return nil, errors.New(fmt.Sprintf("payment (%s) not found", date))
+		return paymentEmpty, errors.New(fmt.Sprintf("payment (%s) not found", date))
 	}
 	return payment, nil
 }
 
-func (allPayments *AllPayments) Order(date, item string) (*order, error) {
+func (allPayments *AllPayments) Order(date, item string) (Order, error) {
+	var orderEmpty Order
 	if err := allPayments.checks(&date, nil, nil, nil, &item); err != nil {
-		return nil, err
+		return orderEmpty, err
 	}
 	payment, err := allPayments.Payment(date)
 	if err != nil {
-		return nil, err
+		return orderEmpty, err
 	}
-	order, foundOrder := payment.orders.Get(newOrderForSearches(item))
+	order, foundOrder := payment.pointer.orders.Get(newOrderForSearches(item))
 	if !foundOrder {
-		return nil, errors.New(fmt.Sprintf("order (%s, %s) not found", date, item))
+		return orderEmpty, errors.New(fmt.Sprintf("order (%s, %s) not found", date, item))
 	}
 	return order, nil
 }
@@ -47,42 +49,42 @@ func (allPayments *AllPayments) Items() *ReadOnlyBTree[string] {
 	return &ReadOnlyBTree[string]{btree: allPayments.valueSet.items}
 }
 
-func (allPayments *AllPayments) Payments() *ReadOnlyBTree[*payment] {
-	return &ReadOnlyBTree[*payment]{btree: allPayments.payments}
+func (allPayments *AllPayments) Payments() *ReadOnlyBTree[Payment] {
+	return &ReadOnlyBTree[Payment]{btree: allPayments.payments}
 }
 
-func (payment *payment) City() string {
-	return payment.city
+func (payment Payment) City() string {
+	return payment.pointer.city
 }
 
-func (payment *payment) Shop() string {
-	return payment.shop
+func (payment Payment) Shop() string {
+	return payment.pointer.shop
 }
 
-func (payment *payment) PaymentMethod() string {
-	return payment.paymentMethod
+func (payment Payment) PaymentMethod() string {
+	return payment.pointer.paymentMethod
 }
 
-func (payment *payment) Date() string {
-	return payment.date
+func (payment Payment) Date() string {
+	return payment.pointer.date
 }
 
-func (payment *payment) Description() string {
-	return payment.description
+func (payment Payment) Description() string {
+	return payment.pointer.description
 }
 
-func (payment *payment) Orders() *ReadOnlyBTree[*order] {
-	return &ReadOnlyBTree[*order]{btree: payment.orders}
+func (payment Payment) Orders() *ReadOnlyBTree[Order] {
+	return &ReadOnlyBTree[Order]{btree: payment.pointer.orders}
 }
 
-func (order *order) Quantity() uint {
-	return order.quantity
+func (order Order) Quantity() uint {
+	return order.pointer.quantity
 }
 
-func (order *order) UnitPrice() uint {
-	return order.unitPrice
+func (order Order) UnitPrice() uint {
+	return order.pointer.unitPrice
 }
 
-func (order *order) Item() string {
-	return order.item
+func (order Order) Item() string {
+	return order.pointer.item
 }

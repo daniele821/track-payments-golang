@@ -60,10 +60,10 @@ func (allPayments *AllPayments) AddOrder(quantity, unitPrice uint, item, date st
 	if err != nil {
 		return err
 	}
-	if payment.orders.Has(newOrderForSearches(item)) {
+	if payment.pointer.orders.Has(newOrderForSearches(item)) {
 		return errors.New("order item was already inserted")
 	}
-	if _, replaced := payment.orders.ReplaceOrInsert(order); replaced {
+	if _, replaced := payment.pointer.orders.ReplaceOrInsert(order); replaced {
 		panic("UNREACHABLE CODE: already checked order wasn't already inserted!")
 	}
 	return nil
