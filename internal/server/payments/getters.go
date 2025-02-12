@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (allPayments *AllPayments) Payment(date string) (*Payment, error) {
+func (allPayments *AllPayments) Payment(date string) (*payment, error) {
 	if err := allPayments.checks(&date, nil, nil, nil, nil); err != nil {
 		return nil, err
 	}
@@ -16,7 +16,7 @@ func (allPayments *AllPayments) Payment(date string) (*Payment, error) {
 	return payment, nil
 }
 
-func (allPayments *AllPayments) Order(date, item string) (*Order, error) {
+func (allPayments *AllPayments) Order(date, item string) (*order, error) {
 	if err := allPayments.checks(&date, nil, nil, nil, &item); err != nil {
 		return nil, err
 	}
@@ -47,42 +47,42 @@ func (allPayments *AllPayments) Items() *ReadOnlyBTree[string] {
 	return &ReadOnlyBTree[string]{btree: allPayments.valueSet.items}
 }
 
-func (allPayments *AllPayments) Payments() *ReadOnlyBTree[*Payment] {
-	return &ReadOnlyBTree[*Payment]{btree: allPayments.payments}
+func (allPayments *AllPayments) Payments() *ReadOnlyBTree[*payment] {
+	return &ReadOnlyBTree[*payment]{btree: allPayments.payments}
 }
 
-func (payment *Payment) City() string {
+func (payment *payment) City() string {
 	return payment.city
 }
 
-func (payment *Payment) Shop() string {
+func (payment *payment) Shop() string {
 	return payment.shop
 }
 
-func (payment *Payment) PaymentMethod() string {
+func (payment *payment) PaymentMethod() string {
 	return payment.paymentMethod
 }
 
-func (payment *Payment) Date() string {
+func (payment *payment) Date() string {
 	return payment.date
 }
 
-func (payment *Payment) Description() string {
+func (payment *payment) Description() string {
 	return payment.description
 }
 
-func (payment *Payment) Orders() *ReadOnlyBTree[*Order] {
-	return &ReadOnlyBTree[*Order]{btree: payment.orders}
+func (payment *payment) Orders() *ReadOnlyBTree[*order] {
+	return &ReadOnlyBTree[*order]{btree: payment.orders}
 }
 
-func (order *Order) Quantity() uint {
+func (order *order) Quantity() uint {
 	return order.quantity
 }
 
-func (order *Order) UnitPrice() uint {
+func (order *order) UnitPrice() uint {
 	return order.unitPrice
 }
 
-func (order *Order) Item() string {
+func (order *order) Item() string {
 	return order.item
 }
