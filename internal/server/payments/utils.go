@@ -16,22 +16,22 @@ func (allPayments *AllPayments) checks(date, city, shop, paymentMethod, item *st
 		}
 	}
 	if city != nil {
-		if !allPayments.pointer.valueSet.pointer.cities.Has(*city) {
+		if !allPayments.p.valueSet.p.cities.Has(*city) {
 			return errors.New("invalid city: " + *city)
 		}
 	}
 	if shop != nil {
-		if !allPayments.pointer.valueSet.pointer.shops.Has(*shop) {
+		if !allPayments.p.valueSet.p.shops.Has(*shop) {
 			return errors.New("invalid shop: " + *shop)
 		}
 	}
 	if paymentMethod != nil {
-		if !allPayments.pointer.valueSet.pointer.paymentMethods.Has(*paymentMethod) {
+		if !allPayments.p.valueSet.p.paymentMethods.Has(*paymentMethod) {
 			return errors.New("invalid paymentMethod: " + *paymentMethod)
 		}
 	}
 	if item != nil {
-		if !allPayments.pointer.valueSet.pointer.items.Has(*item) {
+		if !allPayments.p.valueSet.p.items.Has(*item) {
 			return errors.New("invalid item: " + *item)
 		}
 	}

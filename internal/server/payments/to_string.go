@@ -17,25 +17,25 @@ func fmtBtree[T any](btree *btree.BTreeG[T], strconv func(item T) string) string
 }
 
 func (valueSet ValueSet) String() string {
-	cityStr := fmtBtree(valueSet.pointer.cities, func(item string) string { return item })
-	shopStr := fmtBtree(valueSet.pointer.shops, func(item string) string { return item })
-	payMStr := fmtBtree(valueSet.pointer.paymentMethods, func(item string) string { return item })
-	itemStr := fmtBtree(valueSet.pointer.items, func(item string) string { return item })
+	cityStr := fmtBtree(valueSet.p.cities, func(item string) string { return item })
+	shopStr := fmtBtree(valueSet.p.shops, func(item string) string { return item })
+	payMStr := fmtBtree(valueSet.p.paymentMethods, func(item string) string { return item })
+	itemStr := fmtBtree(valueSet.p.items, func(item string) string { return item })
 	return fmt.Sprintf("(cities: %s, shops: %s, paymentMethods: %s, items: %s)", cityStr, shopStr, payMStr, itemStr)
 }
 
 func (order Order) String() string {
-	return fmt.Sprintf("(item: %s, quantity: %d, unitPrice: %d)", order.pointer.item, order.pointer.quantity, order.pointer.unitPrice)
+	return fmt.Sprintf("(item: %s, quantity: %d, unitPrice: %d)", order.p.item, order.p.quantity, order.p.unitPrice)
 }
 
 func (payment Payment) String() string {
-	ordersStr := fmtBtree(payment.pointer.orders, func(item Order) string { return item.String() })
+	ordersStr := fmtBtree(payment.p.orders, func(item Order) string { return item.String() })
 	return fmt.Sprintf("(city: %s, shop: %s, paymentMethod: %s, date: %s, description: %s, orders: %s)",
-		payment.pointer.city, payment.pointer.shop, payment.pointer.paymentMethod, payment.pointer.date, payment.pointer.description, ordersStr)
+		payment.p.city, payment.p.shop, payment.p.paymentMethod, payment.p.date, payment.p.description, ordersStr)
 }
 
 func (allPayments AllPayments) String() string {
-	paymentStr := fmtBtree(allPayments.pointer.payments, func(item Payment) string { return item.String() })
-	valueSetStr := allPayments.pointer.valueSet.String()
+	paymentStr := fmtBtree(allPayments.p.payments, func(item Payment) string { return item.String() })
+	valueSetStr := allPayments.p.valueSet.String()
 	return fmt.Sprintf("(payments: %s, valueSet: %s)", paymentStr, valueSetStr)
 }

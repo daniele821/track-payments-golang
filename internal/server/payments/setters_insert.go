@@ -22,19 +22,19 @@ func insertAll(typeData string, valueSet *btree.BTreeG[string], elems ...string)
 }
 
 func (allPayments AllPayments) AddCities(cities ...string) error {
-	return insertAll("cities", allPayments.pointer.valueSet.pointer.cities, cities...)
+	return insertAll("cities", allPayments.p.valueSet.p.cities, cities...)
 }
 
 func (allPayments AllPayments) AddShops(shops ...string) error {
-	return insertAll("shops", allPayments.pointer.valueSet.pointer.shops, shops...)
+	return insertAll("shops", allPayments.p.valueSet.p.shops, shops...)
 }
 
 func (allPayments AllPayments) AddPaymentMethods(paymentMethods ...string) error {
-	return insertAll("paymentMethods", allPayments.pointer.valueSet.pointer.paymentMethods, paymentMethods...)
+	return insertAll("paymentMethods", allPayments.p.valueSet.p.paymentMethods, paymentMethods...)
 }
 
 func (allPayments AllPayments) AddItems(items ...string) error {
-	return insertAll("items", allPayments.pointer.valueSet.pointer.items, items...)
+	return insertAll("items", allPayments.p.valueSet.p.items, items...)
 }
 
 func (allPayments AllPayments) AddPayment(city, shop, paymentMethod, date, description string) error {
@@ -42,10 +42,10 @@ func (allPayments AllPayments) AddPayment(city, shop, paymentMethod, date, descr
 		return err
 	}
 	payment := newPayment(city, shop, paymentMethod, date, description)
-	if allPayments.pointer.payments.Has(payment) {
+	if allPayments.p.payments.Has(payment) {
 		return errors.New("invalid date: already exists")
 	}
-	if _, replaced := allPayments.pointer.payments.ReplaceOrInsert(payment); replaced {
+	if _, replaced := allPayments.p.payments.ReplaceOrInsert(payment); replaced {
 		panic("UNREACHABLE CODE: already check payment wasn't already inserted!")
 	}
 	return nil
@@ -60,10 +60,10 @@ func (allPayments AllPayments) AddOrder(quantity, unitPrice uint, item, date str
 	if err != nil {
 		return err
 	}
-	if payment.pointer.orders.Has(NewOrderForSearches(item)) {
+	if payment.p.orders.Has(NewOrderForSearches(item)) {
 		return errors.New("order item was already inserted")
 	}
-	if _, replaced := payment.pointer.orders.ReplaceOrInsert(order); replaced {
+	if _, replaced := payment.p.orders.ReplaceOrInsert(order); replaced {
 		panic("UNREACHABLE CODE: already checked order wasn't already inserted!")
 	}
 	return nil

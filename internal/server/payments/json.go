@@ -59,19 +59,19 @@ func mapperPaymentJson(item Payment) paymentJson {
 		PaymentMethod: item.PaymentMethod(),
 		Date:          item.Date(),
 		Description:   item.Description(),
-		Orders:        btreeToSlice(item.pointer.orders, mapperOrderJson),
+		Orders:        btreeToSlice(item.p.orders, mapperOrderJson),
 	}
 }
 
 func convertToJsonData(input AllPayments) allPaymentsJson {
 	return allPaymentsJson{
 		ValueSet: valueSetJson{
-			Cities:         btreeToSlice(input.pointer.valueSet.pointer.cities, mapperIdentity),
-			Shops:          btreeToSlice(input.pointer.valueSet.pointer.shops, mapperIdentity),
-			PaymentMethods: btreeToSlice(input.pointer.valueSet.pointer.paymentMethods, mapperIdentity),
-			Items:          btreeToSlice(input.pointer.valueSet.pointer.items, mapperIdentity),
+			Cities:         btreeToSlice(input.p.valueSet.p.cities, mapperIdentity),
+			Shops:          btreeToSlice(input.p.valueSet.p.shops, mapperIdentity),
+			PaymentMethods: btreeToSlice(input.p.valueSet.p.paymentMethods, mapperIdentity),
+			Items:          btreeToSlice(input.p.valueSet.p.items, mapperIdentity),
 		},
-		Payments: btreeToSlice(input.pointer.payments, mapperPaymentJson),
+		Payments: btreeToSlice(input.p.payments, mapperPaymentJson),
 	}
 }
 

@@ -9,16 +9,16 @@ func (allPayments AllPayments) UpdatePayment(date string, city, shop, paymentMet
 		return err
 	}
 	if city != nil {
-		payment.pointer.city = *city
+		payment.p.city = *city
 	}
 	if shop != nil {
-		payment.pointer.shop = *shop
+		payment.p.shop = *shop
 	}
 	if paymentMethod != nil {
-		payment.pointer.paymentMethod = *paymentMethod
+		payment.p.paymentMethod = *paymentMethod
 	}
 	if description != nil {
-		payment.pointer.description = *description
+		payment.p.description = *description
 	}
 	return nil
 }
@@ -32,10 +32,10 @@ func (allPayments AllPayments) UpdateOrder(date, item string, quantity, unitPric
 		return err
 	}
 	if quantity != nil {
-		order.pointer.quantity = *quantity
+		order.p.quantity = *quantity
 	}
 	if unitPrice != nil {
-		order.pointer.unitPrice = *unitPrice
+		order.p.unitPrice = *unitPrice
 	}
 	return nil
 }

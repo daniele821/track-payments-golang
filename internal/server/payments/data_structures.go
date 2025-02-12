@@ -8,14 +8,14 @@ type valueSet struct {
 	paymentMethods *btree.BTreeG[string]
 	items          *btree.BTreeG[string]
 }
-type ValueSet struct{ pointer *valueSet }
+type ValueSet struct{ p *valueSet }
 
 type order struct {
 	quantity  uint
 	unitPrice uint // is the price in euro cents (2.40 euro => 240)
 	item      string
 }
-type Order struct{ pointer *order }
+type Order struct{ p *order }
 
 type payment struct {
 	city          string
@@ -25,10 +25,10 @@ type payment struct {
 	description   string
 	orders        *btree.BTreeG[Order]
 }
-type Payment struct{ pointer *payment }
+type Payment struct{ p *payment }
 
 type allPayments struct {
 	payments *btree.BTreeG[Payment]
 	valueSet ValueSet
 }
-type AllPayments struct{ pointer *allPayments }
+type AllPayments struct{ p *allPayments }
