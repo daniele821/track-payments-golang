@@ -50,7 +50,7 @@ func mapperIdentity[T any](item T) T {
 func mapperOrderJson(item Order) orderJson {
 	return orderJson{
 		Quantity:  item.Quantity(),
-		UnitPrice: item.Quantity(),
+		UnitPrice: item.UnitPrice(),
 		Item:      item.Item(),
 	}
 }
