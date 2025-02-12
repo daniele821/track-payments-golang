@@ -43,7 +43,6 @@ func btreeToSlice[T, S any](data *btree.BTreeG[T], mapper func(item T) S) []S {
 func mapperIdentity[T any](item T) T {
 	return item
 }
-
 func mapperOrderJson(item Order) orderJson {
 	return orderJson{
 		Quantity:  item.Quantity(),
@@ -51,7 +50,6 @@ func mapperOrderJson(item Order) orderJson {
 		Item:      item.Item(),
 	}
 }
-
 func mapperPaymentJson(item Payment) paymentJson {
 	return paymentJson{
 		City:          item.City(),
