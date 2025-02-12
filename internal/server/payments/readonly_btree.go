@@ -6,23 +6,23 @@ type ReadOnlyBTree[T any] struct {
 	btree *btree.BTreeG[T]
 }
 
-func (readOnlyBTree *ReadOnlyBTree[T]) Len() int {
+func (readOnlyBTree ReadOnlyBTree[T]) Len() int {
 	return readOnlyBTree.btree.Len()
 }
 
-func (readOnlyBTree *ReadOnlyBTree[T]) Min() (T, bool) {
+func (readOnlyBTree ReadOnlyBTree[T]) Min() (T, bool) {
 	return readOnlyBTree.btree.Min()
 }
 
-func (readOnlyBTree *ReadOnlyBTree[T]) Max() (T, bool) {
+func (readOnlyBTree ReadOnlyBTree[T]) Max() (T, bool) {
 	return readOnlyBTree.btree.Max()
 }
 
-func (readOnlyBTree *ReadOnlyBTree[T]) Get(key T) (T, bool) {
+func (readOnlyBTree ReadOnlyBTree[T]) Get(key T) (T, bool) {
 	return readOnlyBTree.btree.Get(key)
 }
 
-func (readOnlyBTree *ReadOnlyBTree[T]) Ascend(iterator btree.ItemIteratorG[T], first, last *T) {
+func (readOnlyBTree ReadOnlyBTree[T]) Ascend(iterator btree.ItemIteratorG[T], first, last *T) {
 	switch {
 	case first == nil && last == nil:
 		readOnlyBTree.btree.Ascend(iterator)
@@ -37,7 +37,7 @@ func (readOnlyBTree *ReadOnlyBTree[T]) Ascend(iterator btree.ItemIteratorG[T], f
 	}
 }
 
-func (readOnlyBTree *ReadOnlyBTree[T]) Descend(iterator btree.ItemIteratorG[T], first, last *T) {
+func (readOnlyBTree ReadOnlyBTree[T]) Descend(iterator btree.ItemIteratorG[T], first, last *T) {
 	switch {
 	case first == nil && last == nil:
 		readOnlyBTree.btree.Descend(iterator)

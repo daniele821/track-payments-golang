@@ -5,18 +5,18 @@ import (
 	"fmt"
 )
 
-func (allPayments *AllPayments) RemovePayment(date string) error {
+func (allPayments AllPayments) RemovePayment(date string) error {
 	if err := allPayments.checks(&date, nil, nil, nil, nil); err != nil {
 		return err
 	}
-	_, found := allPayments.payments.Delete(NewPaymentForSearches(date))
+	_, found := allPayments.pointer.payments.Delete(NewPaymentForSearches(date))
 	if !found {
 		return errors.New(fmt.Sprintf("payment (%s) was not found", date))
 	}
 	return nil
 }
 
-func (allPayments *AllPayments) RemoveOrder(date, item string) error {
+func (allPayments AllPayments) RemoveOrder(date, item string) error {
 	if err := allPayments.checks(&date, nil, nil, nil, &item); err != nil {
 		return err
 	}

@@ -1,6 +1,6 @@
 package payments
 
-func (allPayments *AllPayments) UpdatePayment(date string, city, shop, paymentMethod, description *string) error {
+func (allPayments AllPayments) UpdatePayment(date string, city, shop, paymentMethod, description *string) error {
 	if err := allPayments.checks(&date, city, shop, paymentMethod, nil); err != nil {
 		return err
 	}
@@ -23,7 +23,7 @@ func (allPayments *AllPayments) UpdatePayment(date string, city, shop, paymentMe
 	return nil
 }
 
-func (allPayments *AllPayments) UpdateOrder(date, item string, quantity, unitPrice *uint) error {
+func (allPayments AllPayments) UpdateOrder(date, item string, quantity, unitPrice *uint) error {
 	if err := allPayments.checks(&date, nil, nil, nil, &item); err != nil {
 		return err
 	}

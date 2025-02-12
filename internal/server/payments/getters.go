@@ -5,19 +5,19 @@ import (
 	"fmt"
 )
 
-func (allPayments *AllPayments) Payment(date string) (Payment, error) {
+func (allPayments AllPayments) Payment(date string) (Payment, error) {
 	var paymentEmpty Payment
 	if err := allPayments.checks(&date, nil, nil, nil, nil); err != nil {
 		return paymentEmpty, err
 	}
-	payment, foundPayment := allPayments.payments.Get(NewPaymentForSearches(date))
+	payment, foundPayment := allPayments.pointer.payments.Get(NewPaymentForSearches(date))
 	if !foundPayment {
 		return paymentEmpty, errors.New(fmt.Sprintf("payment (%s) not found", date))
 	}
 	return payment, nil
 }
 
-func (allPayments *AllPayments) Order(date, item string) (Order, error) {
+func (allPayments AllPayments) Order(date, item string) (Order, error) {
 	var orderEmpty Order
 	if err := allPayments.checks(&date, nil, nil, nil, &item); err != nil {
 		return orderEmpty, err
@@ -33,24 +33,24 @@ func (allPayments *AllPayments) Order(date, item string) (Order, error) {
 	return order, nil
 }
 
-func (allPayments *AllPayments) Cities() *ReadOnlyBTree[string] {
-	return &ReadOnlyBTree[string]{btree: allPayments.valueSet.cities}
+func (allPayments AllPayments) Cities() ReadOnlyBTree[string] {
+	return ReadOnlyBTree[string]{btree: allPayments.pointer.valueSet.pointer.cities}
 }
 
-func (allPayments *AllPayments) Shops() *ReadOnlyBTree[string] {
-	return &ReadOnlyBTree[string]{btree: allPayments.valueSet.shops}
+func (allPayments AllPayments) Shops() ReadOnlyBTree[string] {
+	return ReadOnlyBTree[string]{btree: allPayments.pointer.valueSet.pointer.shops}
 }
 
-func (allPayments *AllPayments) PaymentMethods() *ReadOnlyBTree[string] {
-	return &ReadOnlyBTree[string]{btree: allPayments.valueSet.paymentMethods}
+func (allPayments AllPayments) PaymentMethods() ReadOnlyBTree[string] {
+	return ReadOnlyBTree[string]{btree: allPayments.pointer.valueSet.pointer.paymentMethods}
 }
 
-func (allPayments *AllPayments) Items() *ReadOnlyBTree[string] {
-	return &ReadOnlyBTree[string]{btree: allPayments.valueSet.items}
+func (allPayments AllPayments) Items() ReadOnlyBTree[string] {
+	return ReadOnlyBTree[string]{btree: allPayments.pointer.valueSet.pointer.items}
 }
 
-func (allPayments *AllPayments) Payments() *ReadOnlyBTree[Payment] {
-	return &ReadOnlyBTree[Payment]{btree: allPayments.payments}
+func (allPayments AllPayments) Payments() ReadOnlyBTree[Payment] {
+	return ReadOnlyBTree[Payment]{btree: allPayments.pointer.payments}
 }
 
 func (payment Payment) City() string {
@@ -73,8 +73,8 @@ func (payment Payment) Description() string {
 	return payment.pointer.description
 }
 
-func (payment Payment) Orders() *ReadOnlyBTree[Order] {
-	return &ReadOnlyBTree[Order]{btree: payment.pointer.orders}
+func (payment Payment) Orders() ReadOnlyBTree[Order] {
+	return ReadOnlyBTree[Order]{btree: payment.pointer.orders}
 }
 
 func (order Order) Quantity() uint {

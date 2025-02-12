@@ -16,11 +16,11 @@ func fmtBtree[T any](btree *btree.BTreeG[T], strconv func(item T) string) string
 	return "[" + strings.Join(acc, " ") + "]"
 }
 
-func (valueSet *ValueSet) String() string {
-	cityStr := fmtBtree(valueSet.cities, func(item string) string { return item })
-	shopStr := fmtBtree(valueSet.shops, func(item string) string { return item })
-	payMStr := fmtBtree(valueSet.paymentMethods, func(item string) string { return item })
-	itemStr := fmtBtree(valueSet.items, func(item string) string { return item })
+func (valueSet ValueSet) String() string {
+	cityStr := fmtBtree(valueSet.pointer.cities, func(item string) string { return item })
+	shopStr := fmtBtree(valueSet.pointer.shops, func(item string) string { return item })
+	payMStr := fmtBtree(valueSet.pointer.paymentMethods, func(item string) string { return item })
+	itemStr := fmtBtree(valueSet.pointer.items, func(item string) string { return item })
 	return fmt.Sprintf("(cities: %s, shops: %s, paymentMethods: %s, items: %s)", cityStr, shopStr, payMStr, itemStr)
 }
 
@@ -34,8 +34,8 @@ func (payment Payment) String() string {
 		payment.pointer.city, payment.pointer.shop, payment.pointer.paymentMethod, payment.pointer.date, payment.pointer.description, ordersStr)
 }
 
-func (allPayments *AllPayments) String() string {
-	paymentStr := fmtBtree(allPayments.payments, func(item Payment) string { return item.String() })
-	valueSetStr := allPayments.valueSet.String()
+func (allPayments AllPayments) String() string {
+	paymentStr := fmtBtree(allPayments.pointer.payments, func(item Payment) string { return item.String() })
+	valueSetStr := allPayments.pointer.valueSet.String()
 	return fmt.Sprintf("(payments: %s, valueSet: %s)", paymentStr, valueSetStr)
 }
