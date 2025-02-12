@@ -1,6 +1,10 @@
 package payments
 
-import "github.com/google/btree"
+import (
+	"encoding/json"
+
+	"github.com/google/btree"
+)
 
 type valueSetJson struct {
 	Cities         []string `json:"cities"`
@@ -61,6 +65,8 @@ func mapperPaymentJson(item Payment) paymentJson {
 	}
 }
 
+// TO JSON
+
 func convertToJsonData(input AllPayments) allPaymentsJson {
 	return allPaymentsJson{
 		ValueSet: valueSetJson{
@@ -72,15 +78,26 @@ func convertToJsonData(input AllPayments) allPaymentsJson {
 		Payments: btreeToSlice(input.p.payments, mapperPaymentJson),
 	}
 }
+func (allPayments AllPayments) DumpJson(indent bool) (string, error) {
+	allPaymentsJson := convertToJsonData(allPayments)
+	var jsonRes []byte
+	var err error
+	if indent {
+		jsonRes, err = json.MarshalIndent(allPaymentsJson, "", "  ")
+	} else {
+		jsonRes, err = json.Marshal(allPaymentsJson)
+	}
+	if err != nil {
+		return "", err
+	}
+	return string(jsonRes), nil
+}
+
+// FROM JSON
 
 func convertFromJsonData(input allPaymentsJson) (output AllPayments, err error) {
 	return output, nil
 }
-
 func NewAllPaymentsFromJson(allPaymentsJson string) (AllPayments, error) {
 	panic("TODO: convert map to allPayments")
-}
-
-func (AllPayments AllPayments) DumpJson(indent bool) (string, error) {
-	panic("TODO: convert allPayments to map")
 }
