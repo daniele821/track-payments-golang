@@ -17,6 +17,7 @@ Operations:
     l[ist]|v[isualize] s[hops]
     l[ist]|v[isualize] m[ethods]
     l[ist]|v[isualize] i[tems]
+    l[ist]|v[isualize] v[alues]
     l[ist]|v[isualize] p[ayments]
     l[ist]|v[isualize] o[rders]
 

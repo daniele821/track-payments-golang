@@ -47,6 +47,11 @@ func parseAndRun(allPayments payments.AllPayments, args []string) error {
 			listGeneric("methods", allPayments.PaymentMethods())
 		case matchEveryLenght(args[1], "items"):
 			listGeneric("items", allPayments.Items())
+		case matchEveryLenght(args[1], "values"):
+			listGeneric("cities", allPayments.Cities())
+			listGeneric("shops", allPayments.Shops())
+			listGeneric("methods", allPayments.PaymentMethods())
+			listGeneric("items", allPayments.Items())
 		case matchEveryLenght(args[1], "payments"):
 		case matchEveryLenght(args[1], "orders"):
 		default:
