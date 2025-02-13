@@ -11,8 +11,9 @@ func insert(typeData, data string, addFunc func(string) error) {
 	} else {
 		if err := addFunc(data); err != nil {
 			fmt.Printf("%s insertion failed: %s\n", typeData, err)
+		} else {
+			fmt.Printf("successfully added %s %s\n", typeData, data)
 		}
-		fmt.Printf("successfully added %s %s\n", typeData, data)
 	}
 	return
 }
