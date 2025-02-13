@@ -3,6 +3,8 @@ package payments
 import (
 	"errors"
 	"time"
+
+	"github.com/google/btree"
 )
 
 func parseDate(date string) (time.Time, error) {
@@ -36,4 +38,36 @@ func (allPayments *AllPayments) checks(date, city, shop, paymentMethod, item *st
 		}
 	}
 	return nil
+}
+
+func btreeToSlice[T, S any](data *btree.BTreeG[T], mapper func(item T) S) []S {
+	acc := make([]S, data.Len())
+	index := 0
+	data.Ascend(func(item T) bool {
+		acc[index] = mapper(item)
+		index += 1
+		return true
+	})
+	return acc
+}
+
+func mapperIdentity[T any](item T) T {
+	return item
+}
+func mapperOrderJson(item Order) OrderJson {
+	return OrderJson{
+		Quantity:  item.Quantity(),
+		UnitPrice: item.UnitPrice(),
+		Item:      item.Item(),
+	}
+}
+func mapperPaymentJson(item Payment) PaymentJson {
+	return PaymentJson{
+		City:          item.City(),
+		Shop:          item.Shop(),
+		PaymentMethod: item.PaymentMethod(),
+		Date:          item.Date(),
+		Description:   item.Description(),
+		Orders:        btreeToSlice(item.p.orders, mapperOrderJson),
+	}
 }
