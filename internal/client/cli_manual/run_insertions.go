@@ -2,6 +2,7 @@ package cli_manual
 
 import (
 	"fmt"
+	"payment/internal/server/payments"
 	"strings"
 )
 
@@ -15,4 +16,12 @@ func insertGeneric(dataType string, data []string, insertFunc func(data ...strin
 	} else {
 		fmt.Printf("successfully inserted %s (%s)\n", dataType, strings.Join(data, ", "))
 	}
+}
+
+func insertPayments(allPayments payments.AllPayments, data []string) {
+
+}
+
+func insertOrders(allPayments payments.AllPayments, data []string) {
+
 }
