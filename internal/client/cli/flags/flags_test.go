@@ -1,7 +1,6 @@
 package flags_test
 
 import (
-	"fmt"
 	"payment/internal/client/cli/flags"
 	"reflect"
 	"testing"
@@ -22,5 +21,40 @@ func TestFlagParse(t *testing.T) {
 
 func TestFlagElaboration(t *testing.T) {
 	flags, _ := flags.NewFlagParsed([]string{"--debug", "word1", "word2", "-ab", "word3"})
-	fmt.Println(flags, "TODO!")
+	found, words, err := flags.GetFlag("--debug", true)
+	if !found {
+		t.Fatalf("should have found the flag --debug")
+	} else if !reflect.DeepEqual(words, []string{"word1", "word2"}) {
+		t.Fatalf("invalid words: %v", words)
+	} else if err != nil {
+		t.Fatalf("error happened: %s", err)
+	}
+	found, words, err = flags.GetFlag("-a", true)
+	if !found {
+		t.Fatalf("should have found the flag -a")
+	} else if !reflect.DeepEqual(words, []string{"word3"}) {
+		t.Fatalf("invalid words: %v", words)
+	} else if err != nil {
+		t.Fatalf("error happened: %s", err)
+	}
+	found, words, err = flags.GetFlag("-b", false)
+	if !found {
+		t.Fatalf("should have found the flag -b")
+	} else if !reflect.DeepEqual(words, []string{}) {
+		t.Fatalf("invalid words: %v", words)
+	} else if err != nil {
+		t.Fatalf("error happened: %s", err)
+	}
+	found, words, err = flags.GetFlag("-c", false)
+	if found {
+		t.Fatalf("should not have found the flag -c")
+	} else if !reflect.DeepEqual(words, []string{}) {
+		t.Fatalf("invalid words: %v", words)
+	} else if err == nil {
+		t.Fatalf("error should have happened")
+	}
+	err = flags.Conclude()
+	if err != nil {
+		t.Fatalf("conclusion failed: %s", err)
+	}
 }
