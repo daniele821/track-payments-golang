@@ -34,6 +34,25 @@ func listRaw(typeData string, data payments.ReadOnlyBTree[string]) {
 	}, nil, nil)
 }
 
+func listPayments(data payments.ReadOnlyBTree[payments.Payment]) {
+	if data.Len() == 0 {
+		fmt.Printf("There are no payments!\n")
+		return
+	}
+	fmt.Printf("Here's all payments:\n")
+	data.Ascend(func(item payments.Payment) bool {
+		price := item.TotalPrice()
+		fmt.Printf("%s | %s %s %s %d.%02d€\n", item.Date(), item.City(), item.Shop(), item.PaymentMethod(), price/100, price%100)
+		item.Orders().Ascend(func(item payments.Order) bool {
+			price := item.UnitPrice()
+			fmt.Printf("                 | %s x%d %d.%02d\n", item.Item(), item.Quantity(), price/100, price%100)
+			return true
+		}, nil, nil)
+		return true
+	}, nil, nil)
+
+}
+
 func (f flags) execute(allPayments payments.AllPayments) {
 	insertAct := *f.insertAction
 	listAct := *f.listAction
@@ -63,7 +82,7 @@ func (f flags) execute(allPayments payments.AllPayments) {
 		case "item":
 			listRaw("items", allPayments.Items())
 		case "payment":
-		case "order":
+			listPayments(allPayments.Payments())
 		}
 	} else if insertAct == "" && listAct == "" && updateAct != "" && deleteAct == "" {
 		switch updateAct {

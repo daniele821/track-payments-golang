@@ -20,6 +20,7 @@ type flags struct {
 	descriptionData *string
 	quantityData    *string
 	priceData       *string
+	dateData        *string
 }
 
 func addFlags() flags {
@@ -35,6 +36,7 @@ func addFlags() flags {
 		descriptionData: flag.String("description", "", ""),
 		quantityData:    flag.String("quantity", "", ""),
 		priceData:       flag.String("price", "", ""),
+		dateData:        flag.String("date", "", ""),
 	}
 	flag.Usage = helpMsg
 	flag.Parse()
