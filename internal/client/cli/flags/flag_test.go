@@ -10,7 +10,7 @@ func TestFlagParse(t *testing.T) {
 	args := []string{"word1", "-abc", "word2", "-abde", "--flag1", "word3", "word4"}
 	expectedFlagArgs := map[string][]string{"": {"word1"}, "-abc": {"word2"}, "-abde": {}, "--flag1": {"word3", "word4"}}
 	expectedFlagOrder := []string{"-abc", "-abde", "--flag1"}
-	actualFlagParsed := flags.ParseFlags(args)
+	actualFlagParsed := flags.NewFlagParsed(args)
 	actualFlagArgs := actualFlagParsed.FlagArgsCopy()
 	actualFlagOrder := actualFlagParsed.FlagOrderCopy()
 	if !reflect.DeepEqual(expectedFlagArgs, actualFlagArgs) {

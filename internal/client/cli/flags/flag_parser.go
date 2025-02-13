@@ -19,7 +19,7 @@ func (f FlagParsed) FlagOrderCopy() []string {
 	return slices.Clone(f.flagOrder)
 }
 
-func ParseFlags(args []string) FlagParsed {
+func NewFlagParsed(args []string) FlagParsed {
 	flagArgs := map[string][]string{}
 	flagOrder := []string{}
 
