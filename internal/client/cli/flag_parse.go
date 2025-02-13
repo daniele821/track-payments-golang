@@ -60,7 +60,7 @@ func helpMsg() {
         -list method
         -list item
         -list payment   
-        -list order     
+        -list all     
 
     Update operations:
         -update payment -date DATE [-city CITY] [-shop SHOP] [-method METHOD] [-description DESCRIPTION]

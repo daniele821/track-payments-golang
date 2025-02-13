@@ -178,6 +178,16 @@ func (f flags) execute(allPayments payments.AllPayments) {
 			listRaw("items", allPayments.Items())
 		case "payment":
 			listPayments(allPayments.Payments())
+		case "all":
+			listRaw("cities", allPayments.Cities())
+			fmt.Println()
+			listRaw("shops", allPayments.Shops())
+			fmt.Println()
+			listRaw("methods", allPayments.PaymentMethods())
+			fmt.Println()
+			listRaw("items", allPayments.Items())
+			fmt.Println()
+			listPayments(allPayments.Payments())
 		}
 	} else if insertAct == "" && listAct == "" && updateAct != "" && deleteAct == "" {
 		switch updateAct {
