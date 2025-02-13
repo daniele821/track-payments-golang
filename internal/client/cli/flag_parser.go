@@ -1,12 +1,22 @@
 package cli
 
 import (
+	"maps"
+	"slices"
 	"strings"
 )
 
 type FlagParsed struct {
 	flagArgs  map[string][]string
 	flagOrder []string
+}
+
+func (f FlagParsed) FlagArgsCopy() map[string][]string {
+	return maps.Clone(f.flagArgs)
+}
+
+func (f FlagParsed) FlagOrderCopy() []string {
+	return slices.Clone(f.flagOrder)
 }
 
 func ParseFlags(args []string) FlagParsed {
