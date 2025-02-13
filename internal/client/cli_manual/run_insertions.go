@@ -20,16 +20,31 @@ func insertGeneric(dataType string, data []string, insertFunc func(data ...strin
 
 func insertPayments(allPayments payments.AllPayments, data []string) {
 	okMsg := []string{}
+	dateStr, timeStr := getDateAndTime()
 	for index, splittedData := range splitter(data) {
-		if len(splittedData) < 5 {
+		if len(splittedData) < 4 {
 			fmt.Printf("not enough parameters to insert the %dth payment (%s)\n", index, strings.Join(splittedData, ", "))
 			return
+		} else if len(splittedData) > 6 {
+			fmt.Printf("too many parameters to insert the %dth payment (%s)\n", index, strings.Join(splittedData, ", "))
+			return
 		}
-		date := splittedData[0] + " " + splittedData[1]
-		city := splittedData[2]
-		shop := splittedData[3]
-		method := splittedData[4]
-		description := strings.Join(splittedData[4:], " ")
+		offset := 2 - (6 - len(splittedData))
+		switch len(splittedData) {
+		case 5:
+			timeStr = splittedData[0]
+		case 6:
+			dateStr = splittedData[0]
+			timeStr = splittedData[1]
+		}
+		date := dateStr + " " + timeStr
+		city := splittedData[0+offset]
+		shop := splittedData[1+offset]
+		method := splittedData[2+offset]
+		description := splittedData[3+offset]
+		if len(description) <= 1 {
+			description = ""
+		}
 		if err := allPayments.AddPayment(city, shop, method, date, description); err != nil {
 			fmt.Printf("payment (%d) insertion failed: %s\n", index, err)
 			return

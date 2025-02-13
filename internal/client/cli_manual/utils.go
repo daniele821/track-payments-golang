@@ -1,5 +1,7 @@
 package cli_manual
 
+import "time"
+
 func matchEveryLenght(str, match string) bool {
 	if len(str) > len(match) {
 		return false
@@ -27,4 +29,8 @@ func splitter(data []string) (splitted [][]string) {
 		}
 	}
 	return splitted
+}
+
+func getDateAndTime() (dateStr, timeStr string) {
+	return time.Now().Format("2006/01/02"), time.Now().Format("15:04")
 }
