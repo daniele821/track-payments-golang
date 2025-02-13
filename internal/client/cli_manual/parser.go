@@ -21,9 +21,13 @@ func parseAndRun(allPayments payments.AllPayments, args []string) error {
 		case len(args) <= 1:
 			return errors.New("missing arg for insert")
 		case matchEveryLenghtFromAnyWords(args[1], []string{"city", "cities"}):
+			insertGeneric("cities", args[2:], allPayments.AddCities)
 		case matchEveryLenght(args[1], "shops"):
+			insertGeneric("shops", args[2:], allPayments.AddShops)
 		case matchEveryLenght(args[1], "methods"):
+			insertGeneric("methods", args[2:], allPayments.AddPaymentMethods)
 		case matchEveryLenght(args[1], "items"):
+			insertGeneric("items", args[2:], allPayments.AddItems)
 		case matchEveryLenght(args[1], "payments"):
 		case matchEveryLenght(args[1], "orders"):
 		default:
