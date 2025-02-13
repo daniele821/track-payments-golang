@@ -15,3 +15,16 @@ func matchEveryLenghtFromAnyWords(str string, matches []string) bool {
 	}
 	return false
 }
+
+func splitter(data []string) (splitted [][]string) {
+	tmpArray := []string{}
+	for _, elem := range append(data, "@") {
+		if elem == "@" {
+			splitted = append(splitted, tmpArray)
+			tmpArray = []string{}
+		} else {
+			tmpArray = append(tmpArray, elem)
+		}
+	}
+	return splitted
+}
