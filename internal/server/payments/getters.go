@@ -77,11 +77,11 @@ func (payment Payment) Orders() ReadOnlyBTree[Order] {
 	return ReadOnlyBTree[Order]{btree: payment.p.orders}
 }
 
-func (order Order) Quantity() uint {
+func (order Order) Quantity() int {
 	return order.p.quantity
 }
 
-func (order Order) UnitPrice() uint {
+func (order Order) UnitPrice() int {
 	return order.p.unitPrice
 }
 

@@ -11,7 +11,7 @@ func newValueSet() ValueSet {
 	}}
 }
 
-func newOrder(quantity, unitPrice uint, item string) Order {
+func newOrder(quantity, unitPrice int, item string) Order {
 	return Order{&order{
 		quantity:  quantity,
 		unitPrice: unitPrice,

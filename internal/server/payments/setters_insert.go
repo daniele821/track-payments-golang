@@ -51,7 +51,7 @@ func (allPayments AllPayments) AddPayment(city, shop, paymentMethod, date, descr
 	return nil
 }
 
-func (allPayments AllPayments) AddOrder(quantity, unitPrice uint, item, date string) error {
+func (allPayments AllPayments) AddOrder(quantity, unitPrice int, item, date string) error {
 	if err := allPayments.checks(&date, nil, nil, nil, &item); err != nil {
 		return err
 	}

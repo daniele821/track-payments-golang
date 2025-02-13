@@ -8,8 +8,8 @@ type ValueSetJson struct {
 }
 
 type OrderJson struct {
-	Quantity  uint   `json:"quantity"`
-	UnitPrice uint   `json:"unitPrice"`
+	Quantity  int    `json:"quantity"`
+	UnitPrice int    `json:"unitPrice"`
 	Item      string `json:"item"`
 }
 

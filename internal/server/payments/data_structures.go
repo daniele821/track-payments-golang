@@ -11,8 +11,8 @@ type valueSet struct {
 type ValueSet struct{ p *valueSet }
 
 type order struct {
-	quantity  uint
-	unitPrice uint // is the price in euro cents (2.40 euro => 240)
+	quantity  int
+	unitPrice int // is the price in euro cents (2.40 euro => 240)
 	item      string
 }
 type Order struct{ p *order }

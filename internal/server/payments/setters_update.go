@@ -23,7 +23,7 @@ func (allPayments AllPayments) UpdatePayment(date string, city, shop, paymentMet
 	return nil
 }
 
-func (allPayments AllPayments) UpdateOrder(date, item string, quantity, unitPrice *uint) error {
+func (allPayments AllPayments) UpdateOrder(date, item string, quantity, unitPrice *int) error {
 	if err := allPayments.checks(&date, nil, nil, nil, &item); err != nil {
 		return err
 	}
