@@ -1,34 +1,46 @@
 package flags
 
 import (
+	"errors"
 	"maps"
-	"slices"
 	"strings"
 )
 
 type FlagParsed struct {
-	flagArgs  map[string][]string
-	flagOrder []string
+	flagArgs map[string][]string
 }
 
 func (f FlagParsed) FlagArgsCopy() map[string][]string {
 	return maps.Clone(f.flagArgs)
 }
 
-func (f FlagParsed) FlagOrderCopy() []string {
-	return slices.Clone(f.flagOrder)
-}
-
-func NewFlagParsed(args []string) FlagParsed {
+func NewFlagParsed(args []string) (FlagParsed, error) {
 	flagArgs := map[string][]string{}
 	flagOrder := []string{}
+
+	flagEmpty := FlagParsed{}
+	letters := []string{}
 
 	tmpFlag := ""
 	tmpArg := []string{}
 
 	for _, arg := range append(args, "--") {
 		if strings.HasPrefix(arg, "-") {
-			flagOrder = append(flagOrder, arg)
+			if arg == "" {
+				if len(tmpArg) != 0 {
+					return flagEmpty, errors.New("invalid words before flags: " + strings.Join(tmpArg, " "))
+				}
+			} else {
+				flagOrder = append(flagOrder, arg)
+			}
+
+			if strings.HasPrefix(arg, "--") {
+				if _, exists := flagArgs[tmpFlag]; exists {
+					return flagEmpty, errors.New("duplicated word flag: ")
+				}
+			} else {
+				letters = append(letters, arg)
+			}
 
 			flagArgs[tmpFlag] = tmpArg
 			tmpFlag = arg
@@ -38,5 +50,5 @@ func NewFlagParsed(args []string) FlagParsed {
 		}
 	}
 
-	return FlagParsed{flagArgs: flagArgs, flagOrder: flagOrder[:len(flagOrder)-1]}
+	return FlagParsed{flagArgs: flagArgs}, nil
 }

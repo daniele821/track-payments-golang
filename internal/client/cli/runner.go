@@ -7,6 +7,6 @@ import (
 )
 
 func Run() {
-	flags := flags.NewFlagParsed(os.Args[1:])
+	flags, _ := flags.NewFlagParsed(os.Args[1:])
 	fmt.Println(flags)
 }
