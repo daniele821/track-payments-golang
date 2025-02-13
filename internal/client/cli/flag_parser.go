@@ -4,12 +4,12 @@ import (
 	"strings"
 )
 
-type Flags struct {
+type FlagParsed struct {
 	flagArgs  map[string][]string
 	flagOrder []string
 }
 
-func ParseFlags(args []string) Flags {
+func ParseFlags(args []string) FlagParsed {
 	flagArgs := map[string][]string{}
 	flagOrder := []string{}
 
@@ -28,5 +28,5 @@ func ParseFlags(args []string) Flags {
 		}
 	}
 
-	return Flags{flagArgs: flagArgs, flagOrder: flagOrder[:len(flagOrder)-1]}
+	return FlagParsed{flagArgs: flagArgs, flagOrder: flagOrder[:len(flagOrder)-1]}
 }
