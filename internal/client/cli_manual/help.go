@@ -20,11 +20,11 @@ Operations:
     l[ist] p[ayments]
     l[ist] o[rders]
 
-    u[pdate] p[ayment] DATE [CITY] [SHOP] [METHOD] [DESCRIPTION]
-    u[pdate] o[rder] DATE ITEM [QUANTITY] [PRICE]
+    u[pdate] p[ayment] DATE [CITY] [SHOP] [METHOD] [DESCRIPTION] [@ DATE2 [CITY2] [SHOP2] [METHOD2] [DESCRIPTION2] @ ...]
+    u[pdate] o[rder] DATE ITEM [QUANTITY] [PRICE] [@ DATE2 ITEM2 [QUANTITY2] [PRICE2] @ ...]
 
-    d[elete] p[ayment] DATE [DATE2 DATE ...]
-    d[elete] o[rder] DATE ITEM [@ ITEM2 ITEM3 ...]
+    d[elete] p[ayment] DATE [DATE2 ...]
+    d[elete] o[rder] DATE ITEM [@ [DATE2] ITEM2 @ ...]
     
     h[elp]
 `)
