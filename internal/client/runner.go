@@ -42,7 +42,9 @@ func Run(execution func(allPayments payments.AllPayments) error, jsonPathFromExe
 	}
 
 	// execute program
-	execution(allPayments)
+	if err := execution(allPayments); err != nil {
+		return err
+	}
 
 	// dump all payments to json file
 	jsonData, err := allPayments.DumpJson(true)

@@ -1,7 +1,9 @@
 package cli_manual
 
-import "errors"
+import (
+	"payment/internal/client"
+)
 
 func Run(jsonPathFromExeDir ...string) error {
-	return errors.New("TODO: implement climanual")
+	return client.Run(parseParamsAndRun, jsonPathFromExeDir...)
 }
