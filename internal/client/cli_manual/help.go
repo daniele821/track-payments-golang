@@ -13,12 +13,12 @@ Operations:
     i[nsert] p[ayments] DATE CITY SHOP METHOD [DESCRIPTION] [@ ITEM1 QUANTITY1 PRICE1 @ ...]
     i[nsert] o[rders] DATE ITEM QUANTITY PRICE [@ ITEM2 QUANTITY2 PRICE2 @ ...] 
 
-    l[ist] c[ity|ities]
-    l[ist] s[hops]
-    l[ist] m[ethods]
-    l[ist] i[tems]
-    l[ist] p[ayments]
-    l[ist] o[rders]
+    l[ist]|v[isualize] c[ity|ities]
+    l[ist]|v[isualize] s[hops]
+    l[ist]|v[isualize] m[ethods]
+    l[ist]|v[isualize] i[tems]
+    l[ist]|v[isualize] p[ayments]
+    l[ist]|v[isualize] o[rders]
 
     u[pdate] p[ayments] DATE [CITY] [SHOP] [METHOD] [DESCRIPTION] [@ DATE2 [CITY2] [SHOP2] [METHOD2] [DESCRIPTION2] @ ...]
     u[pdate] o[rders] DATE ITEM [QUANTITY] [PRICE] [@ DATE2 ITEM2 [QUANTITY2] [PRICE2] @ ...]

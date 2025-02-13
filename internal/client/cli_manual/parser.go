@@ -40,6 +40,23 @@ func parseAndRun(allPayments payments.AllPayments, args []string) error {
 		case len(args) <= 1:
 			return errors.New("missing arg for list")
 		case matchEveryLenghtFromAnyWords(args[1], []string{"city", "cities"}):
+			listGeneric("cities", allPayments.Cities())
+		case matchEveryLenght(args[1], "shops"):
+			listGeneric("shops", allPayments.Shops())
+		case matchEveryLenght(args[1], "methods"):
+			listGeneric("methods", allPayments.PaymentMethods())
+		case matchEveryLenght(args[1], "items"):
+			listGeneric("items", allPayments.Items())
+		case matchEveryLenght(args[1], "payments"):
+		case matchEveryLenght(args[1], "orders"):
+		default:
+			return errors.New(fmt.Sprintf("invalid arg for list: %s", args[1]))
+		}
+	case matchEveryLenght(args[0], "visualize"):
+		switch {
+		case len(args) <= 1:
+			return errors.New("missing arg for list")
+		case matchEveryLenghtFromAnyWords(args[1], []string{"city", "cities"}):
 		case matchEveryLenght(args[1], "shops"):
 		case matchEveryLenght(args[1], "methods"):
 		case matchEveryLenght(args[1], "items"):
