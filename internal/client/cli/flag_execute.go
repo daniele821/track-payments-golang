@@ -28,7 +28,7 @@ func listRaw(typeData string, data payments.ReadOnlyBTree[string]) {
 	maxLen := len(strconv.Itoa(data.Len()))
 	index := 0
 	data.Ascend(func(item string) bool {
-		fmt.Printf("%0*d | %s\n", maxLen, index, item)
+		fmt.Printf("%-*d | %s\n", maxLen, index, item)
 		index += 1
 		return true
 	}, nil, nil)
@@ -51,6 +51,8 @@ func (f flags) execute(allPayments payments.AllPayments) {
 			insert("item", *f.itemData, func(s string) error { return allPayments.AddItems(s) })
 		case "payment":
 		case "order":
+		default:
+			fmt.Printf("invalid action type (%s)\n", insertAct)
 		}
 	} else if insertAct == "" && listAct != "" && updateAct == "" && deleteAct == "" {
 		switch listAct {
@@ -64,16 +66,22 @@ func (f flags) execute(allPayments payments.AllPayments) {
 			listRaw("items", allPayments.Items())
 		case "payment":
 		case "order":
+		default:
+			fmt.Printf("invalid action type (%s)\n", listAct)
 		}
 	} else if insertAct == "" && listAct == "" && updateAct != "" && deleteAct == "" {
 		switch updateAct {
 		case "payment":
 		case "order":
+		default:
+			fmt.Printf("invalid action type (%s)\n", updateAct)
 		}
 	} else if insertAct == "" && listAct == "" && updateAct == "" && deleteAct != "" {
 		switch deleteAct {
 		case "payment":
 		case "order":
+		default:
+			fmt.Printf("invalid action type (%s)\n", deleteAct)
 		}
 	}
 }
