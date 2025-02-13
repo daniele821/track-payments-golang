@@ -1,7 +1,7 @@
-package cli_test
+package flags_test
 
 import (
-	"payment/internal/client/cli"
+	flags "payment/internal/client/flag"
 	"reflect"
 	"testing"
 )
@@ -10,7 +10,7 @@ func TestFlagParse(t *testing.T) {
 	args := []string{"word1", "-abc", "word2", "-abde", "--flag1", "word3", "word4"}
 	expectedFlagArgs := map[string][]string{"": {"word1"}, "-abc": {"word2"}, "-abde": {}, "--flag1": {"word3", "word4"}}
 	expectedFlagOrder := []string{"-abc", "-abde", "--flag1"}
-	actualFlagParsed := cli.ParseFlags(args)
+	actualFlagParsed := flags.ParseFlags(args)
 	actualFlagArgs := actualFlagParsed.FlagArgsCopy()
 	actualFlagOrder := actualFlagParsed.FlagOrderCopy()
 	if !reflect.DeepEqual(expectedFlagArgs, actualFlagArgs) {
