@@ -1,4 +1,4 @@
-package climanual
+package cli_manual
 
 import "fmt"
 
