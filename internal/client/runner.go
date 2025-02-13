@@ -6,7 +6,7 @@ import (
 	"payment/internal/server/payments"
 )
 
-func Run(execution func(allPayments payments.AllPayments) error) error {
+func Run(execution func(allPayments payments.AllPayments) error, jsonPathFromExeDir ...string) error {
 	// load json file
 	exePath, err := os.Executable()
 	if err != nil {
@@ -17,7 +17,7 @@ func Run(execution func(allPayments payments.AllPayments) error) error {
 		return err
 	}
 	jsonDir := filepath.Dir(exePath)
-	jsonPath := filepath.Join(jsonDir, "payments.json")
+	jsonPath := filepath.Join(append([]string{jsonDir}, jsonPathFromExeDir...)...)
 	jsonDataByte, err := os.ReadFile(jsonPath)
 	if err != nil {
 		fileCreated, err := os.Create(jsonPath)

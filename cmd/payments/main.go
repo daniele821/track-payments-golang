@@ -5,8 +5,10 @@ import (
 	"payment/internal/client/cli_goflag"
 )
 
+const jsonPath string = "payments.json"
+
 func main() {
-	if err := cli_goflag.Run(); err != nil {
+	if err := cli_goflag.Run(jsonPath); err != nil {
 		fmt.Println(err)
 	}
 }

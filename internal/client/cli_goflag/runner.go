@@ -5,9 +5,9 @@ import (
 	"payment/internal/server/payments"
 )
 
-func Run() error {
+func Run(jsonPathFromExeDir ...string) error {
 	return client.Run(func(allPayments payments.AllPayments) error {
 		addFlags().execute(allPayments)
 		return nil
-	})
+	}, jsonPathFromExeDir...)
 }
