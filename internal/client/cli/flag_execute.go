@@ -100,7 +100,7 @@ func insertOrder(allPayments payments.AllPayments, flags flags) {
 		if err := allPayments.AddOrder(quantityInt, priceInt, item, date); err != nil {
 			fmt.Printf("payment insertion failed: %s\n", err)
 		} else {
-			fmt.Printf("successfully added order (date: %s, item: %s, quantity: %d, unitPrice: %0.2f)\n", date, item, quantityInt, float64(priceInt)/100.0)
+			fmt.Printf("successfully added order (date: %s, item: %s, quantity: %d, unitPrice: %0.2f€)\n", date, item, quantityInt, float64(priceInt)/100.0)
 		}
 
 	}
@@ -138,7 +138,7 @@ func listPayments(data payments.ReadOnlyBTree[payments.Payment]) {
 		fmt.Printf("%s | %s %s %s %d.%02d€\n", date, item.City(), item.Shop(), item.PaymentMethod(), price/100, price%100)
 		item.Orders().Ascend(func(item payments.Order) bool {
 			price := item.UnitPrice()
-			fmt.Printf("                 | %s x%d %d.%02d\n", item.Item(), item.Quantity(), price/100, price%100)
+			fmt.Printf("                 | %s x%d %d.%02d€\n", item.Item(), item.Quantity(), price/100, price%100)
 			return true
 		}, nil, nil)
 		return true
