@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 )
 
-func ConvertFromJsonData(input AllPaymentsJson) (AllPayments, error) {
+func ConvertFromJsonData(input allPaymentsJson) (AllPayments, error) {
 	output := NewAllPayments()
 	outputEmpty := NewAllPayments()
 	if err := output.AddCities(input.ValueSet.Cities...); err != nil {
@@ -33,7 +33,7 @@ func ConvertFromJsonData(input AllPaymentsJson) (AllPayments, error) {
 	return output, nil
 }
 func NewAllPaymentsFromJson(input string) (AllPayments, error) {
-	data := AllPaymentsJson{}
+	data := allPaymentsJson{}
 	outputEmpty := NewAllPayments()
 	if err := json.Unmarshal([]byte(input), &data); err != nil {
 		return outputEmpty, err

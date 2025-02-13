@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 )
 
-func ConvertToJsonData(input AllPayments) AllPaymentsJson {
-	return AllPaymentsJson{
-		ValueSet: ValueSetJson{
+func ConvertToJsonData(input AllPayments) allPaymentsJson {
+	return allPaymentsJson{
+		ValueSet: valueSetJson{
 			Cities:         btreeToSlice(input.p.valueSet.p.cities, mapperIdentity),
 			Shops:          btreeToSlice(input.p.valueSet.p.shops, mapperIdentity),
 			PaymentMethods: btreeToSlice(input.p.valueSet.p.paymentMethods, mapperIdentity),
