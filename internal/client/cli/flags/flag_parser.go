@@ -42,7 +42,7 @@ func NewFlagParsed(args []string) (FlagParsed, error) {
 
 			if strings.HasPrefix(arg, "--") {
 				if _, exists := flagArgs[tmpFlag]; exists {
-					return flagEmpty, errors.New("duplicated word flag: " + arg)
+					return flagEmpty, errors.New("duplicated word flag: " + tmpFlag)
 				}
 			} else {
 				tmpLetters := convertWordIntoLetters(arg[1:])
