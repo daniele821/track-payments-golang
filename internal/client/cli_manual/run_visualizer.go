@@ -11,3 +11,16 @@ const BoxVertRight string = "├"
 const BoxHorizTop string = "┴"
 const BoxHorizDown string = "┬"
 const BoxCross string = "┼"
+
+/*
+random box, because why not?
+┌──────┬──────┐
+│      │      │
+│      │      │
+│      │      │
+├──────┼──────┤
+│      │      │
+│      │      │
+│      │      │
+└──────┴──────┘
+*/
