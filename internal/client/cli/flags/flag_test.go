@@ -1,7 +1,7 @@
 package flags_test
 
 import (
-	flags "payment/internal/client/flag"
+	"payment/internal/client/cli/flags"
 	"reflect"
 	"testing"
 )
