@@ -3,6 +3,7 @@ package flags
 import (
 	"errors"
 	"maps"
+	"slices"
 	"strings"
 )
 
@@ -12,6 +13,14 @@ type FlagParsed struct {
 
 func (f FlagParsed) FlagArgsCopy() map[string][]string {
 	return maps.Clone(f.flagArgs)
+}
+
+func convertWordIntoLetters(word string) (letters []string) {
+	letters = make([]string, len(word))
+	for i, letter := range word {
+		letters[i] = string(letter)
+	}
+	return letters
 }
 
 func NewFlagParsed(args []string) (FlagParsed, error) {
@@ -36,10 +45,16 @@ func NewFlagParsed(args []string) (FlagParsed, error) {
 
 			if strings.HasPrefix(arg, "--") {
 				if _, exists := flagArgs[tmpFlag]; exists {
-					return flagEmpty, errors.New("duplicated word flag: ")
+					return flagEmpty, errors.New("duplicated word flag: " + arg)
 				}
 			} else {
-				letters = append(letters, arg)
+				tmpLetters := convertWordIntoLetters(arg[1:])
+				for _, tmpLetter := range tmpLetters {
+					if slices.Contains(letters, tmpLetter) {
+						return flagEmpty, errors.New("duplicated letter flag: -" + tmpLetter)
+					}
+				}
+				letters = append(letters, tmpLetters...)
 			}
 
 			flagArgs[tmpFlag] = tmpArg
