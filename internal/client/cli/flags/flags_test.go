@@ -8,8 +8,8 @@ import (
 )
 
 func TestFlagParse(t *testing.T) {
-	args := []string{"word1", "-abc", "word2", "-de", "--flag1", "word3", "word4"}
-	expectedFlagArgs := map[string][]string{"": {"word1"}, "-abc": {"word2"}, "-de": {}, "--flag1": {"word3", "word4"}}
+	args := []string{"-abc", "word2", "-de", "--flag1", "word3", "word4"}
+	expectedFlagArgs := map[string][]string{"-abc": {"word2"}, "-de": {}, "--flag1": {"word3", "word4"}}
 	actualFlagParsed, err := flags.NewFlagParsed(args)
 	if err != nil {
 		t.Fatalf("error while parsing flags: %s", err)

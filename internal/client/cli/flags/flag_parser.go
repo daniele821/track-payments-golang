@@ -25,7 +25,6 @@ func convertWordIntoLetters(word string) (letters []string) {
 
 func NewFlagParsed(args []string) (FlagParsed, error) {
 	flagArgs := map[string][]string{}
-	flagOrder := []string{}
 
 	flagEmpty := FlagParsed{}
 	letters := []string{}
@@ -35,12 +34,10 @@ func NewFlagParsed(args []string) (FlagParsed, error) {
 
 	for _, arg := range append(args, "--") {
 		if strings.HasPrefix(arg, "-") {
-			if arg == "" {
+			if tmpFlag == "" {
 				if len(tmpArg) != 0 {
 					return flagEmpty, errors.New("invalid words before flags: " + strings.Join(tmpArg, " "))
 				}
-			} else {
-				flagOrder = append(flagOrder, arg)
 			}
 
 			if strings.HasPrefix(arg, "--") {
@@ -64,6 +61,8 @@ func NewFlagParsed(args []string) (FlagParsed, error) {
 			tmpArg = append(tmpArg, arg)
 		}
 	}
+
+	delete(flagArgs, "")
 
 	return FlagParsed{flagArgs: flagArgs}, nil
 }
