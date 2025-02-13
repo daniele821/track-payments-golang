@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"payment/internal/server/payments"
 	"strconv"
+	"time"
 )
 
 func insert(typeData, data string, addFunc func(string) error) {
@@ -13,10 +14,38 @@ func insert(typeData, data string, addFunc func(string) error) {
 		if err := addFunc(data); err != nil {
 			fmt.Printf("%s insertion failed: %s\n", typeData, err)
 		} else {
-			fmt.Printf("successfully added %s %s\n", typeData, data)
+			fmt.Printf("successfully added %s (%s)\n", typeData, data)
 		}
 	}
 	return
+}
+
+func insertPayment(allPayments payments.AllPayments, flags flags) {
+	date := *flags.dateData
+	if len(date) == 5 {
+		date = time.Now().Format("2006/01/02") + " " + date
+	}
+	city := *flags.cityData
+	method := *flags.methodData
+	shop := *flags.shopData
+	description := *flags.descriptionData
+	switch {
+	case date == "":
+		fmt.Printf("no date was passed")
+	case city == "":
+		fmt.Printf("no city was passed")
+	case method == "":
+		fmt.Printf("no method was passed")
+	case shop == "":
+		fmt.Printf("no shop was passed")
+	default:
+		if err := allPayments.AddPayment(city, shop, method, date, description); err != nil {
+			fmt.Printf("payment insertion failed: %s\n", err)
+		} else {
+			fmt.Printf("successfully added payment (date: %s, city: %s, shop: %s, method: %s, description: %s)\n", date, city, shop, method, description)
+		}
+
+	}
 }
 
 func listRaw(typeData string, data payments.ReadOnlyBTree[string]) {
@@ -69,6 +98,7 @@ func (f flags) execute(allPayments payments.AllPayments) {
 		case "item":
 			insert("item", *f.itemData, func(s string) error { return allPayments.AddItems(s) })
 		case "payment":
+			insertPayment(allPayments, f)
 		case "order":
 		}
 	} else if insertAct == "" && listAct != "" && updateAct == "" && deleteAct == "" {
