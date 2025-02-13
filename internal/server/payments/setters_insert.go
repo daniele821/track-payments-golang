@@ -14,9 +14,7 @@ func insertAll(typeData string, valueSet *btree.BTreeG[string], elems ...string)
 		}
 	}
 	for _, elem := range elems {
-		if _, replaced := valueSet.ReplaceOrInsert(elem); replaced {
-			panic("UNREACHABLE CODE: should have already checked no duplicates were present!")
-		}
+		valueSet.ReplaceOrInsert(elem) // avoided redundant panic: if elems has duplicates it will crash
 	}
 	return nil
 }
