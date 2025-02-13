@@ -1,11 +1,34 @@
 package cli
 
 import (
+	"errors"
 	"fmt"
 	"payment/internal/server/payments"
 	"strconv"
+	"strings"
 	"time"
 )
+
+func parsePrice(price string) (int, error) {
+	price = strings.TrimSpace(price)
+	priceInt, err := strconv.Atoi(price)
+	if err == nil {
+		return priceInt, nil
+	}
+	splitted := strings.Split(price, ".")
+	if len(splitted) > 2 {
+		return 0, errors.New("invalid price")
+	}
+	realInt, err := strconv.Atoi(splitted[0])
+	if err != nil {
+		return 0, err
+	}
+	decInt, err := strconv.Atoi((splitted[1] + "00")[2:])
+	if err != nil {
+		return 0, err
+	}
+	return realInt*100 + decInt, nil
+}
 
 func insert(typeData, data string, addFunc func(string) error) {
 	if data == "" {
@@ -22,9 +45,6 @@ func insert(typeData, data string, addFunc func(string) error) {
 
 func insertPayment(allPayments payments.AllPayments, flags flags) {
 	date := *flags.dateData
-	if len(date) == 5 {
-		date = time.Now().Format("2006/01/02") + " " + date
-	}
 	city := *flags.cityData
 	method := *flags.methodData
 	shop := *flags.shopData
@@ -39,10 +59,48 @@ func insertPayment(allPayments payments.AllPayments, flags flags) {
 	case shop == "":
 		fmt.Printf("no shop was passed")
 	default:
+		if len(date) == 5 {
+			date = time.Now().Format("2006/01/02") + " " + date
+		}
 		if err := allPayments.AddPayment(city, shop, method, date, description); err != nil {
 			fmt.Printf("payment insertion failed: %s\n", err)
 		} else {
 			fmt.Printf("successfully added payment (date: %s, city: %s, shop: %s, method: %s, description: %s)\n", date, city, shop, method, description)
+		}
+
+	}
+}
+
+func insertOrder(allPayments payments.AllPayments, flags flags) {
+	date := *flags.dateData
+	item := *flags.itemData
+	quantity := *flags.quantityData
+	price := *flags.priceData
+	switch {
+	case date == "":
+		fmt.Printf("no date was passed")
+	case item == "":
+		fmt.Printf("no item was passed")
+	case quantity == "":
+		fmt.Printf("no quantity was passed")
+	case price == "":
+		fmt.Printf("no unitPrice was passed")
+	default:
+		if len(date) == 5 {
+			date = time.Now().Format("2006/01/02") + " " + date
+		}
+		quantityInt, err := strconv.Atoi(quantity)
+		if err != nil {
+			fmt.Printf("invalid quantity value: %s\n", err)
+		}
+		priceInt, err := parsePrice(price)
+		if err != nil {
+			fmt.Printf("invalid unitPrice value: %s\n", err)
+		}
+		if err := allPayments.AddOrder(quantityInt, priceInt, item, date); err != nil {
+			fmt.Printf("payment insertion failed: %s\n", err)
+		} else {
+			fmt.Printf("successfully added order (date: %s, item: %s, quantity: %d, unitPrice: %0.2f)\n", date, item, quantityInt, float64(priceInt)/100.0)
 		}
 
 	}
@@ -106,6 +164,7 @@ func (f flags) execute(allPayments payments.AllPayments) {
 		case "payment":
 			insertPayment(allPayments, f)
 		case "order":
+			insertOrder(allPayments, f)
 		}
 	} else if insertAct == "" && listAct != "" && updateAct == "" && deleteAct == "" {
 		switch listAct {
