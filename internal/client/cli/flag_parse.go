@@ -53,7 +53,7 @@ func helpMsg() {
         -insert order   -date DATE -item ITEM -quantity QUANTITY -price PRICE
 
     List operations:
-        -list payments
+        -list payment
         -list order     -date DATE
 
     Update operations:
