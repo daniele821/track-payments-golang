@@ -2,19 +2,25 @@ package payments
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/google/btree"
 )
 
 func parseDate(date string) (time.Time, error) {
-	return time.ParseInLocation("2006/01/02 15:04", date, time.UTC)
+	return time.Parse("2006/01/02 15:04", date)
 }
 
 func (allPayments *AllPayments) checks(date, city, shop, paymentMethod, item *string) error {
 	if date != nil {
-		if _, err := parseDate(*date); err != nil {
+		_, err := parseDate(*date)
+		if err != nil {
 			return errors.New("invalid date: " + err.Error())
+		}
+		dateNow := time.Now().Format("2006/01/02 15:04")
+		if *date > dateNow {
+			return errors.New(fmt.Sprintf("invalid date: future dates are not accepted (input: %s, now: %s)", *date, dateNow))
 		}
 	}
 	if city != nil {
