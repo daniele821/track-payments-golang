@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
+	"payment/internal/client/cli"
 )
 
 func main() {
-	fmt.Println("todo")
+	cli.Run()
 }
