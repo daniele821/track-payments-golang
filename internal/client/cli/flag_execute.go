@@ -13,7 +13,7 @@ func parsePrice(price string) (int, error) {
 	price = strings.TrimSpace(price)
 	priceInt, err := strconv.Atoi(price)
 	if err == nil {
-		return priceInt, nil
+		return priceInt * 100, nil
 	}
 	splitted := strings.Split(price, ".")
 	if len(splitted) > 2 {
