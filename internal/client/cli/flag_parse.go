@@ -53,8 +53,12 @@ func helpMsg() {
         -insert order   -date DATE -item ITEM -quantity QUANTITY -price PRICE
 
     List operations:
-        -list payment
-        -list order     -date DATE
+        -list city
+        -list shop
+        -list method
+        -list item
+        -list payment   
+        -list order     
 
     Update operations:
         -update payment -date DATE [-city CITY] [-shop SHOP] [-method METHOD] [-description DESCRIPTION]

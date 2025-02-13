@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"payment/internal/server/payments"
+	"strconv"
 )
 
 func insert(typeData, data string, addFunc func(string) error) {
@@ -16,6 +17,21 @@ func insert(typeData, data string, addFunc func(string) error) {
 		}
 	}
 	return
+}
+
+func listRaw(typeData string, data payments.ReadOnlyBTree[string]) {
+	if data.Len() == 0 {
+		fmt.Printf("There are no %s!\n", typeData)
+		return
+	}
+	fmt.Printf("Here's all %s:\n", typeData)
+	maxLen := len(strconv.Itoa(data.Len()))
+	index := 0
+	data.Ascend(func(item string) bool {
+		fmt.Printf("%0*d | %s\n", maxLen, index, item)
+		index += 1
+		return true
+	}, nil, nil)
 }
 
 func (f flags) execute(allPayments payments.AllPayments) {
@@ -38,6 +54,14 @@ func (f flags) execute(allPayments payments.AllPayments) {
 		}
 	} else if insertAct == "" && listAct != "" && updateAct == "" && deleteAct == "" {
 		switch listAct {
+		case "city":
+			listRaw("cities", allPayments.Cities())
+		case "shop":
+			listRaw("shops", allPayments.Shops())
+		case "method":
+			listRaw("methods", allPayments.PaymentMethods())
+		case "item":
+			listRaw("items", allPayments.Items())
 		case "payment":
 		case "order":
 		}
