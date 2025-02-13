@@ -51,8 +51,6 @@ func (f flags) execute(allPayments payments.AllPayments) {
 			insert("item", *f.itemData, func(s string) error { return allPayments.AddItems(s) })
 		case "payment":
 		case "order":
-		default:
-			fmt.Printf("invalid action type (%s)\n", insertAct)
 		}
 	} else if insertAct == "" && listAct != "" && updateAct == "" && deleteAct == "" {
 		switch listAct {
@@ -66,22 +64,16 @@ func (f flags) execute(allPayments payments.AllPayments) {
 			listRaw("items", allPayments.Items())
 		case "payment":
 		case "order":
-		default:
-			fmt.Printf("invalid action type (%s)\n", listAct)
 		}
 	} else if insertAct == "" && listAct == "" && updateAct != "" && deleteAct == "" {
 		switch updateAct {
 		case "payment":
 		case "order":
-		default:
-			fmt.Printf("invalid action type (%s)\n", updateAct)
 		}
 	} else if insertAct == "" && listAct == "" && updateAct == "" && deleteAct != "" {
 		switch deleteAct {
 		case "payment":
 		case "order":
-		default:
-			fmt.Printf("invalid action type (%s)\n", deleteAct)
 		}
 	}
 }
