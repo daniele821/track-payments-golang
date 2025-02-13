@@ -77,6 +77,15 @@ func (payment Payment) Orders() ReadOnlyBTree[Order] {
 	return ReadOnlyBTree[Order]{btree: payment.p.orders}
 }
 
+func (payment Payment) TotalPrice() int {
+	acc := 0
+	payment.Orders().Ascend(func(item Order) bool {
+		acc += item.Quantity() * item.UnitPrice()
+		return true
+	}, nil, nil)
+	return acc
+}
+
 func (order Order) Quantity() int {
 	return order.p.quantity
 }

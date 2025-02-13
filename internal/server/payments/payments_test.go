@@ -23,8 +23,18 @@ func TestJsonConversion(t *testing.T) {
 	if err := allPayments.AddPayment("Cesena", "Coop", "Contante", "2025/01/02 23:45", "Testing..."); err != nil {
 		t.Fatalf("operation (add payment) failed: %s", err)
 	}
-	if err := allPayments.AddOrder(3, 4, "Pizza", "2025/01/02 23:45"); err != nil {
-		t.Fatalf("operation (add order) failed: %s", err)
+	if err := allPayments.AddOrder(1, 8900, "Pizza", "2025/01/02 23:45"); err != nil {
+		t.Fatalf("operation (add order1) failed: %s", err)
+	}
+	if err := allPayments.AddOrder(2, 1200, "Briosche", "2025/01/02 23:45"); err != nil {
+		t.Fatalf("operation (add order2) failed: %s", err)
+	}
+
+	payment, err := allPayments.Payment("2025/01/02 23:45")
+	if err != nil {
+		t.Fatalf("error getting payment: %s", err)
+	} else if payment.TotalPrice() != 11_300 {
+		t.Fatalf("invalid total price calculations: expected 11300, actual %d", payment.TotalPrice())
 	}
 
 	expected := allPayments
