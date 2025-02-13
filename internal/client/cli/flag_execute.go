@@ -51,13 +51,13 @@ func insertPayment(allPayments payments.AllPayments, flags flags) {
 	description := *flags.descriptionData
 	switch {
 	case date == "":
-		fmt.Printf("no date was passed")
+		fmt.Println("no date was passed")
 	case city == "":
-		fmt.Printf("no city was passed")
+		fmt.Println("no city was passed")
 	case method == "":
-		fmt.Printf("no method was passed")
+		fmt.Println("no method was passed")
 	case shop == "":
-		fmt.Printf("no shop was passed")
+		fmt.Println("no shop was passed")
 	default:
 		if len(date) == 5 {
 			date = time.Now().Format("2006/01/02") + " " + date
@@ -78,13 +78,13 @@ func insertOrder(allPayments payments.AllPayments, flags flags) {
 	price := *flags.priceData
 	switch {
 	case date == "":
-		fmt.Printf("no date was passed")
+		fmt.Println("no date was passed")
 	case item == "":
-		fmt.Printf("no item was passed")
+		fmt.Println("no item was passed")
 	case quantity == "":
-		fmt.Printf("no quantity was passed")
+		fmt.Println("no quantity was passed")
 	case price == "":
-		fmt.Printf("no unitPrice was passed")
+		fmt.Println("no unitPrice was passed")
 	default:
 		if len(date) == 5 {
 			date = time.Now().Format("2006/01/02") + " " + date
