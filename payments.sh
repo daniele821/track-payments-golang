@@ -6,7 +6,7 @@ SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
 GOMAIN_PATH="${SCRIPT_DIR}/cmd/payments/main.go"
 BIN_PATH="${SCRIPT_DIR}/data/.payments"
 
-[[ -v BUILD ]] && rm "$BIN_PATH"
+[[ -v BUILD && -f "$BIN_PATH" ]] && rm "$BIN_PATH"
 
 [[ -f "$BIN_PATH" ]] || go build -o "$BIN_PATH" "$GOMAIN_PATH"
 
