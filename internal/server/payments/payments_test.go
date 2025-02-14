@@ -20,7 +20,7 @@ func TestJsonConversion(t *testing.T) {
 	if err := allPayments.AddPaymentMethods("Contante", "Postepay"); err != nil {
 		t.Fatalf("operation (add method) failed: %s", err)
 	}
-	if err := allPayments.AddPayment("Cesena", "Coop", "Contante", "2025/01/02 23:45", "Testing..."); err != nil {
+	if err := allPayments.AddPayment("Cesena", "Coop", "Contante", "2025/01/02 23:45"); err != nil {
 		t.Fatalf("operation (add payment) failed: %s", err)
 	}
 	if err := allPayments.AddOrder(1, 8900, "Pizza", "2025/01/02 23:45"); err != nil {

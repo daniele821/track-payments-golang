@@ -12,7 +12,7 @@ func updatePayments(allPayments payments.AllPayments, data []string) error {
 	okMsg := []string{}
 	dateStr, timeStr := getDateAndTime()
 	for index, splittedData := range splitter(data) {
-		if len(splittedData) != 6 {
+		if len(splittedData) != 5 {
 			return errors.New(fmt.Sprintf("invalid amount of parameters to update the %dth payment (%s)", index, strings.Join(splittedData, ", ")))
 		}
 		dateStr = fillDataIfEmpty(splittedData[0], dateStr)
@@ -20,12 +20,11 @@ func updatePayments(allPayments payments.AllPayments, data []string) error {
 		city := fillDataIfEmptyOpt(&splittedData[2], nil)
 		shop := fillDataIfEmptyOpt(&splittedData[3], nil)
 		method := fillDataIfEmptyOpt(&splittedData[4], nil)
-		description := fillDataIfEmptyOpt(&splittedData[5], nil)
 		dateFinal := dateStr + " " + timeStr
-		if err := allPayments.UpdatePayment(dateFinal, city, shop, method, description); err != nil {
+		if err := allPayments.UpdatePayment(dateFinal, city, shop, method); err != nil {
 			return errors.New(fmt.Sprintf("payment (%d) update failed: %s\n", index, err))
 		} else {
-			okMsg = append(okMsg, fmt.Sprintf("successfully updated payment (%s, %v, %v, %v, %v)\n", dateFinal, city, shop, method, description))
+			okMsg = append(okMsg, fmt.Sprintf("successfully updated payment (%s, %v, %v, %v)\n", dateFinal, city, shop, method))
 		}
 	}
 	fmt.Println(strings.Join(okMsg, ""))
@@ -68,7 +67,7 @@ func updateDetails(allPayments payments.AllPayments, data []string) error {
 	dateStr, timeStr := getDateAndTime()
 	for index, splittedData := range splitter(data) {
 		if index == 0 {
-			if len(splittedData) != 6 {
+			if len(splittedData) != 5 {
 				return errors.New(fmt.Sprintf("invalid amount of parameters to update the payment (%s)", strings.Join(splittedData, ", ")))
 			}
 			dateStr = fillDataIfEmpty(splittedData[0], dateStr)
@@ -76,12 +75,11 @@ func updateDetails(allPayments payments.AllPayments, data []string) error {
 			city := fillDataIfEmptyOpt(&splittedData[2], nil)
 			shop := fillDataIfEmptyOpt(&splittedData[3], nil)
 			method := fillDataIfEmptyOpt(&splittedData[4], nil)
-			description := fillDataIfEmptyOpt(&splittedData[5], nil)
 			dateFinal := dateStr + " " + timeStr
-			if err := allPayments.UpdatePayment(dateFinal, city, shop, method, description); err != nil {
+			if err := allPayments.UpdatePayment(dateFinal, city, shop, method); err != nil {
 				return errors.New(fmt.Sprintf("payment update failed: %s\n", err))
 			} else {
-				okMsg = append(okMsg, fmt.Sprintf("successfully updated payment (%s, %v, %v, %v, %v)\n", dateFinal, city, shop, method, description))
+				okMsg = append(okMsg, fmt.Sprintf("successfully updated payment (%s, %v, %v, %v)\n", dateFinal, city, shop, method))
 			}
 		} else {
 			if len(splittedData) != 3 {

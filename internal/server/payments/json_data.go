@@ -18,7 +18,6 @@ type paymentJson struct {
 	Shop          string      `json:"shop"`
 	PaymentMethod string      `json:"paymentMethod"`
 	Date          string      `json:"date"`
-	Description   string      `json:"description"`
 	Orders        []orderJson `json:"orders"`
 }
 

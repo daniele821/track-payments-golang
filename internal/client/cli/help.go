@@ -10,9 +10,9 @@ Operations:
     i[nsert] s[hops] SHOP [...]
     i[nsert] m[ethods] METHOD [...]
     i[nsert] i[tems] ITEM [...]
-    i[nsert] p[ayments] DATE|* TIME|* CITY SHOP METHOD DESCRIPTION|* [@ ...]
+    i[nsert] p[ayments] DATE|* TIME|* CITY SHOP METHOD [@ ...]
     i[nsert] o[rders] DATE|* TIME|* ITEM QUANTITY PRICE [@ ...]
-    i[nsert] d[etails] DATE|* TIME|* CITY SHOP METHOD DESCRIPTION|* [@ ITEM QUANTITY PRICE] [@ ...]
+    i[nsert] d[etails] DATE|* TIME|* CITY SHOP METHOD [@ ITEM QUANTITY PRICE] [@ ...]
 
     l[ist]|v[isualize] c[ity|ities]
     l[ist]|v[isualize] s[hops]
@@ -21,9 +21,9 @@ Operations:
     l[ist]|v[isualize] v[alues]
     l[ist]|v[isualize] p[ayments]
 
-    u[pdate] p[ayments] DATE|* TIME|* CITY|* SHOP|* METHOD|* DESCRIPTION|* [@ ...]
+    u[pdate] p[ayments] DATE|* TIME|* CITY|* SHOP|* METHOD|* [@ ...]
     u[pdate] o[rders] DATE|* TIME|* ITEM QUANTITY PRICE [@ ...]
-    u[pdate] d[etails] DATE|* TIME|* CITY|* SHOP|* METHOD|* DESCRIPTION|* [@ ITEM QUANTITY PRICE] [@ ...]
+    u[pdate] d[etails] DATE|* TIME|* CITY|* SHOP|* METHOD|* [@ ITEM QUANTITY PRICE] [@ ...]
 
     d[elete] p[ayments] DATE|* TIME|* [@...]
     d[elete] o[rders] DATE|* TIME|* ITEM [@ ...]

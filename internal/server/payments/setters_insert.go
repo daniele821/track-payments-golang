@@ -35,11 +35,11 @@ func (allPayments AllPayments) AddItems(items ...string) error {
 	return insertAll("items", allPayments.p.valueSet.p.items, items...)
 }
 
-func (allPayments AllPayments) AddPayment(city, shop, paymentMethod, date, description string) error {
+func (allPayments AllPayments) AddPayment(city, shop, paymentMethod, date string) error {
 	if err := allPayments.checks(&date, &city, &shop, &paymentMethod, nil); err != nil {
 		return err
 	}
-	payment := newPayment(city, shop, paymentMethod, date, description)
+	payment := newPayment(city, shop, paymentMethod, date)
 	if allPayments.p.payments.Has(payment) {
 		return errors.New("invalid date: already exists")
 	}

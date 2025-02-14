@@ -73,7 +73,6 @@ func mapperPaymentJson(item Payment) paymentJson {
 		Shop:          item.Shop(),
 		PaymentMethod: item.PaymentMethod(),
 		Date:          item.Date(),
-		Description:   item.Description(),
 		Orders:        btreeToSlice(item.p.orders, mapperOrderJson),
 	}
 }

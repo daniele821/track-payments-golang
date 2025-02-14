@@ -23,13 +23,12 @@ func NewOrderForSearches(item string) Order {
 	return Order{&order{item: item}}
 }
 
-func newPayment(city, shop, paymentMethod, date, description string) Payment {
+func newPayment(city, shop, paymentMethod, date string) Payment {
 	return Payment{&payment{
 		city:          city,
 		shop:          shop,
 		paymentMethod: paymentMethod,
 		date:          date,
-		description:   description,
 		orders:        btree.NewG(3, func(a, b Order) bool { return a.p.item < b.p.item }),
 	}}
 }

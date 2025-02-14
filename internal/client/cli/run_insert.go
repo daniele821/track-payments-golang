@@ -24,7 +24,7 @@ func insertPayments(allPayments payments.AllPayments, data []string) error {
 	okMsg := []string{}
 	dateStr, timeStr := getDateAndTime()
 	for index, splittedData := range splitter(data) {
-		if len(splittedData) != 6 {
+		if len(splittedData) != 5 {
 			return errors.New(fmt.Sprintf("invalid amount of parameters to insert the %dth payment (%s)", index, strings.Join(splittedData, ", ")))
 		}
 		dateStr = fillDataIfEmpty(splittedData[0], dateStr)
@@ -32,12 +32,11 @@ func insertPayments(allPayments payments.AllPayments, data []string) error {
 		city := splittedData[2]
 		shop := splittedData[3]
 		method := splittedData[4]
-		description := fillDataIfEmpty(splittedData[5], "")
 		dateFinal := dateStr + " " + timeStr
-		if err := allPayments.AddPayment(city, shop, method, dateFinal, description); err != nil {
+		if err := allPayments.AddPayment(city, shop, method, dateFinal); err != nil {
 			return errors.New(fmt.Sprintf("payment (%d) insertion failed: %s\n", index, err))
 		} else {
-			okMsg = append(okMsg, fmt.Sprintf("successfully inserted payment (%s, %s, %s, %s, %s)\n", dateFinal, city, shop, method, description))
+			okMsg = append(okMsg, fmt.Sprintf("successfully inserted payment (%s, %s, %s, %s)\n", dateFinal, city, shop, method))
 		}
 	}
 	fmt.Println(strings.Join(okMsg, ""))
@@ -80,7 +79,7 @@ func insertDetails(allPayments payments.AllPayments, data []string) error {
 	dateStr, timeStr := getDateAndTime()
 	for index, splittedData := range splitter(data) {
 		if index == 0 {
-			if len(splittedData) != 6 {
+			if len(splittedData) != 5 {
 				return errors.New(fmt.Sprintf("invalid amount of parameters to insert payment (%s)", strings.Join(splittedData, ", ")))
 			}
 			dateStr = fillDataIfEmpty(splittedData[0], dateStr)
@@ -88,12 +87,11 @@ func insertDetails(allPayments payments.AllPayments, data []string) error {
 			city := splittedData[2]
 			shop := splittedData[3]
 			method := splittedData[4]
-			description := fillDataIfEmpty(splittedData[5], "")
 			dateFinal := dateStr + " " + timeStr
-			if err := allPayments.AddPayment(city, shop, method, dateFinal, description); err != nil {
+			if err := allPayments.AddPayment(city, shop, method, dateFinal); err != nil {
 				return errors.New(fmt.Sprintf("payment insertion failed: %s\n", err))
 			} else {
-				okMsg = append(okMsg, fmt.Sprintf("successfully inserted payment (%s, %s, %s, %s, %s)\n", dateFinal, city, shop, method, description))
+				okMsg = append(okMsg, fmt.Sprintf("successfully inserted payment (%s, %s, %s, %s)\n", dateFinal, city, shop, method))
 			}
 		} else {
 			if len(splittedData) != 3 {

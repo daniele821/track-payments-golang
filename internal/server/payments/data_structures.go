@@ -22,7 +22,6 @@ type payment struct {
 	shop          string
 	paymentMethod string
 	date          string // note: i will consider every date inserted as is, without any conversions!
-	description   string
 	orders        *btree.BTreeG[Order]
 }
 type Payment struct{ p *payment }

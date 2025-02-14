@@ -30,8 +30,8 @@ func (order Order) String() string {
 
 func (payment Payment) String() string {
 	ordersStr := fmtBtree(payment.p.orders, func(item Order) string { return item.String() })
-	return fmt.Sprintf("(city: %s, shop: %s, paymentMethod: %s, date: %s, description: %s, orders: %s)",
-		payment.p.city, payment.p.shop, payment.p.paymentMethod, payment.p.date, payment.p.description, ordersStr)
+	return fmt.Sprintf("(city: %s, shop: %s, paymentMethod: %s, date: %s, orders: %s)",
+		payment.p.city, payment.p.shop, payment.p.paymentMethod, payment.p.date, ordersStr)
 }
 
 func (allPayments AllPayments) String() string {

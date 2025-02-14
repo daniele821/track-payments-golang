@@ -69,10 +69,6 @@ func (payment Payment) Date() string {
 	return payment.p.date
 }
 
-func (payment Payment) Description() string {
-	return payment.p.description
-}
-
 func (payment Payment) Orders() ReadOnlyBTree[Order] {
 	return ReadOnlyBTree[Order]{btree: payment.p.orders}
 }

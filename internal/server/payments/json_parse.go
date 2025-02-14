@@ -21,7 +21,7 @@ func ConvertFromJsonData(input allPaymentsJson) (AllPayments, error) {
 	}
 	for _, payment := range input.Payments {
 		date := payment.Date
-		if err := output.AddPayment(payment.City, payment.Shop, payment.PaymentMethod, date, payment.Description); err != nil {
+		if err := output.AddPayment(payment.City, payment.Shop, payment.PaymentMethod, date); err != nil {
 			return outputEmpty, err
 		}
 		for _, order := range payment.Orders {
