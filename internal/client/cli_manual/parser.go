@@ -32,6 +32,8 @@ func parseAndRun(allPayments payments.AllPayments, args []string) error {
 			insertPayments(allPayments, args[2:])
 		case matchEveryLenght(args[1], "orders"):
 			insertOrders(allPayments, args[2:])
+		case matchEveryLenght(args[1], "details"):
+			insertDetails(allPayments, args[2:])
 		default:
 			return errors.New(fmt.Sprintf("invalid arg for insert: %s", args[1]))
 		}
