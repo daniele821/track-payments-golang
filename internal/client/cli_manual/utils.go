@@ -61,7 +61,7 @@ func parsePrice(priceStr string) (int, error) {
 			return 0, errors.New("invalid price: after the dot, only digits are allowed")
 		}
 	}
-	priceDec, err := strconv.Atoi(priceParts[1])
+	priceDec, err := strconv.Atoi((priceParts[1] + "00")[:2])
 	if err != nil {
 		return 0, err
 	}

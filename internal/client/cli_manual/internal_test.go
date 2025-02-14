@@ -43,4 +43,13 @@ func TestParsePrice(t *testing.T) {
 	if actual != expected {
 		t.Fatalf("price parsing have failed: actual %d, expected %d", actual, expected)
 	}
+
+	expected = 1980
+	actual, err = parsePrice("19.8")
+	if err != nil {
+		t.Fatalf("price parsing have failed: %s", err)
+	}
+	if actual != expected {
+		t.Fatalf("price parsing have failed: actual %d, expected %d", actual, expected)
+	}
 }
