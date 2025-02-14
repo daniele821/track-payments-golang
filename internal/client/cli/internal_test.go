@@ -1,4 +1,4 @@
-package cli_manual
+package cli
 
 import (
 	"reflect"
