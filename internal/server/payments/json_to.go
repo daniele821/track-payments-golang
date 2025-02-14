@@ -35,7 +35,7 @@ func (allPayments AllPayments) DumpJsonToFile(filePath string, indent bool) erro
 	if err != nil {
 		return err
 	}
-	if err := os.WriteFile(filePath, []byte(jsonData), 0644); err != nil {
+	if err := os.WriteFile(filePath, append([]byte(jsonData), []byte("\n")...), 0644); err != nil {
 		return err
 	}
 	return nil
