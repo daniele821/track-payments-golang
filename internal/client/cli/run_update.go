@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"payment/internal/server/payments"
+	"strconv"
 	"strings"
 )
 
@@ -12,7 +13,7 @@ func updatePayments(allPayments payments.AllPayments, data []string) error {
 	dateStr, timeStr := getDateAndTime()
 	for index, splittedData := range splitter(data) {
 		if len(splittedData) != 6 {
-			return errors.New(fmt.Sprintf("invalid amount of parameters to insert the %dth payment (%s)", index, strings.Join(splittedData, ", ")))
+			return errors.New(fmt.Sprintf("invalid amount of parameters to update the %dth payment (%s)", index, strings.Join(splittedData, ", ")))
 		}
 		dateStr = fillDataIfEmpty(splittedData[0], dateStr)
 		timeStr = fillDataIfEmpty(splittedData[1], timeStr)
@@ -22,7 +23,7 @@ func updatePayments(allPayments payments.AllPayments, data []string) error {
 		description := fillDataIfEmptyOpt(&splittedData[5], nil)
 		dateFinal := dateStr + " " + timeStr
 		if err := allPayments.UpdatePayment(dateFinal, city, shop, method, description); err != nil {
-			return errors.New(fmt.Sprintf("payment (%d) insertion failed: %s\n", index, err))
+			return errors.New(fmt.Sprintf("payment (%d) update failed: %s\n", index, err))
 		} else {
 			okMsg = append(okMsg, fmt.Sprintf("successfully updated payment (%s, %v, %v, %v, %v)\n", dateFinal, city, shop, method, description))
 		}
@@ -31,39 +32,37 @@ func updatePayments(allPayments payments.AllPayments, data []string) error {
 	return nil
 }
 
-// TODO:
+func updateOrders(allPayments payments.AllPayments, data []string) error {
+	okMsg := []string{}
+	dateStr, timeStr := getDateAndTime()
+	for index, splittedData := range splitter(data) {
+		if len(splittedData) != 5 {
+			return errors.New(fmt.Sprintf("invalid amount of parameters to update the %dth order (%s)", index, strings.Join(splittedData, ", ")))
+		}
+		dateStr = fillDataIfEmpty(splittedData[0], dateStr)
+		timeStr = fillDataIfEmpty(splittedData[1], timeStr)
+		item := splittedData[2]
+		quantity := splittedData[3]
+		quantityInt, err := strconv.Atoi(quantity)
+		if err != nil {
+			return errors.New(fmt.Sprintf("order (%d) update failed: quantity (%s) is not an integer", index, quantity))
+		}
+		price := splittedData[4]
+		priceInt, err := parsePrice(price)
+		if err != nil {
+			return errors.New(fmt.Sprintf("order (%d) update failed: invalid price value (%s)", index, price))
+		}
+		dateFinal := dateStr + " " + timeStr
+		if err := allPayments.UpdateOrder(item, dateFinal, &quantityInt, &priceInt); err != nil {
+			return errors.New(fmt.Sprintf("order (%d) update failed: %s\n", index, err))
+		} else {
+			okMsg = append(okMsg, fmt.Sprintf("successfully updated order (%s, %s, %d, %.2f)\n", dateFinal, item, quantityInt, float64(priceInt)/100.0))
+		}
+	}
+	fmt.Println(strings.Join(okMsg, ""))
+	return nil
+}
 
-// func updateOrders(allPayments payments.AllPayments, data []string) error {
-// 	okMsg := []string{}
-// 	dateStr, timeStr := getDateAndTime()
-// 	for index, splittedData := range splitter(data) {
-// 		if len(splittedData) != 5 {
-// 			return errors.New(fmt.Sprintf("invalid amount of parameters to insert the %dth order (%s)", index, strings.Join(splittedData, ", ")))
-// 		}
-// 		dateStr = fillDataIfEmpty(splittedData[0], dateStr)
-// 		timeStr = fillDataIfEmpty(splittedData[1], timeStr)
-// 		item := splittedData[2]
-// 		quantity := splittedData[3]
-// 		quantityInt, err := strconv.Atoi(quantity)
-// 		if err != nil {
-// 			return errors.New(fmt.Sprintf("order (%d) insertion failed: quantity (%s) is not an integer", index, quantity))
-// 		}
-// 		price := splittedData[4]
-// 		priceInt, err := parsePrice(price)
-// 		if err != nil {
-// 			return errors.New(fmt.Sprintf("order (%d) insertion failed: invalid price value (%s)", index, price))
-// 		}
-// 		dateFinal := dateStr + " " + timeStr
-// 		if err := allPayments.AddOrder(quantityInt, priceInt, item, dateFinal); err != nil {
-// 			return errors.New(fmt.Sprintf("order (%d) insertion failed: %s\n", index, err))
-// 		} else {
-// 			okMsg = append(okMsg, fmt.Sprintf("successfully inserted order (%s, %s, %d, %.2f)\n", dateFinal, item, quantityInt, float64(priceInt)/100.0))
-// 		}
-// 	}
-// 	fmt.Println(strings.Join(okMsg, ""))
-// 	return nil
-// }
-//
 // func updateDetails(allPayments payments.AllPayments, data []string) error {
 // 	okMsg := []string{}
 // 	dateStr, timeStr := getDateAndTime()

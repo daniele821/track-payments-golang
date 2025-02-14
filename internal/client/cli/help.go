@@ -22,7 +22,7 @@ Operations:
     l[ist]|v[isualize] p[ayments]
 
     u[pdate] p[ayments] DATE|* TIME|* CITY|* SHOP|* METHOD|* DESCRIPTION|* [@ ...]
-    u[pdate] o[rders] DATE|* TIME|* ITEM QUANTITY|* PRICE|* [@ ...]
+    u[pdate] o[rders] DATE|* TIME|* ITEM QUANTITY PRICE [@ ...]
     u[pdate] d[etails] DATE|* TIME|* CITY|* SHOP|* METHOD|* DESCRIPTION|* [@ ITEM QUANTITY PRICE] [@ ...]
 
     d[elete] p[ayments] DATE|* TIME|* [@...]
