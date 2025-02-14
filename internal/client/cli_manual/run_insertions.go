@@ -68,7 +68,7 @@ func insertOrders(allPayments payments.AllPayments, data []string) error {
 		if err := allPayments.AddOrder(quantityInt, priceInt, item, dateFinal); err != nil {
 			return errors.New(fmt.Sprintf("order (%d) insertion failed: %s\n", index, err))
 		} else {
-			okMsg = append(okMsg, fmt.Sprintf("successfully inserted order (%s, %s, %d, %s)\n", dateFinal, item, quantityInt, "TODO"))
+			okMsg = append(okMsg, fmt.Sprintf("successfully inserted order (%s, %s, %d, %.2f)\n", dateFinal, item, quantityInt, float64(priceInt)/100.0))
 		}
 	}
 	fmt.Println(strings.Join(okMsg, ""))
@@ -81,7 +81,7 @@ func insertDetails(allPayments payments.AllPayments, data []string) error {
 	for index, splittedData := range splitter(data) {
 		if index == 0 {
 			if len(splittedData) != 6 {
-				return errors.New(fmt.Sprintf("invalid amount of parameters to insert the %dth payment (%s)", index, strings.Join(splittedData, ", ")))
+				return errors.New(fmt.Sprintf("invalid amount of parameters to insert payment (%s)", strings.Join(splittedData, ", ")))
 			}
 			dateStr = fillDataIfEmpty(splittedData[0], dateStr)
 			timeStr = fillDataIfEmpty(splittedData[1], timeStr)
@@ -91,30 +91,30 @@ func insertDetails(allPayments payments.AllPayments, data []string) error {
 			description := fillDataIfEmpty(splittedData[5], "")
 			dateFinal := dateStr + " " + timeStr
 			if err := allPayments.AddPayment(city, shop, method, dateFinal, description); err != nil {
-				return errors.New(fmt.Sprintf("payment (%d) insertion failed: %s\n", index, err))
+				return errors.New(fmt.Sprintf("payment insertion failed: %s\n", err))
 			} else {
 				okMsg = append(okMsg, fmt.Sprintf("successfully inserted payment (%s, %s, %s, %s, %s)", dateFinal, city, shop, method, description))
 			}
 		} else {
 			if len(splittedData) != 3 {
-				return errors.New(fmt.Sprintf("invalid amount of parameters to insert the %dth order (%s)", index, strings.Join(splittedData, ", ")))
+				return errors.New(fmt.Sprintf("invalid amount of parameters to insert the %dth order (%s)", index-1, strings.Join(splittedData, ", ")))
 			}
 			item := splittedData[0]
 			quantity := splittedData[1]
 			quantityInt, err := strconv.Atoi(quantity)
 			if err != nil {
-				return errors.New(fmt.Sprintf("order (%d) insertion failed: quantity (%s) is not an integer", index, quantity))
+				return errors.New(fmt.Sprintf("order (%d) insertion failed: quantity (%s) is not an integer", index-1, quantity))
 			}
 			price := splittedData[2]
 			priceInt, err := parsePrice(price)
 			if err != nil {
-				return errors.New(fmt.Sprintf("order (%d) insertion failed: invalid price value (%s)", index, price))
+				return errors.New(fmt.Sprintf("order (%d) insertion failed: invalid price value (%s)", index-1, price))
 			}
 			dateFinal := dateStr + " " + timeStr
 			if err := allPayments.AddOrder(quantityInt, priceInt, item, dateFinal); err != nil {
 				return errors.New(fmt.Sprintf("order (%d) insertion failed: %s\n", index, err))
 			} else {
-				okMsg = append(okMsg, fmt.Sprintf("successfully inserted order (%s, %s, %d, %s)\n", dateFinal, item, quantityInt, "TODO"))
+				okMsg = append(okMsg, fmt.Sprintf("successfully inserted order (%s, %s, %d, %.2f)\n", dateFinal, item, quantityInt, float64(priceInt)/100.0))
 			}
 		}
 	}
