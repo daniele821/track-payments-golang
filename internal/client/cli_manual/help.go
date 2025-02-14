@@ -12,6 +12,7 @@ Operations:
     i[nsert] i[tems] ITEM [...]
     i[nsert] p[ayments] [[DATE] TIME] CITY SHOP METHOD DESCRIPTION|* [@ ...]
     i[nsert] o[rders] [[DATE] TIME] ITEM QUANTITY PRICE [@ ...]
+    i[nsert] d[etails] [[DATE] TIME] CITY SHOP METHOD DESCRIPTION|* [@ ITEM QUANTITY PRICE] [@ ...]
 
     l[ist]|v[isualize] c[ity|ities]
     l[ist]|v[isualize] s[hops]
@@ -21,8 +22,9 @@ Operations:
     l[ist]|v[isualize] p[ayments]
     l[ist]|v[isualize] o[rders]
 
-    u[pdate] p[ayments] DATE TIME [CITY] [SHOP] [METHOD] [DESCRIPTION] [@ ...]
-    u[pdate] o[rders] DATE TIME ITEM [QUANTITY] [PRICE] [@ ...]
+    u[pdate] p[ayments] DATE TIME CITY SHOP METHOD DESCRIPTION|* [@ ...]
+    u[pdate] o[rders] DATE TIME ITEM QUANTITY PRICE [@ ...]
+    i[nsert] d[etails] DATE TIME CITY SHOP METHOD DESCRIPTION|* [@ ITEM QUANTITY PRICE] [@ ...]
 
     d[elete] p[ayments] [[DATE] TIME] [@...]
     d[elete] o[rders] [[DATE] TIME] ITEM [@ ...]
@@ -30,3 +32,9 @@ Operations:
     h[elp]
 `)
 }
+
+/*
+TODO:
+    - think about allowing passing args as name=value instead of relying on just the order
+    - rethink update operations: OPTIONAL params do NOT work if i rely on order. How to do it? have a nil value? (maybe - or -- ?)
+*/
