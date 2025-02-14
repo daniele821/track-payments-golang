@@ -1,6 +1,12 @@
 package cli_manual
 
-import "time"
+import (
+	"errors"
+	"strconv"
+	"strings"
+	"time"
+	"unicode"
+)
 
 func matchEveryLenght(str, match string) bool {
 	if len(str) > len(match) {
@@ -29,6 +35,37 @@ func splitter(data []string) (splitted [][]string) {
 		}
 	}
 	return splitted
+}
+
+func fillDataIfEmpty(data, instead string) string {
+	if len(data) <= 1 {
+		return instead
+	}
+	return data
+}
+
+func parsePrice(priceStr string) (int, error) {
+	priceParts := strings.Split(priceStr, ".")
+	if len(priceParts) > 2 {
+		return 0, errors.New("invalid price: too many dots (max 1 allowed)")
+	}
+	priceInt, err := strconv.Atoi(priceParts[0])
+	if err != nil {
+		return 0, err
+	}
+	if len(priceParts) == 1 {
+		return priceInt * 100, nil
+	}
+	for _, rune := range priceParts[1] {
+		if !unicode.IsDigit(rune) {
+			return 0, errors.New("invalid price: after the dot, only digits are allowed")
+		}
+	}
+	priceDec, err := strconv.Atoi(priceParts[1])
+	if err != nil {
+		return 0, err
+	}
+	return priceInt*100 + priceDec, nil
 }
 
 func getDateAndTime() (dateStr, timeStr string) {

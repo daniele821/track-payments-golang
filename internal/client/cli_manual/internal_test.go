@@ -33,3 +33,14 @@ func TestSplitter(t *testing.T) {
 		t.Fatalf("splitter failed: \nactual: %s\nexpected: %s", actual, expected)
 	}
 }
+
+func TestParsePrice(t *testing.T) {
+	expected := 1968
+	actual, err := parsePrice("19.68")
+	if err != nil {
+		t.Fatalf("price parsing have failed: %s", err)
+	}
+	if actual != expected {
+		t.Fatalf("price parsing have failed: actual %d, expected %d", actual, expected)
+	}
+}
