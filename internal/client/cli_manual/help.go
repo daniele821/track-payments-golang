@@ -20,7 +20,6 @@ Operations:
     l[ist]|v[isualize] i[tems]
     l[ist]|v[isualize] v[alues]
     l[ist]|v[isualize] p[ayments]
-    l[ist]|v[isualize] o[rders]
 
     u[pdate] p[ayments] DATE TIME CITY SHOP METHOD DESCRIPTION|* [@ ...]
     u[pdate] o[rders] DATE TIME ITEM QUANTITY PRICE [@ ...]
