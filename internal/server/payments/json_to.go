@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func ConvertToJsonData(input AllPayments) allPaymentsJson {
+func convertToJsonData(input AllPayments) allPaymentsJson {
 	return allPaymentsJson{
 		ValueSet: valueSetJson{
 			Cities:         btreeToSlice(input.p.valueSet.p.cities, mapperIdentity),
@@ -17,7 +17,7 @@ func ConvertToJsonData(input AllPayments) allPaymentsJson {
 	}
 }
 func (allPayments AllPayments) DumpJson(indent bool) (string, error) {
-	allPaymentsJson := ConvertToJsonData(allPayments)
+	allPaymentsJson := convertToJsonData(allPayments)
 	var jsonRes []byte
 	var err error
 	if indent {
