@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"payment/internal/server/payments"
 	"strconv"
+	"strings"
 )
 
 func listGeneric(dataType string, data payments.ReadOnlyBTree[string]) {
@@ -34,7 +35,9 @@ func listPayments(data payments.ReadOnlyBTree[payments.Payment]) {
 		if date[:10] == prevDate {
 			date = "          " + date[10:]
 		}
-		prevDate = date[:10]
+		if strings.TrimSpace(date[:10]) != "" {
+			prevDate = date[:10]
+		}
 		fmt.Printf("%s | %s %s %s %d.%02d€\n", date, item.City(), item.Shop(), item.PaymentMethod(), price/100, price%100)
 		item.Orders().Ascend(func(item payments.Order) bool {
 			price := item.UnitPrice()
