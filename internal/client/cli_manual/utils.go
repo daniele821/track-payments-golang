@@ -44,6 +44,13 @@ func fillDataIfEmpty(data, instead string) string {
 	return data
 }
 
+func fillDataIfEmptyOpt(data, instead *string) *string {
+	if data == nil || len(*data) <= 1 {
+		return instead
+	}
+	return data
+}
+
 func parsePrice(priceStr string) (int, error) {
 	priceParts := strings.Split(priceStr, ".")
 	if len(priceParts) > 2 {
