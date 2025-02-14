@@ -1,16 +1,16 @@
 package cli
 
-const BoxVert string = "│"
-const BoxHoriz string = "─"
-const BoxLeftTop string = "┘"
-const BoxRightTop string = "└"
-const BoxLeftDown string = "┐"
-const BoxRightDown string = "┌"
-const BoxVertLeft string = "┤"
-const BoxVertRight string = "├"
-const BoxHorizTop string = "┴"
-const BoxHorizDown string = "┬"
-const BoxCross string = "┼"
+const boxVert string = "│"
+const boxHoriz string = "─"
+const boxLeftTop string = "┘"
+const boxRightTop string = "└"
+const boxLeftDown string = "┐"
+const boxRightDown string = "┌"
+const boxVertLeft string = "┤"
+const boxVertRight string = "├"
+const boxHorizTop string = "┴"
+const boxHorizDown string = "┬"
+const boxCross string = "┼"
 
 /*
 random box, because why not?
