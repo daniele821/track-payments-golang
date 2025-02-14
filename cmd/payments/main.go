@@ -9,6 +9,6 @@ const jsonPath string = "payments.json"
 
 func main() {
 	if err := cli_manual.Run(jsonPath); err != nil {
-		fmt.Printf("execution failed: %s\n", err)
+		fmt.Printf("%s\n", err)
 	}
 }
