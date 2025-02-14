@@ -85,7 +85,9 @@ func parseAndRun(allPayments payments.AllPayments, args []string) error {
 		case len(args) <= 1:
 			return errors.New("missing arg for delete")
 		case matchEveryLenght(args[1], "payments"):
+			return deletePayments(allPayments, args[2:])
 		case matchEveryLenght(args[1], "orders"):
+			return deleteOrders(allPayments, args[2:])
 		default:
 			return errors.New(fmt.Sprintf("invalid arg for delete: %s", args[1]))
 		}
