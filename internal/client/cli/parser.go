@@ -78,7 +78,9 @@ func parseAndRun(allPayments payments.AllPayments, args []string) error {
 		case matchEveryLenght(args[1], "payments"):
 			return updatePayments(allPayments, args[2:])
 		case matchEveryLenght(args[1], "orders"):
+			return updateOrders(allPayments, args[2:])
 		case matchEveryLenght(args[1], "details"):
+			return updateDetails(allPayments, args[2:])
 		default:
 			return errors.New(fmt.Sprintf("invalid arg for update: %s", args[1]))
 		}
