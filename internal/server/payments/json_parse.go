@@ -2,6 +2,7 @@ package payments
 
 import (
 	"encoding/json"
+	"os"
 )
 
 func ConvertFromJsonData(input allPaymentsJson) (AllPayments, error) {
@@ -43,4 +44,29 @@ func NewAllPaymentsFromJson(input string) (AllPayments, error) {
 		return outputEmpty, err
 	}
 	return output, nil
+}
+func NewAllPaymentsFromjsonFile(jsonPath string) (AllPayments, error) {
+	allPaymentsEmpty := NewAllPayments()
+	jsonDataByte, err := os.ReadFile(jsonPath)
+	if err != nil {
+		fileCreated, err := os.Create(jsonPath)
+		if err != nil {
+			return allPaymentsEmpty, err
+		}
+		defer fileCreated.Close()
+		if _, err := fileCreated.WriteString("{}"); err != nil {
+			return allPaymentsEmpty, err
+		}
+		jsonDataByte, err = os.ReadFile(jsonPath)
+		if err != nil {
+			return allPaymentsEmpty, err
+		}
+	}
+	JsonData := string(jsonDataByte)
+	// load all payments from json file
+	allPayments, err := NewAllPaymentsFromJson(JsonData)
+	if err != nil {
+		return allPaymentsEmpty, err
+	}
+	return allPayments, nil
 }

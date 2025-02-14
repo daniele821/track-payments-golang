@@ -2,6 +2,7 @@ package payments
 
 import (
 	"encoding/json"
+	"os"
 )
 
 func ConvertToJsonData(input AllPayments) allPaymentsJson {
@@ -28,4 +29,14 @@ func (allPayments AllPayments) DumpJson(indent bool) (string, error) {
 		return "", err
 	}
 	return string(jsonRes), nil
+}
+func (allPayments AllPayments) DumpJsonToFile(filePath string, indent bool) error {
+	jsonData, err := allPayments.DumpJson(true)
+	if err != nil {
+		return err
+	}
+	if err := os.WriteFile(filePath, []byte(jsonData), 0644); err != nil {
+		return err
+	}
+	return nil
 }
