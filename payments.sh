@@ -3,6 +3,8 @@
 SCRIPT_PWD="$(realpath "${BASH_SOURCE[0]}")"
 SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
 
+cd "$SCRIPT_DIR" || exit 1
+
 GOMAIN_PATH="${SCRIPT_DIR}/cmd/payments/main.go"
 BIN_PATH="${SCRIPT_DIR}/data/.payments"
 
