@@ -37,7 +37,7 @@ func insertPayments(allPayments payments.AllPayments, data []string) error {
 		if err := allPayments.AddPayment(city, shop, method, dateFinal, description); err != nil {
 			return errors.New(fmt.Sprintf("payment (%d) insertion failed: %s\n", index, err))
 		} else {
-			okMsg = append(okMsg, fmt.Sprintf("successfully inserted payment (%s, %s, %s, %s, %s)", dateFinal, city, shop, method, description))
+			okMsg = append(okMsg, fmt.Sprintf("successfully inserted payment (%s, %s, %s, %s, %s)\n", dateFinal, city, shop, method, description))
 		}
 	}
 	fmt.Println(strings.Join(okMsg, ""))
@@ -93,7 +93,7 @@ func insertDetails(allPayments payments.AllPayments, data []string) error {
 			if err := allPayments.AddPayment(city, shop, method, dateFinal, description); err != nil {
 				return errors.New(fmt.Sprintf("payment insertion failed: %s\n", err))
 			} else {
-				okMsg = append(okMsg, fmt.Sprintf("successfully inserted payment (%s, %s, %s, %s, %s)", dateFinal, city, shop, method, description))
+				okMsg = append(okMsg, fmt.Sprintf("successfully inserted payment (%s, %s, %s, %s, %s)\n", dateFinal, city, shop, method, description))
 			}
 		} else {
 			if len(splittedData) != 3 {
