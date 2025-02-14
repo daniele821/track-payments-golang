@@ -18,25 +18,8 @@ func Run(jsonPathFromExeDir ...string) error {
 	}
 	jsonDir := filepath.Dir(exePath)
 	jsonPath := filepath.Join(append([]string{jsonDir}, jsonPathFromExeDir...)...)
-	jsonDataByte, err := os.ReadFile(jsonPath)
-	if err != nil {
-		fileCreated, err := os.Create(jsonPath)
-		if err != nil {
-			return err
-		}
-		defer fileCreated.Close()
-		if _, err := fileCreated.WriteString("{}"); err != nil {
-			return err
-		}
-		jsonDataByte, err = os.ReadFile(jsonPath)
-		if err != nil {
-			return err
-		}
-	}
-	JsonData := string(jsonDataByte)
 
-	// load all payments from json file
-	allPayments, err := payments.NewAllPaymentsFromJson(JsonData)
+	allPayments, err := payments.NewAllPaymentsFromjsonFile(jsonPath)
 	if err != nil {
 		return err
 	}
@@ -46,12 +29,7 @@ func Run(jsonPathFromExeDir ...string) error {
 		return err
 	}
 
-	// dump all payments to json file
-	jsonData, err := allPayments.DumpJson(true)
-	if err != nil {
-		return err
-	}
-	if err := os.WriteFile(jsonPath, []byte(jsonData), 0644); err != nil {
+	if err := allPayments.DumpJsonToFile(jsonPath, true); err != nil {
 		return err
 	}
 
