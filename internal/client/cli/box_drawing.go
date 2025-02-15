@@ -58,19 +58,21 @@ func alignStr(str string, maxLen int, align align) string {
 	panic("UNREACHABLE CODE!")
 }
 
-func getMaxLen(data [][]string) []int {
-	maxLen := make([]int, len(data[0]))
-	for _, row := range data {
-		for index, cell := range row {
-			if maxLen[index] < len(cell) {
-				maxLen[index] = len(cell)
+func getMaxLen(data [][][]string) []int {
+	maxLen := make([]int, len(data[0][0]))
+	for _, box := range data {
+		for _, row := range box {
+			for index, cell := range row {
+				if maxLen[index] < len(cell) {
+					maxLen[index] = len(cell)
+				}
 			}
 		}
 	}
 	return maxLen
 }
 
-func drawBoxRow(maxLen []int, startChar, middleChar, endChar string) string {
+func drawBoxRow(maxLen []int, startChar, middleChar, endChar string, totPad int) string {
 	acc := strings.Builder{}
 	for index, nthLen := range maxLen {
 		if index == 0 {
@@ -78,30 +80,36 @@ func drawBoxRow(maxLen []int, startChar, middleChar, endChar string) string {
 		} else {
 			acc.WriteString(middleChar)
 		}
-		acc.WriteString(strings.Repeat(boxHoriz, nthLen))
+		acc.WriteString(strings.Repeat(boxHoriz, nthLen+totPad))
 	}
 	acc.WriteString(endChar)
 	return acc.String()
 }
 
-func fmtBox(data [][]string) string {
+func fmtBox(data [][][]string, lPad, rPad int) string {
 	acc := strings.Builder{}
 	maxLen := getMaxLen(data)
-	for indexRow, row := range data {
-		if indexRow == 0 {
-			acc.WriteString(drawBoxRow(maxLen, boxRightDown, boxHorizDown, boxLeftDown))
+	acc.WriteString(drawBoxRow(maxLen, boxRightDown, boxHorizDown, boxLeftDown, lPad+rPad))
+	acc.WriteString("\n")
+	for indexBox, box := range data {
+		if indexBox != 0 {
+			acc.WriteString(drawBoxRow(maxLen, boxVertRight, boxCross, boxVertLeft, lPad+rPad))
 			acc.WriteString("\n")
 		}
-		for indexCol, cell := range row {
-			if indexCol == 0 {
+		for _, row := range box {
+			for indexCol, cell := range row {
+				if indexCol == 0 {
+					acc.WriteString(boxVert)
+				}
+				acc.WriteString(strings.Repeat(" ", lPad))
+				acc.WriteString(alignStr(cell, maxLen[indexCol], leftAlign))
+				acc.WriteString(strings.Repeat(" ", rPad))
 				acc.WriteString(boxVert)
 			}
-			acc.WriteString(alignStr(cell, maxLen[indexCol], centerLeftAlign))
-			acc.WriteString(boxVert)
+			acc.WriteString("\n")
 		}
-		acc.WriteString("\n")
 	}
-	acc.WriteString(drawBoxRow(maxLen, boxRightUp, boxHorizUp, boxLeftUp))
+	acc.WriteString(drawBoxRow(maxLen, boxRightUp, boxHorizUp, boxLeftUp, lPad+rPad))
 	acc.WriteString("\n")
 	return acc.String()
 }

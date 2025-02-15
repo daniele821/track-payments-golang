@@ -37,7 +37,7 @@ func TestBoxRow(t *testing.T) {
 	m := boxHorizDown
 	e := boxLeftDown
 	expected := s + strings.Repeat(boxHoriz, 10) + m + strings.Repeat(boxHoriz, 5) + e
-	actual := drawBoxRow([]int{10, 5}, s, m, e)
+	actual := drawBoxRow([]int{9, 4}, s, m, e, 1)
 	if !reflect.DeepEqual(actual, expected) {
 		t.Fatalf("draw box row failed: \nexpected | %s |\nactual   | %s |", expected, actual)
 	}
@@ -45,13 +45,17 @@ func TestBoxRow(t *testing.T) {
 
 func TestBoxDrawing(t *testing.T) {
 	expected := `
-┌─────┬─────────┐
-│Index│  City   │
-│  0  │Tesseract│
-│  1  │Monopoly │
-└─────┴─────────┘
+┌────────┬───────────────┐
+│ Index  │ City          │
+├────────┼───────────────┤
+│ 0      │ Tesseract     │
+│ 1      │ Monopoly      │
+├────────┼───────────────┤
+│ 2      │ VeryLongWord  │
+│ 3      │ Hello!        │
+└────────┴───────────────┘
 `
-	actual := "\n" + fmtBox([][]string{{"Index", "City"}, {"0", "Tesseract"}, {"1", "Monopoly"}})
+	actual := "\n" + fmtBox([][][]string{{{"Index", "City"}}, {{"0", "Tesseract"}, {"1", "Monopoly"}}, {{"2", "VeryLongWord"}, {"3", "Hello!"}}}, 1, 2)
 	if !reflect.DeepEqual(actual, expected) {
 		t.Fatalf("draw box failed: \nexpected:\n%s\nactual:\n%s\n", expected, actual)
 	}
