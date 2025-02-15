@@ -14,12 +14,12 @@ Operations:
     i[nsert] o[rders] DATE|* TIME|* ITEM QUANTITY PRICE [@ ...]
     i[nsert] d[etails] DATE|* TIME|* CITY SHOP METHOD [@ ITEM QUANTITY PRICE] [@ ...]
 
-    l[ist]|v[isualize] c[ity|ities]
-    l[ist]|v[isualize] s[hops]
-    l[ist]|v[isualize] m[ethods]
-    l[ist]|v[isualize] i[tems]
-    l[ist]|v[isualize] v[alues]
-    l[ist]|v[isualize] p[ayments]
+    l[ist]|v[isualize] c[ity|ities] [range (from FROM)|(to TO)|(both FROM TO)] 
+    l[ist]|v[isualize] s[hops] [range (from FROM)|(to TO)|(both FROM TO)]
+    l[ist]|v[isualize] m[ethods] [range (from FROM)|(to TO)|(both FROM TO)]
+    l[ist]|v[isualize] i[tems] [range (from FROM)|(to TO)|(both FROM TO)]
+    l[ist]|v[isualize] v[alues] [range (from FROM)|(to TO)|(both FROM TO)]
+    l[ist]|v[isualize] p[ayments] [range (from FROM)|(to TO)|(both FROM TO)]
 
     u[pdate] p[ayments] DATE|* TIME|* CITY|* SHOP|* METHOD|* [@ ...]
     u[pdate] o[rders] DATE|* TIME|* ITEM QUANTITY PRICE [@ ...]
