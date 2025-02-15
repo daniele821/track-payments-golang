@@ -7,13 +7,13 @@ import (
 
 const boxVert string = "│"
 const boxHoriz string = "─"
-const boxLeftTop string = "┘"
-const boxRightTop string = "└"
+const boxLeftUp string = "┘"
+const boxRightUp string = "└"
 const boxLeftDown string = "┐"
 const boxRightDown string = "┌"
 const boxVertLeft string = "┤"
 const boxVertRight string = "├"
-const boxHorizTop string = "┴"
+const boxHorizUp string = "┴"
 const boxHorizDown string = "┬"
 const boxCross string = "┼"
 
@@ -84,13 +84,24 @@ func drawBoxRow(maxLen []int, startChar, middleChar, endChar string) string {
 	return acc.String()
 }
 
-// func fmtBox(data [][]string) {
-// 	maxLen := getMaxLen()
-// 	for indexRow, row := range data {
-// 		if indexRow == 0 {
-// 		}
-// 		for indexCol, cell := range row {
-//
-// 		}
-// 	}
-// }
+func fmtBox(data [][]string) string {
+	acc := strings.Builder{}
+	maxLen := getMaxLen(data)
+	for indexRow, row := range data {
+		if indexRow == 0 {
+			acc.WriteString(drawBoxRow(maxLen, boxRightDown, boxHorizDown, boxLeftDown))
+			acc.WriteString("\n")
+		}
+		for indexCol, cell := range row {
+			if indexCol == 0 {
+				acc.WriteString(boxVert)
+			}
+			acc.WriteString(alignStr(cell, maxLen[indexCol], centerLeftAlign))
+			acc.WriteString(boxVert)
+		}
+		acc.WriteString("\n")
+	}
+	acc.WriteString(drawBoxRow(maxLen, boxRightUp, boxHorizUp, boxLeftUp))
+	acc.WriteString("\n")
+	return acc.String()
+}
