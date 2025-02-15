@@ -41,18 +41,18 @@ const (
 
 type cell struct {
 	box  int
-	row  *int
-	cell *int
+	row  int
+	cell int
 }
 
 func newCellBox(nthRow int) cell {
-	return cell{box: nthRow, row: nil, cell: nil}
+	return cell{box: nthRow, row: -1, cell: -1}
 }
-func newCellRox(nthBox, nthRow int) cell {
-	return cell{box: nthBox, row: &nthRow, cell: nil}
+func newCellRow(nthBox, nthRow int) cell {
+	return cell{box: nthBox, row: nthRow, cell: -1}
 }
-func newCell(nthBox, nthRow, nthCell int) cell {
-	return cell{box: nthBox, row: &nthRow, cell: &nthCell}
+func newCellCol(nthBox, nthRow, nthCol int) cell {
+	return cell{box: nthBox, row: nthRow, cell: nthCol}
 }
 
 func alignStr(str string, maxLen int, align align) string {
@@ -71,7 +71,7 @@ func alignStr(str string, maxLen int, align align) string {
 	case rightAlign:
 		return strings.Repeat(" ", diff) + str
 	}
-	panic("UNREACHABLE CODE!")
+	panic("UNREACHABLE CODE: invalid value of align!")
 }
 
 func getMaxLen(data [][][]string) []int {
@@ -118,9 +118,9 @@ func fmtBox(data [][][]string, lPad, rPad int, alignCells map[cell]align) string
 					acc.WriteString(boxVert)
 				}
 				acc.WriteString(strings.Repeat(" ", lPad))
-				align, exist := alignCells[newCell(indexBox, indexRow, indexCol)]
+				align, exist := alignCells[newCellCol(indexBox, indexRow, indexCol)]
 				if !exist {
-					align, exist = alignCells[newCellRox(indexBox, indexRow)]
+					align, exist = alignCells[newCellRow(indexBox, indexRow)]
 					if !exist {
 						align, _ = alignCells[newCellBox(indexBox)]
 					}
