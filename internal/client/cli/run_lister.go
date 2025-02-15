@@ -36,10 +36,24 @@ func listPayments(data payments.ReadOnlyBTree[payments.Payment], from, to *strin
 		fmt.Printf("There are no payments!\n")
 		return
 	}
+	totPrice := 0
+	count := 0
+	fromDate := ""
+	toDate := ""
+	data.Ascend(func(item payments.Payment) bool {
+		fromDate = item.Date()
+		return false
+	}, fromPayment, toPayment)
+	data.Descend(func(item payments.Payment) bool {
+		toDate = item.Date()
+		return false
+	}, fromPayment, toPayment)
 	fmt.Printf("Here's all payments:\n")
 	prevDate := ""
 	data.Ascend(func(item payments.Payment) bool {
+		count += 1
 		price := item.TotalPrice()
+		totPrice += price
 		date := item.Date()
 		if date[:10] == prevDate {
 			date = "          " + date[10:]
@@ -55,5 +69,8 @@ func listPayments(data payments.ReadOnlyBTree[payments.Payment], from, to *strin
 		}, nil, nil)
 		return true
 	}, fromPayment, toPayment)
-
+	fmt.Printf("\n%s - %s\n", fromDate, toDate)
+	fmt.Printf("total price: %.2f€\n", float64(totPrice)/100.0)
+	fmt.Printf("payments: %d\n", count)
+	fmt.Printf("average payment: %.2f€\n", float64(totPrice)/100.0/float64(count))
 }
