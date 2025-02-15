@@ -41,19 +41,10 @@ const (
 )
 
 type cell struct {
-	box  int
-	row  int
-	cell int
-}
-
-func newCellBox(nthRow int) cell {
-	return cell{box: nthRow, row: -1, cell: -1}
-}
-func newCellRow(nthBox, nthRow int) cell {
-	return cell{box: nthBox, row: nthRow, cell: -1}
-}
-func newCellCol(nthBox, nthRow, nthCol int) cell {
-	return cell{box: nthBox, row: nthRow, cell: nthCol}
+	box   int
+	row   int
+	col   int
+	align align
 }
 
 func moreAccurateStrLen(str string) int {
@@ -107,7 +98,7 @@ func drawBoxRow(maxLen []int, startChar, middleChar, endChar string, totPad int)
 	return acc.String()
 }
 
-func fmtBox(data [][][]string, lPad, rPad int, alignCells map[cell]align) string {
+func fmtBox(data [][][]string, lPad, rPad int, alignCells []cell) string {
 	acc := strings.Builder{}
 	maxLen := getMaxLen(data)
 	acc.WriteString(drawBoxRow(maxLen, boxRightDown, boxHorizDown, boxLeftDown, lPad+rPad))
@@ -123,14 +114,23 @@ func fmtBox(data [][][]string, lPad, rPad int, alignCells map[cell]align) string
 					acc.WriteString(boxVert)
 				}
 				acc.WriteString(strings.Repeat(" ", lPad))
-				align, exist := alignCells[newCellCol(indexBox, indexRow, indexCol)]
-				if !exist {
-					align, exist = alignCells[newCellRow(indexBox, indexRow)]
-					if !exist {
-						align, _ = alignCells[newCellBox(indexBox)]
+				alignByPreciseness := [4]*align{}
+				for _, alignCell := range alignCells {
+					alignBox, alignRow, alignCol := alignCell.box, alignCell.row, alignCell.col
+					calc := map[int]int{-1: 1}
+					preciseness := calc[alignBox] + calc[alignRow] + calc[alignCol]
+					if (alignBox == -1 || alignBox == indexBox) && (alignRow == -1 || alignRow == indexRow) && (alignCol == -1 || alignCol == indexCol) {
+						alignByPreciseness[preciseness] = &alignCell.align
 					}
 				}
-				acc.WriteString(alignStr(cell, maxLen[indexCol], align))
+				cellAlign := leftAlign
+				for i := 0; i < 4; i++ {
+					if alignByPreciseness[i] != nil {
+						cellAlign = *alignByPreciseness[i]
+						break
+					}
+				}
+				acc.WriteString(alignStr(cell, maxLen[indexCol], cellAlign))
 				acc.WriteString(strings.Repeat(" ", rPad))
 				acc.WriteString(boxVert)
 			}

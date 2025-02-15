@@ -59,10 +59,10 @@ func TestBoxDrawing(t *testing.T) {
 		{{"0", "Tesseract"}, {"1", "Monopoly"}},
 		{{"2", "VeryLongWord"}, {"3", "Hello!"}}},
 		1, 2,
-		map[cell]align{
-			newCellBox(0):       centerLeftAlign,
-			newCellRow(1, 1):    centerRightAlign,
-			newCellCol(1, 1, 1): rightAlign,
+		[]cell{
+			{box: 1, row: 1, col: 1, align: rightAlign},
+			{box: 1, row: 1, col: -1, align: centerRightAlign},
+			{box: 0, row: -1, col: -1, align: centerRightAlign},
 		})
 	if !reflect.DeepEqual(actual, expected) {
 		t.Fatalf("draw box failed: \nexpected:\n%s\nactual:\n%s\n", expected, actual)
