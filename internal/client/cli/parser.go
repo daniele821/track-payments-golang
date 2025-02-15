@@ -38,24 +38,29 @@ func parseAndRun(allPayments payments.AllPayments, args []string) error {
 			return errors.New(fmt.Sprintf("invalid arg for insert: %s", args[1]))
 		}
 	case matchEveryLenght(args[0], "list"):
-		switch {
-		case len(args) <= 1:
+		if len(args) <= 1 {
 			return errors.New("missing arg for list")
+		}
+		from, to, err := parseRanges(args[2:])
+		if err != nil {
+			return err
+		}
+		switch {
 		case matchEveryLenghtFromAnyWords(args[1], []string{"city", "cities"}):
-			listGeneric("cities", allPayments.Cities())
+			listGeneric("cities", allPayments.Cities(), from, to)
 		case matchEveryLenght(args[1], "shops"):
-			listGeneric("shops", allPayments.Shops())
+			listGeneric("shops", allPayments.Shops(), from, to)
 		case matchEveryLenght(args[1], "methods"):
-			listGeneric("methods", allPayments.PaymentMethods())
+			listGeneric("methods", allPayments.PaymentMethods(), from, to)
 		case matchEveryLenght(args[1], "items"):
-			listGeneric("items", allPayments.Items())
+			listGeneric("items", allPayments.Items(), from, to)
 		case matchEveryLenght(args[1], "values"):
-			parseAndRun(allPayments, []string{"list", "cities"})
-			parseAndRun(allPayments, []string{"list", "shops"})
-			parseAndRun(allPayments, []string{"list", "methods"})
-			parseAndRun(allPayments, []string{"list", "items"})
+			listGeneric("cities", allPayments.Cities(), from, to)
+			listGeneric("shops", allPayments.Shops(), from, to)
+			listGeneric("methods", allPayments.PaymentMethods(), from, to)
+			listGeneric("items", allPayments.Items(), from, to)
 		case matchEveryLenght(args[1], "payments"):
-			listPayments(allPayments.Payments())
+			listPayments(allPayments.Payments(), from, to)
 		default:
 			return errors.New(fmt.Sprintf("invalid arg for list: %s", args[1]))
 		}

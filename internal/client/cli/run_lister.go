@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func listGeneric(dataType string, data payments.ReadOnlyBTree[string]) {
+func listGeneric(dataType string, data payments.ReadOnlyBTree[string], from, to *string) {
 	if data.Len() == 0 {
 		fmt.Printf("There are no %s\n", dataType)
 		return
@@ -19,10 +19,19 @@ func listGeneric(dataType string, data payments.ReadOnlyBTree[string]) {
 		fmt.Printf("%-*d | %s\n", maxLen, index, item)
 		index += 1
 		return true
-	}, nil, nil)
+	}, from, to)
 }
 
-func listPayments(data payments.ReadOnlyBTree[payments.Payment]) {
+func strToPayment(str *string) *payments.Payment {
+	if str == nil {
+		return nil
+	}
+	payment := payments.NewPaymentForSearches(*str)
+	return &payment
+}
+
+func listPayments(data payments.ReadOnlyBTree[payments.Payment], from, to *string) {
+	fromPayment, toPayment := strToPayment(from), strToPayment(to)
 	if data.Len() == 0 {
 		fmt.Printf("There are no payments!\n")
 		return
@@ -45,6 +54,6 @@ func listPayments(data payments.ReadOnlyBTree[payments.Payment]) {
 			return true
 		}, nil, nil)
 		return true
-	}, nil, nil)
+	}, fromPayment, toPayment)
 
 }

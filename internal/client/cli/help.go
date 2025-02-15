@@ -14,12 +14,12 @@ Operations:
     i[nsert] o[rders] DATE|* TIME|* ITEM QUANTITY PRICE [@ ...]
     i[nsert] d[etails] DATE|* TIME|* CITY SHOP METHOD [@ ITEM QUANTITY PRICE] [@ ...]
 
-    l[ist]|v[isualize] c[ity|ities] [range (from FROM)|(to TO)|(both FROM TO)] 
-    l[ist]|v[isualize] s[hops] [range (from FROM)|(to TO)|(both FROM TO)]
-    l[ist]|v[isualize] m[ethods] [range (from FROM)|(to TO)|(both FROM TO)]
-    l[ist]|v[isualize] i[tems] [range (from FROM)|(to TO)|(both FROM TO)]
-    l[ist]|v[isualize] v[alues] [range (from FROM)|(to TO)|(both FROM TO)]
-    l[ist]|v[isualize] p[ayments] [range (from FROM)|(to TO)|(both FROM TO)]
+    l[ist]|v[isualize] c[ity|ities] [r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)] 
+    l[ist]|v[isualize] s[hops] [r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]
+    l[ist]|v[isualize] m[ethods] [r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]
+    l[ist]|v[isualize] i[tems] [r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]
+    l[ist]|v[isualize] v[alues] [r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]
+    l[ist]|v[isualize] p[ayments] [r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]
 
     u[pdate] p[ayments] DATE|* TIME|* CITY|* SHOP|* METHOD|* [@ ...]
     u[pdate] o[rders] DATE|* TIME|* ITEM QUANTITY PRICE [@ ...]
