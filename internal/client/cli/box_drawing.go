@@ -57,3 +57,40 @@ func alignStr(str string, maxLen int, align align) string {
 	}
 	panic("UNREACHABLE CODE!")
 }
+
+func getMaxLen(data [][]string) []int {
+	maxLen := make([]int, len(data[0]))
+	for _, row := range data {
+		for index, cell := range row {
+			if maxLen[index] < len(cell) {
+				maxLen[index] = len(cell)
+			}
+		}
+	}
+	return maxLen
+}
+
+func drawBoxRow(maxLen []int, startChar, middleChar, endChar string) string {
+	acc := strings.Builder{}
+	for index, nthLen := range maxLen {
+		if index == 0 {
+			acc.WriteString(startChar)
+		} else {
+			acc.WriteString(middleChar)
+		}
+		acc.WriteString(strings.Repeat(boxHoriz, nthLen))
+	}
+	acc.WriteString(endChar)
+	return acc.String()
+}
+
+// func fmtBox(data [][]string) {
+// 	maxLen := getMaxLen()
+// 	for indexRow, row := range data {
+// 		if indexRow == 0 {
+// 		}
+// 		for indexCol, cell := range row {
+//
+// 		}
+// 	}
+// }
