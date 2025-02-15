@@ -65,24 +65,29 @@ func parseAndRun(allPayments payments.AllPayments, args []string) error {
 			return errors.New(fmt.Sprintf("invalid arg for list: %s", args[1]))
 		}
 	case matchEveryLenght(args[0], "visualize"):
+		if len(args) <= 1 {
+			return errors.New("missing arg for list")
+		}
+		from, to, err := parseRanges(args[2:])
+		if err != nil {
+			return err
+		}
 		switch {
-		case len(args) <= 1:
-			return errors.New("missing arg for visualize")
 		case matchEveryLenghtFromAnyWords(args[1], []string{"city", "cities"}):
-			visualizeGeneric("CITY", allPayments.Cities())
+			visualizeGeneric("CITY", allPayments.Cities(), from, to)
 		case matchEveryLenght(args[1], "shops"):
-			visualizeGeneric("SHOP", allPayments.Shops())
+			visualizeGeneric("SHOP", allPayments.Shops(), from, to)
 		case matchEveryLenght(args[1], "methods"):
-			visualizeGeneric("METHOD", allPayments.PaymentMethods())
+			visualizeGeneric("METHOD", allPayments.PaymentMethods(), from, to)
 		case matchEveryLenght(args[1], "items"):
-			visualizeGeneric("ITEM", allPayments.Items())
+			visualizeGeneric("ITEM", allPayments.Items(), from, to)
 		case matchEveryLenght(args[1], "values"):
-			parseAndRun(allPayments, []string{"visualize", "cities"})
-			parseAndRun(allPayments, []string{"visualize", "shops"})
-			parseAndRun(allPayments, []string{"visualize", "methods"})
-			parseAndRun(allPayments, []string{"visualize", "items"})
+			visualizeGeneric("CITY", allPayments.Cities(), from, to)
+			visualizeGeneric("SHOP", allPayments.Shops(), from, to)
+			visualizeGeneric("METHOD", allPayments.PaymentMethods(), from, to)
+			visualizeGeneric("ITEM", allPayments.Items(), from, to)
 		case matchEveryLenght(args[1], "payments"):
-			visualizePayment(allPayments.Payments())
+			visualizePayment(allPayments.Payments(), from, to)
 		default:
 			return errors.New(fmt.Sprintf("invalid arg for visualize: %s", args[1]))
 		}

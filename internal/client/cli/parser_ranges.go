@@ -5,11 +5,6 @@ import (
 	"fmt"
 )
 
-func getNextStr(str string) *string {
-	tmp := str + " "
-	return &tmp
-}
-
 func parseRanges(args []string) (from, to *string, err error) {
 	switch {
 	case len(args) <= 0:
@@ -27,12 +22,12 @@ func parseRanges(args []string) (from, to *string, err error) {
 			if len(args) != 3 {
 				return nil, nil, errors.New("invalid amount of args for range to filter")
 			}
-			return nil, getNextStr(args[2]), nil
+			return nil, &args[2], nil
 		case matchEveryLenght(args[1], "both"):
 			if len(args) != 4 {
 				return nil, nil, errors.New("invalid amount of args for range both filter")
 			}
-			return &args[2], getNextStr(args[3]), nil
+			return &args[2], &args[3], nil
 		default:
 			return nil, nil, errors.New(fmt.Sprintf("invalid arg for range filter: %s", args[1]))
 		}

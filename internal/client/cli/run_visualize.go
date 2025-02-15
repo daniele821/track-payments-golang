@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func visualizeGeneric(dataType string, data payments.ReadOnlyBTree[string]) {
+func visualizeGeneric(dataType string, data payments.ReadOnlyBTree[string], from, to *string) {
 	boxData := [][][]string{{{"", dataType}}}
 	bodyData := [][]string{}
 	index := 0
@@ -14,12 +14,13 @@ func visualizeGeneric(dataType string, data payments.ReadOnlyBTree[string]) {
 		index += 1
 		bodyData = append(bodyData, []string{strconv.Itoa(index), item})
 		return true
-	}, nil, nil)
+	}, from, to)
 	boxData = append(boxData, bodyData)
 	fmt.Print(fmtBox(boxData, 1, 1, nil))
 }
 
-func visualizePayment(data payments.ReadOnlyBTree[payments.Payment]) {
+func visualizePayment(data payments.ReadOnlyBTree[payments.Payment], from, to *string) {
+	fromPayment, toPayment := strToPayment(from), strToPayment(to)
 	boxData := [][][]string{{{"", "DATE", "CITY", "SHOP", "METHOD", "PRICE"}}}
 	bodyData := [][]string{}
 	index := 0
@@ -27,7 +28,7 @@ func visualizePayment(data payments.ReadOnlyBTree[payments.Payment]) {
 		index += 1
 		bodyData = append(bodyData, []string{strconv.Itoa(index), item.Date(), item.City(), item.Shop(), item.PaymentMethod(), fmt.Sprintf("%.2f€", float64(item.TotalPrice())/100.0)})
 		return true
-	}, nil, nil)
+	}, fromPayment, toPayment)
 	boxData = append(boxData, bodyData)
 	fmt.Print(fmtBox(boxData, 1, 1, nil))
 }
