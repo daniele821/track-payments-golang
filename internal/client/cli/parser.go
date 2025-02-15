@@ -77,6 +77,7 @@ func parseAndRun(allPayments payments.AllPayments, args []string) error {
 			parseAndRun(allPayments, []string{"visualize", "methods"})
 			parseAndRun(allPayments, []string{"visualize", "items"})
 		case matchEveryLenght(args[1], "payments"):
+			visualizePayment(allPayments.Payments())
 		default:
 			return errors.New(fmt.Sprintf("invalid arg for visualize: %s", args[1]))
 		}

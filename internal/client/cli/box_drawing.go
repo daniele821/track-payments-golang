@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"strings"
+	"unicode/utf8"
 )
 
 const boxVert string = "│"
@@ -55,8 +56,12 @@ func newCellCol(nthBox, nthRow, nthCol int) cell {
 	return cell{box: nthBox, row: nthRow, cell: nthCol}
 }
 
+func moreAccurateStrLen(str string) int {
+	return utf8.RuneCountInString(str)
+}
+
 func alignStr(str string, maxLen int, align align) string {
-	lenStr := len(str)
+	lenStr := moreAccurateStrLen(str)
 	if lenStr > maxLen {
 		panic(fmt.Sprintf("invalid formatting: string (%s) is longer then max lenght (%d)", str, maxLen))
 	}
@@ -79,8 +84,8 @@ func getMaxLen(data [][][]string) []int {
 	for _, box := range data {
 		for _, row := range box {
 			for index, cell := range row {
-				if maxLen[index] < len(cell) {
-					maxLen[index] = len(cell)
+				if maxLen[index] < moreAccurateStrLen(cell) {
+					maxLen[index] = moreAccurateStrLen(cell)
 				}
 			}
 		}
