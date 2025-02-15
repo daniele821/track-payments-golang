@@ -39,6 +39,22 @@ const (
 	rightAlign
 )
 
+type cell struct {
+	box  int
+	row  *int
+	cell *int
+}
+
+func newCellBox(nthRow int) cell {
+	return cell{box: nthRow, row: nil, cell: nil}
+}
+func newCellRox(nthBox, nthRow int) cell {
+	return cell{box: nthBox, row: &nthRow, cell: nil}
+}
+func newCell(nthBox, nthRow, nthCell int) cell {
+	return cell{box: nthBox, row: &nthRow, cell: &nthCell}
+}
+
 func alignStr(str string, maxLen int, align align) string {
 	lenStr := len(str)
 	if lenStr > maxLen {
@@ -86,7 +102,7 @@ func drawBoxRow(maxLen []int, startChar, middleChar, endChar string, totPad int)
 	return acc.String()
 }
 
-func fmtBox(data [][][]string, lPad, rPad int) string {
+func fmtBox(data [][][]string, lPad, rPad int, alignCells map[cell]align) string {
 	acc := strings.Builder{}
 	maxLen := getMaxLen(data)
 	acc.WriteString(drawBoxRow(maxLen, boxRightDown, boxHorizDown, boxLeftDown, lPad+rPad))
@@ -96,13 +112,20 @@ func fmtBox(data [][][]string, lPad, rPad int) string {
 			acc.WriteString(drawBoxRow(maxLen, boxVertRight, boxCross, boxVertLeft, lPad+rPad))
 			acc.WriteString("\n")
 		}
-		for _, row := range box {
+		for indexRow, row := range box {
 			for indexCol, cell := range row {
 				if indexCol == 0 {
 					acc.WriteString(boxVert)
 				}
 				acc.WriteString(strings.Repeat(" ", lPad))
-				acc.WriteString(alignStr(cell, maxLen[indexCol], leftAlign))
+				align, exist := alignCells[newCell(indexBox, indexRow, indexCol)]
+				if !exist {
+					align, exist = alignCells[newCellRox(indexBox, indexRow)]
+					if !exist {
+						align, _ = alignCells[newCellBox(indexBox)]
+					}
+				}
+				acc.WriteString(alignStr(cell, maxLen[indexCol], align))
 				acc.WriteString(strings.Repeat(" ", rPad))
 				acc.WriteString(boxVert)
 			}
