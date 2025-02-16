@@ -3,8 +3,8 @@ package cli
 import "fmt"
 
 var helpActions map[[2]string]string = map[[2]string]string{
-	{"insert", "city"}:     "CITY [...]",
-	{"insert", "shop"}:     "SHOP [...]",
+	{"insert", "cities"}:   "CITY [...]",
+	{"insert", "shops"}:    "SHOP [...]",
 	{"insert", "methods"}:  "METHOD [...]",
 	{"insert", "items"}:    "ITEM [...]",
 	{"insert", "payments"}: "DATE|* TIME|* CITY SHOP METHOD [@ ...]",

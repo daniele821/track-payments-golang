@@ -13,6 +13,23 @@ func parseHelp(args []string) bool {
 
 	switch {
 	case matchEveryLenght(tmpArr[0], "insert"):
+		switch {
+		case matchEveryLenght(tmpArr[1], "help"):
+			fmt.Print(genMsgs([]string{"i[nsert] c[ity|ities]", "i[nsert] s[hops]", "i[nsert] m[ethods]",
+				"i[nsert] i[tems]", "i[nsert] p[ayments]"},
+				[][2]string{{"insert", "cities"}, {"insert", "shops"}, {"insert", "methods"},
+					{"insert", "items"}, {"insert", "payments"}}))
+		case matchEveryLenght(tmpArr[1], "cities"):
+			fmt.Print(genMsg("i[nsert] c[ity|ities]", [2]string{"insert", "cities"}))
+		case matchEveryLenght(tmpArr[1], "shops"):
+			fmt.Print(genMsg("i[nsert] s[hops]", [2]string{"insert", "shops"}))
+		case matchEveryLenght(tmpArr[1], "methods"):
+			fmt.Print(genMsg("i[nsert] m[ethods]", [2]string{"insert", "methods"}))
+		case matchEveryLenght(tmpArr[1], "items"):
+			fmt.Print(genMsg("i[nsert] i[tems]", [2]string{"insert", "items"}))
+		case matchEveryLenght(tmpArr[1], "payments"):
+			fmt.Print(genMsg("i[nsert] p[ayments]", [2]string{"insert", "payments"}))
+		}
 
 	case matchEveryLenght(tmpArr[0], "list"):
 		switch {
