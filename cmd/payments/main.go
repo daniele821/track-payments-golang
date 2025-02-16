@@ -17,6 +17,7 @@ import (
 
 const cipherKeyFile = ".cipher_key"
 const cipherJsonFile = "payments-cipher.json"
+const jsonLocalFile = "payments.json"
 
 func main() {
 	if err := runner(); err != nil {
@@ -39,27 +40,34 @@ func runner() error {
 	}
 	cipherKeyPath := filepath.Join(append([]string{jsonDir}, cipherKeyFile)...)
 	cipherJsonPath := filepath.Join(append([]string{jsonDir}, cipherJsonFile)...)
+	jsonLocalPath := filepath.Join(append([]string{jsonDir}, jsonLocalFile)...)
 
-	// decrypt file and create data structure
-	storedData, err := decryptFile(cipherJsonPath, cipherKeyPath)
-	if err != nil {
-		fmt.Printf("data decryption failed: %s\n", err)
-		fmt.Printf("Do you want to OVERWRITE the file with empty data? ")
-		scanner := bufio.NewScanner(os.Stdin)
-	outerLoop:
-		for scanner.Scan() {
-			input := scanner.Text()
-			switch strings.ToLower(input) {
-			case "y":
-				break outerLoop
-			case "n":
-				return errors.New("cipher file couldn't be decrypted")
-			default:
-				fmt.Printf("invalid answer (y/n): ")
+	// load from local file or server encrypted one
+	var allPayments payments.AllPayments
+	var storedData string
+	if _, found := os.LookupEnv("LOCAL"); found {
+		allPayments, err = payments.NewAllPaymentsFromjsonFile(jsonLocalPath)
+	} else {
+		storedData, err = decryptFile(cipherJsonPath, cipherKeyPath)
+		if err != nil {
+			fmt.Printf("data decryption failed: %s\n", err)
+			fmt.Printf("Do you want to OVERWRITE the file with empty data? ")
+			scanner := bufio.NewScanner(os.Stdin)
+		outerLoop:
+			for scanner.Scan() {
+				input := scanner.Text()
+				switch strings.ToLower(input) {
+				case "y":
+					break outerLoop
+				case "n":
+					return errors.New("cipher file couldn't be decrypted")
+				default:
+					fmt.Printf("invalid answer (y/n): ")
+				}
 			}
 		}
+		allPayments, _ = payments.NewAllPaymentsFromJson(storedData)
 	}
-	allPayments, _ := payments.NewAllPaymentsFromJson(storedData)
 
 	// run cli tool
 	if err := cli.ParseAndRun(allPayments, args); err != nil {
@@ -72,6 +80,9 @@ func runner() error {
 		if err := encryptFile(newStoredData, cipherJsonPath, cipherKeyPath); err != nil {
 			return err
 		}
+	}
+	if err := allPayments.DumpJsonToFile(jsonLocalPath, true); err != nil {
+		return err
 	}
 
 	return nil
