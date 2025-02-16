@@ -1,15 +1,18 @@
 package main
 
 import (
+	"bufio"
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"errors"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 	"payment/internal/client/cli"
 	"payment/internal/server/payments"
+	"strings"
 )
 
 const cipherKeyFile = ".cipher_key"
@@ -38,7 +41,24 @@ func runner() error {
 	cipherJsonPath := filepath.Join(append([]string{jsonDir}, cipherJsonFile)...)
 
 	// decrypt file and create data structure
-	storedData, _ := decryptFile(cipherJsonPath, cipherKeyPath)
+	storedData, err := decryptFile(cipherJsonPath, cipherKeyPath)
+	if err != nil {
+		fmt.Printf("data decryption failed: %s\n", err)
+		fmt.Printf("Do you want to OVERWRITE the file with empty data? ")
+		scanner := bufio.NewScanner(os.Stdin)
+	outerLoop:
+		for scanner.Scan() {
+			input := scanner.Text()
+			switch strings.ToLower(input) {
+			case "y":
+				break outerLoop
+			case "n":
+				return errors.New("cipher file couldn't be decrypted")
+			default:
+				fmt.Printf("invalid answer (y/n): ")
+			}
+		}
+	}
 	allPayments, _ := payments.NewAllPaymentsFromJson(storedData)
 
 	// run cli tool
