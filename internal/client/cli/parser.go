@@ -117,6 +117,12 @@ func parseAndRun(allPayments payments.AllPayments, args []string) error {
 		}
 	case matchEveryLenght(args[0], "help"):
 		helpMsg()
+	case matchEveryLenght(args[0], "print"):
+		jsonData, err := allPayments.DumpJson(true)
+		if err != nil {
+			return nil
+		}
+		fmt.Println(jsonData)
 	default:
 		return errors.New(fmt.Sprintf("invalid arg: %s", args[0]))
 	}

@@ -29,5 +29,7 @@ Operations:
     d[elete] o[rders] DATE|* TIME|* ITEM [@ ...]
     
     h[elp]
+
+    p[rint]
 `)
 }
