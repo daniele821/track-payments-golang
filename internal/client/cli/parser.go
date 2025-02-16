@@ -3,13 +3,8 @@ package cli
 import (
 	"errors"
 	"fmt"
-	"os"
 	"payment/internal/server/payments"
 )
-
-func parseParamsAndRun(allPayments payments.AllPayments) error {
-	return parseAndRun(allPayments, os.Args[1:])
-}
 
 func parseAndRun(allPayments payments.AllPayments, args []string) error {
 	if len(args) == 0 {
@@ -115,8 +110,6 @@ func parseAndRun(allPayments payments.AllPayments, args []string) error {
 		default:
 			return errors.New(fmt.Sprintf("invalid arg for delete: %s", args[1]))
 		}
-	case matchEveryLenght(args[0], "help"):
-		helpMsg()
 	case matchEveryLenght(args[0], "print"):
 		jsonData, err := allPayments.DumpJson(true)
 		if err != nil {

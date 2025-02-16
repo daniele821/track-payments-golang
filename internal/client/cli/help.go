@@ -2,6 +2,31 @@ package cli
 
 import "fmt"
 
+var helpActions map[[2]string]string = map[[2]string]string{
+	{"insert", "city"}:     "CITY [...]",
+	{"insert", "shop"}:     "SHOP [...]",
+	{"insert", "methods"}:  "METHOD [...]",
+	{"insert", "items"}:    "ITEM [...]",
+	{"insert", "payments"}: "DATE|* TIME|* CITY SHOP METHOD [@ ...]",
+	{"insert", "orders"}:   "DATE|* TIME|* ITEM QUANTITY PRICE [@ ...]",
+	{"insert", "details"}:  "DATE|* TIME|* CITY SHOP METHOD [@ ITEM QUANTITY PRICE] [@ ...]",
+
+	{"list", "cities"}:   "[r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]",
+	{"list", "shops"}:    "[r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]",
+	{"list", "methods"}:  "[r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]",
+	{"list", "items"}:    "[r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]",
+	{"list", "payments"}: "[r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]",
+
+	{"update", "payments"}: "DATE|* TIME|* CITY|* SHOP|* METHOD|* [@ ...]",
+	{"update", "orders"}:   "DATE|* TIME|* ITEM QUANTITY PRICE [@ ...]",
+	{"update", "details"}:  "DATE|* TIME|* CITY|* SHOP|* METHOD|* [@ ITEM QUANTITY PRICE] [@ ...]",
+
+	{"delete", "payments"}: "DATE|* TIME|* [@...]",
+	{"delete", "orders"}:   "DATE|* TIME|* ITEM [@ ...]",
+
+	{"print", ""}: "",
+}
+
 func helpMsg() {
 	fmt.Print(`Usage of ./payments
 

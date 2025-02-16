@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"os"
 	"payment/internal/server/payments"
 )
 
@@ -12,8 +13,10 @@ func Run(jsonPath string) error {
 	}
 
 	// run program
-	if err := parseParamsAndRun(allPayments); err != nil {
-		return err
+	if helpAction := parseHelp(os.Args[1:]); !helpAction {
+		if err := parseAndRun(allPayments, os.Args[1:]); err != nil {
+			return err
+		}
 	}
 
 	// save to json file
