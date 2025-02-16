@@ -13,7 +13,7 @@ import (
 )
 
 const cipherKeyFile = ".cipher_key"
-const cipherJsonFile = "payments-cipher.json"
+const cipherJsonFile = "payments.json.cipher"
 const jsonLocalFile = "payments.json"
 
 func main() {
