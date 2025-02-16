@@ -6,7 +6,7 @@ import (
 	"payment/internal/server/payments"
 )
 
-func parseAndRun(allPayments payments.AllPayments, args []string) error {
+func ParseAndRun(allPayments payments.AllPayments, args []string) error {
 	if len(args) == 0 {
 		return nil
 	}

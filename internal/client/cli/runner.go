@@ -13,8 +13,8 @@ func Run(jsonPath string) error {
 	}
 
 	// run program
-	if helpAction := parseHelp(os.Args[1:]); !helpAction {
-		if err := parseAndRun(allPayments, os.Args[1:]); err != nil {
+	if helpAction := ParseHelp(os.Args[1:]); !helpAction {
+		if err := ParseAndRun(allPayments, os.Args[1:]); err != nil {
 			return err
 		}
 	}

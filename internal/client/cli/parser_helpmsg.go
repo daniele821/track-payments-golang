@@ -5,8 +5,8 @@ import (
 	"strings"
 )
 
-func parseHelp(args []string) bool {
-	if !matchEveryLenght(args[len(args)-1], "help") || len(args) >= 4 {
+func ParseHelp(args []string) bool {
+	if len(args) <= 0 || len(args) >= 4 || !matchEveryLenght(args[len(args)-1], "help") {
 		return false
 	}
 	tmpArr := append(args, "", "", "")
