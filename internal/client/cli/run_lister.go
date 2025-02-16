@@ -2,9 +2,11 @@ package cli
 
 import (
 	"fmt"
+	"math"
 	"payment/internal/server/payments"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func listGeneric(dataType string, data payments.ReadOnlyBTree[string], from, to *string) {
@@ -72,5 +74,9 @@ func listPayments(data payments.ReadOnlyBTree[payments.Payment], from, to *strin
 	fmt.Printf("\n%s - %s\n", fromDate, toDate)
 	fmt.Printf("total price: %.2f€\n", float64(totPrice)/100.0)
 	fmt.Printf("payments: %d\n", count)
-	fmt.Printf("average payment: %.2f€\n", float64(totPrice)/100.0/float64(count))
+	tmp1, _ := time.Parse("2006/01/02", fromDate[:10])
+	tmp2, _ := time.Parse("2006/01/02", toDate[:10])
+	days := int(math.RoundToEven((tmp2.Sub(tmp1).Hours() / 24) + 1))
+	fmt.Printf("days: %d\n", days)
+	fmt.Printf("average daily payment: %.2f€\n", float64(totPrice)/100.0/float64(days))
 }
