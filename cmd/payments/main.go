@@ -6,33 +6,55 @@ import (
 	"crypto/rand"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"path/filepath"
 	"payment/internal/client/cli"
+	"payment/internal/server/payments"
 )
 
+const cipherKeyFile = ".cipher_key"
+const cipherJsonFile = "payments-cipher.json"
+
 func main() {
+	if err := runner(); err != nil {
+		fmt.Println(err)
+	}
+}
+
+func runner() error {
 	args := os.Args[1:]
 
 	// print help message
 	if cli.ParseHelp(args) {
-		return
+		return nil
 	}
 
 	// get paths
 	jsonDir, err := getExeDir()
 	if err != nil {
-		fmt.Printf("%s\n", err)
-		return
+		return err
 	}
-	jsonPath := filepath.Join(append([]string{jsonDir}, "payments-cipher.json")...)
+	cipherKeyPath := filepath.Join(append([]string{jsonDir}, cipherKeyFile)...)
+	cipherJsonPath := filepath.Join(append([]string{jsonDir}, cipherJsonFile)...)
+
+	// decrypt file and create data structure
+	storedData, _ := decryptFile(cipherJsonPath, cipherKeyPath)
+	allPayments, _ := payments.NewAllPaymentsFromJson(storedData)
 
 	// run cli tool
-	if err := cli.Run(jsonPath); err != nil {
-		fmt.Printf("%s\n", err)
-		return
+	if err := cli.ParseAndRun(allPayments, args); err != nil {
+		return err
 	}
+
+	// save changes to encrypted file
+	newStoredData, err := allPayments.DumpJson(false)
+	if newStoredData != storedData {
+		if err := encryptFile(newStoredData, cipherJsonPath, cipherKeyPath); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func getExeDir() (string, error) {
@@ -47,29 +69,29 @@ func getExeDir() (string, error) {
 	return filepath.Dir(exePath), nil
 }
 
-func encryptFile(plainText, cipherFile, keyFile string) {
+func encryptFile(plainText, cipherFile, keyFile string) error {
 	// Reading key
 	key, err := os.ReadFile(keyFile)
 	if err != nil {
-		log.Fatalf("read file err: %v", err.Error())
+		return err
 	}
 
 	// Creating block of algorithm
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		log.Fatalf("cipher err: %v", err.Error())
+		return err
 	}
 
 	// Creating GCM mode
 	gcm, err := cipher.NewGCM(block)
 	if err != nil {
-		log.Fatalf("cipher GCM err: %v", err.Error())
+		return err
 	}
 
 	// Generating random nonce
 	nonce := make([]byte, gcm.NonceSize())
 	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
-		log.Fatalf("nonce  err: %v", err.Error())
+		return err
 	}
 
 	// Decrypt file
@@ -78,34 +100,34 @@ func encryptFile(plainText, cipherFile, keyFile string) {
 	// Writing ciphertext file
 	err = os.WriteFile(cipherFile, cipherText, 0600)
 	if err != nil {
-		log.Fatalf("write file err: %v", err.Error())
+		return err
 	}
-
+	return nil
 }
 
-func decryptFile(cipherFile, keyFile string) (plainText string) {
+func decryptFile(cipherFile, keyFile string) (string, error) {
 	// Reading ciphertext file
 	cipherText, err := os.ReadFile(cipherFile)
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 
 	// Reading key
 	key, err := os.ReadFile(keyFile)
 	if err != nil {
-		log.Fatalf("read file err: %v", err.Error())
+		return "", err
 	}
 
 	// Creating block of algorithm
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		log.Fatalf("cipher err: %v", err.Error())
+		return "", err
 	}
 
 	// Creating GCM mode
 	gcm, err := cipher.NewGCM(block)
 	if err != nil {
-		log.Fatalf("cipher GCM err: %v", err.Error())
+		return "", err
 	}
 
 	// Deattached nonce and decrypt
@@ -113,8 +135,8 @@ func decryptFile(cipherFile, keyFile string) (plainText string) {
 	cipherText = cipherText[gcm.NonceSize():]
 	plainTextByte, err := gcm.Open(nil, nonce, cipherText, nil)
 	if err != nil {
-		log.Fatalf("decrypt file err: %v", err.Error())
+		return "", err
 	}
 
-	return string(plainTextByte)
+	return string(plainTextByte), nil
 }
