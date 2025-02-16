@@ -8,8 +8,14 @@ cd "$SCRIPT_DIR" || exit 1
 GOMAIN_PATH="${SCRIPT_DIR}/cmd/payments/main.go"
 BIN_PATH="${SCRIPT_DIR}/data/.payments"
 
-[[ -v BUILD && -f "$BIN_PATH" ]] && rm "$BIN_PATH"
+# automagically build go executable ONLY if go source code was updated in the meanwhile
+latest_go_file=$(find "$SCRIPT_DIR" -type f -name "*.go" -printf "%T@ %p\n" | sort -nr | head -n1 | awk '{print $2}')
+other_file="$BIN_PATH"
 
-[[ -f "$BIN_PATH" ]] || go build -o "$BIN_PATH" "$GOMAIN_PATH"
+if [[ $(stat -c %Y "$latest_go_file") -gt $(stat -c %Y "$other_file") ]]; then
+    [[ -f "$BIN_PATH" ]] && rm "$BIN_PATH"
+    go build -o "$BIN_PATH" "$GOMAIN_PATH"
+
+fi
 
 "$BIN_PATH" "$@"
