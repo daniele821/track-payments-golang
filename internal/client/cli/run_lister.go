@@ -17,11 +17,11 @@ func listGeneric(dataType string, data payments.ReadOnlyBTree[string], from, to 
 	fmt.Printf("Here all the %s:\n", dataType)
 	maxLen := len(strconv.Itoa(data.Len()))
 	index := 0
-	data.Ascend(func(item string) bool {
+	data.AscendRange(from, to, true, true, func(item string) bool {
 		fmt.Printf("%-*d | %s\n", maxLen, index, item)
 		index += 1
 		return true
-	}, from, to)
+	})
 }
 
 func strToPayment(str *string) *payments.Payment {
@@ -33,7 +33,7 @@ func strToPayment(str *string) *payments.Payment {
 }
 
 func listPayments(data payments.ReadOnlyBTree[payments.Payment], from, to *string) {
-	fromPayment, toPayment := strToPayment(from), strToPayment(to)
+	fromPayment, toPayment, fromInclude, toInclude := strToPayment(from), strToPayment(to), true, true
 	if data.Len() == 0 {
 		fmt.Printf("There are no payments!\n")
 		return
@@ -42,17 +42,17 @@ func listPayments(data payments.ReadOnlyBTree[payments.Payment], from, to *strin
 	count := 0
 	fromDate := ""
 	toDate := ""
-	data.Ascend(func(item payments.Payment) bool {
+	data.AscendRange(fromPayment, toPayment, fromInclude, toInclude, func(item payments.Payment) bool {
 		fromDate = item.Date()
 		return false
-	}, fromPayment, toPayment)
-	data.Descend(func(item payments.Payment) bool {
+	})
+	data.DescendRange(fromPayment, toPayment, fromInclude, toInclude, func(item payments.Payment) bool {
 		toDate = item.Date()
 		return false
-	}, fromPayment, toPayment)
+	})
 	fmt.Printf("Here's all payments:\n")
 	prevDate := ""
-	data.Ascend(func(item payments.Payment) bool {
+	data.AscendRange(fromPayment, toPayment, fromInclude, toInclude, func(item payments.Payment) bool {
 		count += 1
 		price := item.TotalPrice()
 		totPrice += price
@@ -68,9 +68,9 @@ func listPayments(data payments.ReadOnlyBTree[payments.Payment], from, to *strin
 			price := item.UnitPrice()
 			fmt.Printf("                 | %s x%d %d.%02d€\n", item.Item(), item.Quantity(), price/100, price%100)
 			return true
-		}, nil, nil)
+		})
 		return true
-	}, fromPayment, toPayment)
+	})
 	fmt.Printf("\n%s - %s\n", fromDate, toDate)
 	fmt.Printf("total price: %.2f€\n", float64(totPrice)/100.0)
 	fmt.Printf("payments: %d\n", count)

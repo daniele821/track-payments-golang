@@ -78,7 +78,7 @@ func (payment Payment) TotalPrice() int {
 	payment.Orders().Ascend(func(item Order) bool {
 		acc += item.Quantity() * item.UnitPrice()
 		return true
-	}, nil, nil)
+	})
 	return acc
 }
 
