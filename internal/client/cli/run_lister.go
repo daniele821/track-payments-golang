@@ -86,3 +86,35 @@ func listDetails(data payments.ReadOnlyBTree[payments.Payment], from, to *string
 		return true
 	})
 }
+
+func listAggregated(data payments.ReadOnlyBTree[payments.Payment], from, to *string) {
+	panic("TODO")
+	fromPayment, toPayment, fromInclude, toInclude := strToPayment(from), strToPayment(to), true, true
+	if data.Len() == 0 {
+		fmt.Printf("There are no payments!\n")
+		return
+	}
+	totPrice := 0
+	count := 0
+	fmt.Printf("Here's all payments:\n")
+	prevDate := ""
+	data.AscendRange(fromPayment, toPayment, fromInclude, toInclude, func(item payments.Payment) bool {
+		count += 1
+		price := item.TotalPrice()
+		totPrice += price
+		date := item.Date()
+		if date[:10] == prevDate {
+			date = "          " + date[10:]
+		}
+		if strings.TrimSpace(date[:10]) != "" {
+			prevDate = date[:10]
+		}
+		fmt.Printf("%s | %s %s %s %d.%02d€\n", date, item.City(), item.Shop(), item.PaymentMethod(), price/100, price%100)
+		item.Orders().Ascend(func(item payments.Order) bool {
+			price := item.UnitPrice()
+			fmt.Printf("                 | x%d %s %d.%02d€\n", item.Quantity(), item.Item(), price/100, price%100)
+			return true
+		})
+		return true
+	})
+}
