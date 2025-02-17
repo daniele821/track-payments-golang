@@ -58,6 +58,8 @@ func ParseHelp(args []string) bool {
 			fmt.Print(genMsg("l[ist] p[ayments]", [2]string{"list", "payments"}))
 		case matchEveryLenght(tmpArr[1], "details"):
 			fmt.Print(genMsg("l[ist] d[etails]", [2]string{"list", "details"}))
+		case matchEveryLenght(tmpArr[1], "aggregated"):
+			fmt.Print(genMsg("l[ist] a[ggregate]", [2]string{"list", "aggregated"}))
 		}
 
 	case matchEveryLenght(tmpArr[0], "visualize"):
@@ -81,6 +83,8 @@ func ParseHelp(args []string) bool {
 			fmt.Print(genMsg("v[isualize] p[ayments]", [2]string{"list", "payments"}))
 		case matchEveryLenght(tmpArr[1], "details"):
 			fmt.Print(genMsg("v[isualize] d[etails]", [2]string{"list", "details"}))
+		case matchEveryLenght(tmpArr[1], "aggregated"):
+			fmt.Print(genMsg("v[isualize] a[ggregate]", [2]string{"list", "aggregated"}))
 		}
 
 	case matchEveryLenght(tmpArr[0], "update"):

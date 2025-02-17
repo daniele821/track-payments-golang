@@ -11,12 +11,13 @@ var helpActions map[[2]string]string = map[[2]string]string{
 	{"insert", "orders"}:   "DATE|* TIME|* ITEM QUANTITY PRICE [@ ...]",
 	{"insert", "details"}:  "DATE|* TIME|* CITY SHOP METHOD [@ ITEM QUANTITY PRICE] [@ ...]",
 
-	{"list", "cities"}:   "[r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]",
-	{"list", "shops"}:    "[r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]",
-	{"list", "methods"}:  "[r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]",
-	{"list", "items"}:    "[r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]",
-	{"list", "payments"}: "[r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]",
-	{"list", "details"}:  "[r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]",
+	{"list", "cities"}:     "[r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]",
+	{"list", "shops"}:      "[r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]",
+	{"list", "methods"}:    "[r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]",
+	{"list", "items"}:      "[r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]",
+	{"list", "payments"}:   "[r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]",
+	{"list", "details"}:    "[r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]",
+	{"list", "aggregated"}: "[r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]",
 
 	{"update", "payments"}: "DATE|* TIME|* CITY|* SHOP|* METHOD|* [@ ...]",
 	{"update", "orders"}:   "DATE|* TIME|* ITEM QUANTITY PRICE [@ ...]",
@@ -47,6 +48,7 @@ Operations:
     l[ist]|v[isualize] v[alues] [r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]
     l[ist]|v[isualize] p[ayments] [r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]
     l[ist]|v[isualize] d[etails] [r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]
+    l[ist]|v[isualize] a[ggregated] [r[ange] (f[rom] FROM)|(t[o] TO)|(b[oth] FROM TO)]
 
     u[pdate] p[ayments] DATE|* TIME|* CITY|* SHOP|* METHOD|* [@ ...]
     u[pdate] o[rders] DATE|* TIME|* ITEM QUANTITY PRICE [@ ...]
