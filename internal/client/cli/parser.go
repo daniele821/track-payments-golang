@@ -83,6 +83,8 @@ func ParseAndRun(allPayments payments.AllPayments, args []string) error {
 			visualizeGeneric("ITEM", allPayments.Items(), from, to)
 		case matchEveryLenght(args[1], "payments"):
 			visualizePayment(allPayments.Payments(), from, to)
+		case matchEveryLenght(args[1], "details"):
+			visualizeDetail(allPayments.Payments(), from, to)
 		default:
 			return errors.New(fmt.Sprintf("invalid arg for visualize: %s", args[1]))
 		}
