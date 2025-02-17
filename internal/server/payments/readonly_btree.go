@@ -1,6 +1,8 @@
 package payments
 
-import "github.com/google/btree"
+import (
+	"github.com/google/btree"
+)
 
 type ReadOnlyBTree[T any] struct {
 	btree *btree.BTreeG[T]
@@ -30,11 +32,13 @@ func (readOnlyBTree ReadOnlyBTree[T]) Descend(iterator btree.ItemIteratorG[T]) {
 	readOnlyBTree.btree.Descend(iterator)
 }
 
-func skipFirstItem[T any](item T, index *int, iterator btree.ItemIteratorG[T]) bool {
-	if *index == 0 {
-		return true
+func skipFirstItem[T any](item T, first *T, data ReadOnlyBTree[T], index *int, iterator btree.ItemIteratorG[T]) bool {
+	if first != nil {
+		*index += 1
+		if *index == 1 && data.btree.Has(*first) {
+			return true
+		}
 	}
-	*index += 1
 	return iterator(item)
 }
 
@@ -49,14 +53,14 @@ func (readOnlyBTree ReadOnlyBTree[T]) AscendRange(first, last *T, includeFirst, 
 			readOnlyBTree.btree.AscendGreaterOrEqual(*first, iterator)
 		} else {
 			index := 0
-			readOnlyBTree.btree.AscendGreaterOrEqual(*first, func(item T) bool { return skipFirstItem(item, &index, iterator) })
+			readOnlyBTree.btree.AscendGreaterOrEqual(*first, func(item T) bool { return skipFirstItem(item, first, readOnlyBTree, &index, iterator) })
 		}
 	case first != nil && last != nil:
 		if includeFirst {
 			readOnlyBTree.btree.AscendRange(*first, *last, iterator)
 		} else {
 			index := 0
-			readOnlyBTree.btree.AscendRange(*first, *last, func(item T) bool { return skipFirstItem(item, &index, iterator) })
+			readOnlyBTree.btree.AscendRange(*first, *last, func(item T) bool { return skipFirstItem(item, first, readOnlyBTree, &index, iterator) })
 		}
 	default:
 		panic("UNREACHABLE CODE: all possible cases should have already been covered!")
@@ -79,14 +83,14 @@ func (readOnlyBTree ReadOnlyBTree[T]) DescendRange(first, last *T, includeFirst,
 			readOnlyBTree.btree.DescendLessOrEqual(*first, iterator)
 		} else {
 			index := 0
-			readOnlyBTree.btree.DescendLessOrEqual(*first, func(item T) bool { return skipFirstItem(item, &index, iterator) })
+			readOnlyBTree.btree.DescendLessOrEqual(*first, func(item T) bool { return skipFirstItem(item, first, readOnlyBTree, &index, iterator) })
 		}
 	case first != nil && last != nil:
 		if includeFirst {
 			readOnlyBTree.btree.DescendRange(*first, *last, iterator)
 		} else {
 			index := 0
-			readOnlyBTree.btree.DescendRange(*first, *last, func(item T) bool { return skipFirstItem(item, &index, iterator) })
+			readOnlyBTree.btree.DescendRange(*first, *last, func(item T) bool { return skipFirstItem(item, first, readOnlyBTree, &index, iterator) })
 		}
 	default:
 		panic("UNREACHABLE CODE: all possible cases should have already been covered!")
