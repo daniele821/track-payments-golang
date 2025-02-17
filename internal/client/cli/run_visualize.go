@@ -22,7 +22,7 @@ func visualizeGeneric(dataType string, data payments.ReadOnlyBTree[string], from
 
 func visualizePayment(data payments.ReadOnlyBTree[payments.Payment], from, to *string) {
 	fromPayment, toPayment, fromInclude, toInclude := strToPayment(from), strToPayment(to), true, true
-	boxData := [][][]string{{{"", "MONTH", "DAY", "TIME", "CITY", "SHOP", "METHOD", "PRICE"}}}
+	boxData := [][][]string{{{"", "MONTH", "DAY", "TIME", "CITY", "SHOP", "METHOD", "PRICE", "ITEM", "QUANTITY", "PRICE"}}}
 	bodyData := [][]string{}
 	index := 0
 	monthOld, dayOld := "", ""
@@ -43,7 +43,19 @@ func visualizePayment(data payments.ReadOnlyBTree[payments.Payment], from, to *s
 			}
 		}
 		dayOld, monthOld = day, month
-		bodyData = append(bodyData, []string{strconv.Itoa(index), monthFmt, dayFmt, timeFmt, item.City(), item.Shop(), item.PaymentMethod(), fmt.Sprintf("%.2f€", float64(item.TotalPrice())/100.0)})
+		orders := [][]string{}
+		item.Orders().Ascend(func(item payments.Order) bool {
+			orders = append(orders, []string{item.Item(), strconv.Itoa(item.Quantity()), strPrice(item.UnitPrice())})
+			return true
+		})
+		if len(orders) == 0 {
+			orders = append(orders, []string{"", "", ""})
+		}
+		bodyData = append(bodyData, []string{strconv.Itoa(index), monthFmt, dayFmt, timeFmt, item.City(), item.Shop(),
+			item.PaymentMethod(), fmt.Sprintf("%.2f€", float64(item.TotalPrice())/100.0), orders[0][0], orders[0][1], orders[0][2]})
+		for i := 1; i < len(orders); i++ {
+			bodyData = append(bodyData, []string{"", "", "", "", "", "", "", "", orders[i][0], orders[i][1], orders[i][2]})
+		}
 		return true
 	})
 	boxData = append(boxData, bodyData)

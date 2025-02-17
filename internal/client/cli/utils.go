@@ -75,6 +75,14 @@ func parsePrice(priceStr string) (int, error) {
 	return priceInt*100 + priceDec, nil
 }
 
+func strPrice(price int) string {
+	priceStr := strconv.Itoa(price)
+	if len(priceStr) < 3 {
+		priceStr = strings.Repeat("0", 3-len(priceStr)) + priceStr
+	}
+	return priceStr[:len(priceStr)-2] + "." + priceStr[len(priceStr)-2:] + "€"
+}
+
 func getDateAndTime() (dateStr, timeStr string) {
 	return time.Now().Format("2006/01/02"), time.Now().Format("15:04")
 }
