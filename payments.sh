@@ -21,4 +21,4 @@ else
     go build -o "$BIN_PATH" "$GOMAIN_PATH"
 fi
 
-"$BIN_PATH" "$@" | cut "-c1-$(tput cols)"
+"$BIN_PATH" "$@"
