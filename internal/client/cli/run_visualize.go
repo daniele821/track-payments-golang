@@ -170,45 +170,53 @@ func getAllAggregated(data payments.ReadOnlyBTree[payments.Payment], from, to *s
 	lines := [][]string{}
 
 	fromStr, toStr := "", ""
-	data.Ascend(func(item payments.Payment) bool {
+	data.AscendRange(strToPayment(from), strToPayment(to), true, true, func(item payments.Payment) bool {
 		fromStr = item.Date()[:10]
 		return false
 	})
-	data.Descend(func(item payments.Payment) bool {
+	data.DescendRange(strToPayment(to), strToPayment(from), true, true, func(item payments.Payment) bool {
 		toStr = item.Date()[:10]
 		return false
 	})
 
-	fromDate, err := time.Parse("2006/01/02", fromStr)
-	if err != nil {
-		panic(err)
-	}
-	toDate, err := time.Parse("2006/01/02", toStr)
-	if err != nil {
-		panic(err)
-	}
-	currentDate := fromDate
+	if fromStr != "" {
 
-	// monthly stats
-	for !currentDate.After(toDate) {
-		year, month, _ := currentDate.Date()
-		firstDayMonth := time.Date(year, month, 1, 0, 0, 0, 0, time.UTC)
-		nextMonth := month + 1
-		nextYear := year
-		if nextMonth > time.December {
-			nextMonth = time.January
-			nextYear++
+		fromDate, err := time.Parse("2006/01/02", fromStr)
+		if err != nil {
+			panic(err)
 		}
-		firstDayOfNextMonth := time.Date(nextYear, nextMonth, 1, 0, 0, 0, 0, time.UTC)
-		lastDayMonth := firstDayOfNextMonth.AddDate(0, 0, -1)
+		toDate, err := time.Parse("2006/01/02", toStr)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(fromDate, toDate)
+		currentDate := fromDate
 
-		lines = append(lines, getAggregated(data, firstDayMonth.Format("2006 January"), firstDayMonth.Format("2006/01/02"), lastDayMonth.Format("2006/01/02")))
+		// monthly stats
+		for !currentDate.After(toDate) {
+			year, month, _ := currentDate.Date()
+			firstDayMonth := time.Date(year, month, 1, 0, 0, 0, 0, time.UTC)
+			nextMonth := month + 1
+			nextYear := year
+			if nextMonth > time.December {
+				nextMonth = time.January
+				nextYear++
+			}
+			firstDayOfNextMonth := time.Date(nextYear, nextMonth, 1, 0, 0, 0, 0, time.UTC)
+			lastDayMonth := firstDayOfNextMonth.AddDate(0, 0, -1)
 
-		currentDate = firstDayOfNextMonth
+			lines = append(lines, getAggregated(data, firstDayMonth.Format("2006 January"), firstDayMonth.Format("2006/01/02"), lastDayMonth.Format("2006/01/02")))
+
+			currentDate = firstDayOfNextMonth
+		}
 	}
 
 	// complessive stats
-	lines = append(lines, getAggregated(data, "TOTAL", fromStr, toStr))
-
+	total := getAggregated(data, "TOTAL", fromStr, toStr)
+	if total != nil {
+		lines = append(lines, total)
+	} else {
+		lines = append(lines, []string{"TOTAL", "", "0", strPrice(0), strPrice(0), strPrice(0), "", "0", strPrice(0), "", strPrice(0)})
+	}
 	return lines
 }
