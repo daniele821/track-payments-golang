@@ -15,6 +15,13 @@ const jsonLocalFile = "payments.json"
 
 func main() {
 	if err := runner(); err != nil {
+		if args := os.Args[1:]; len(args) == 1 && args[0] == "print" {
+			jsonDir, _ := utils.GetExeDir()
+			encryptedFile := filepath.Join([]string{jsonDir, cipherJsonFile}...)
+			encryptedBytes, _ := os.ReadFile(encryptedFile)
+			fmt.Println(string(encryptedBytes))
+			return
+		}
 		fmt.Println(err)
 		os.Exit(1)
 	}
@@ -33,9 +40,9 @@ func runner() error {
 	if err != nil {
 		return err
 	}
-	cipherKeyPath := filepath.Join(append([]string{jsonDir}, cipherKeyFile)...)
-	cipherJsonPath := filepath.Join(append([]string{jsonDir}, cipherJsonFile)...)
-	jsonLocalPath := filepath.Join(append([]string{jsonDir}, jsonLocalFile)...)
+	cipherKeyPath := filepath.Join([]string{jsonDir, cipherKeyFile}...)
+	cipherJsonPath := filepath.Join([]string{jsonDir, cipherJsonFile}...)
+	jsonLocalPath := filepath.Join([]string{jsonDir, jsonLocalFile}...)
 
 	// load from local file or server encrypted one
 	var allPayments payments.AllPayments
