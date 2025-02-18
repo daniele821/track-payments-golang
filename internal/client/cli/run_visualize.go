@@ -112,7 +112,7 @@ func visualizeDetail(data payments.ReadOnlyBTree[payments.Payment], from, to *st
 
 func visualizeAggregated(data payments.ReadOnlyBTree[payments.Payment], from, to *string) {
 	boxData := [][][]string{}
-	boxData = append(boxData, [][]string{{"PERIOD", "", "PAYMENTS", "AVG", "MIN", "MAX", "", "DAYS", "AVG", "", "TOTAL"}})
+	boxData = append(boxData, [][]string{{"PERIOD", "FROM", "TO", "", "PAYMENTS", "AVG", "MIN", "MAX", "", "DAYS", "AVG", "", "TOTAL"}})
 	for _, row := range getAllAggregated(data, from, to) {
 		if row != nil {
 			boxData = append(boxData, [][]string{row})
@@ -151,7 +151,7 @@ func getAggregated(data payments.ReadOnlyBTree[payments.Payment], name, from, to
 	avgDaily := fmt.Sprintf("%.2f€", float64(totPrice)/100.0/float64(dayCount))
 	minStr := strPrice(min)
 	maxStr := strPrice(max)
-	return []string{name, "", countStr, avg, minStr, maxStr, "", dayCountStr, avgDaily, "", totPriceStr}
+	return []string{name, from, to, "", countStr, avg, minStr, maxStr, "", dayCountStr, avgDaily, "", totPriceStr}
 }
 
 func days(from, to string) int {
@@ -216,7 +216,7 @@ func getAllAggregated(data payments.ReadOnlyBTree[payments.Payment], from, to *s
 	if total != nil {
 		lines = append(lines, total)
 	} else {
-		lines = append(lines, []string{"TOTAL", "", "0", strPrice(0), strPrice(0), strPrice(0), "", "0", strPrice(0), "", strPrice(0)})
+		lines = append(lines, []string{"TOTAL", "-", "-", "", "0", strPrice(0), strPrice(0), strPrice(0), "", "0", strPrice(0), "", strPrice(0)})
 	}
 	return lines
 }
