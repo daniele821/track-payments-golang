@@ -1,14 +1,11 @@
 package main
 
 import (
-	"crypto/aes"
-	"crypto/cipher"
-	"crypto/rand"
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
 	"payment/internal/client/cli"
+	"payment/internal/encryption"
 	"payment/internal/server/payments"
 )
 
@@ -45,7 +42,7 @@ func runner() error {
 	if _, found := os.LookupEnv("LOCAL"); found {
 		allPayments, err = payments.NewAllPaymentsFromjsonFile(jsonLocalPath)
 	} else {
-		storedData, err = decryptFile(cipherJsonPath, cipherKeyPath)
+		storedData, err = encryption.DecryptFile(cipherJsonPath, cipherKeyPath)
 		if err != nil {
 			return err
 		}
@@ -60,7 +57,7 @@ func runner() error {
 	// save changes to encrypted file
 	newStoredData, err := allPayments.DumpJson(false)
 	if newStoredData != storedData {
-		if err := encryptFile(newStoredData, cipherJsonPath, cipherKeyPath); err != nil {
+		if err := encryption.EncryptFile(newStoredData, cipherJsonPath, cipherKeyPath); err != nil {
 			return err
 		}
 	}
@@ -81,76 +78,4 @@ func getExeDir() (string, error) {
 		return "", err
 	}
 	return filepath.Dir(exePath), nil
-}
-
-func encryptFile(plainText, cipherFile, keyFile string) error {
-	// Reading key
-	key, err := os.ReadFile(keyFile)
-	if err != nil {
-		return err
-	}
-
-	// Creating block of algorithm
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		return err
-	}
-
-	// Creating GCM mode
-	gcm, err := cipher.NewGCM(block)
-	if err != nil {
-		return err
-	}
-
-	// Generating random nonce
-	nonce := make([]byte, gcm.NonceSize())
-	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
-		return err
-	}
-
-	// Decrypt file
-	cipherText := gcm.Seal(nonce, nonce, []byte(plainText), nil)
-
-	// Writing ciphertext file
-	err = os.WriteFile(cipherFile, cipherText, 0600)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func decryptFile(cipherFile, keyFile string) (string, error) {
-	// Reading ciphertext file
-	cipherText, err := os.ReadFile(cipherFile)
-	if err != nil {
-		return "", err
-	}
-
-	// Reading key
-	key, err := os.ReadFile(keyFile)
-	if err != nil {
-		return "", err
-	}
-
-	// Creating block of algorithm
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		return "", err
-	}
-
-	// Creating GCM mode
-	gcm, err := cipher.NewGCM(block)
-	if err != nil {
-		return "", err
-	}
-
-	// Deattached nonce and decrypt
-	nonce := cipherText[:gcm.NonceSize()]
-	cipherText = cipherText[gcm.NonceSize():]
-	plainTextByte, err := gcm.Open(nil, nonce, cipherText, nil)
-	if err != nil {
-		return "", err
-	}
-
-	return string(plainTextByte), nil
 }
