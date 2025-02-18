@@ -189,7 +189,6 @@ func getAllAggregated(data payments.ReadOnlyBTree[payments.Payment], from, to *s
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println(fromDate, toDate)
 		currentDate := fromDate
 
 		// monthly stats
