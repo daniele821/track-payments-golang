@@ -22,33 +22,37 @@ func visualizeGeneric(dataType string, data payments.ReadOnlyBTree[string], from
 
 func visualizePayment(data payments.ReadOnlyBTree[payments.Payment], from, to *string) {
 	fromPayment, toPayment, fromInclude, toInclude := strToPayment(from), strToPayment(to), true, true
-	boxData := [][][]string{{{"", "MONTH", "DAY", "TIME", "CITY", "SHOP", "METHOD", "PRICE"}}}
+	boxData := [][][]string{{{"", "MONTH", "DAY", "TOTAL", "TIME", "CITY", "SHOP", "METHOD", "PRICE"}}}
 	bodyData := [][]string{}
 	index := 0
 	monthOld, dayOld := "", ""
+	dailyTotal := 0
 	data.AscendRange(fromPayment, toPayment, fromInclude, toInclude, func(item payments.Payment) bool {
 		index += 1
 		dateTime, _ := time.Parse("2006/01/02 15:04", item.Date())
 		month, day, time := dateTime.Format("2006 January"), dateTime.Format("02 Mon"), dateTime.Format("15:04")
 		monthFmt, dayFmt, timeFmt := month, day, time
+		dailyTotal += item.TotalPrice()
 		if dayOld != "" {
 			if month == monthOld {
 				monthFmt = ""
 				if day == dayOld {
 					dayFmt = ""
 				} else {
+					dailyTotal = item.TotalPrice()
 					boxData = append(boxData, bodyData)
 					bodyData = [][]string{}
 				}
 			} else {
-				// index = 1
+				dailyTotal = item.TotalPrice()
 				boxData = append(boxData, bodyData)
 				bodyData = [][]string{}
 			}
 		}
 
 		dayOld, monthOld = day, month
-		bodyData = append(bodyData, []string{strconv.Itoa(index), monthFmt, dayFmt, timeFmt, item.City(), item.Shop(), item.PaymentMethod(), fmt.Sprintf("%.2f€", float64(item.TotalPrice())/100.0)})
+		bodyData = append(bodyData, []string{strconv.Itoa(index), monthFmt, dayFmt, "", timeFmt, item.City(), item.Shop(), item.PaymentMethod(), fmt.Sprintf("%.2f€", float64(item.TotalPrice())/100.0)})
+		bodyData[0][3] = strPrice(dailyTotal)
 		return true
 	})
 	boxData = append(boxData, bodyData)
