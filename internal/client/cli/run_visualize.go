@@ -205,6 +205,13 @@ func getAllAggregated(data payments.ReadOnlyBTree[payments.Payment], from, to *s
 			firstDayOfNextMonth := time.Date(nextYear, nextMonth, 1, 0, 0, 0, 0, time.UTC)
 			lastDayMonth := firstDayOfNextMonth.AddDate(0, 0, -1)
 
+			if firstDayMonth.Before(fromDate) {
+				firstDayMonth = fromDate
+			}
+			if lastDayMonth.After(toDate) {
+				lastDayMonth = toDate
+			}
+
 			lines = append(lines, getAggregated(data, firstDayMonth.Format("2006 January"), firstDayMonth.Format("2006/01/02"), lastDayMonth.Format("2006/01/02")))
 
 			currentDate = firstDayOfNextMonth
