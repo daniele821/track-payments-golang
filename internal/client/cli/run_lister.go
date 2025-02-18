@@ -90,6 +90,6 @@ func listDetails(data payments.ReadOnlyBTree[payments.Payment], from, to *string
 func listAggregated(data payments.ReadOnlyBTree[payments.Payment], from, to *string) {
 	stats := getAllAggregated(data, from, to)
 	for _, row := range stats {
-		fmt.Printf("PERIOD:%s, TOTAL:%s, PAYMENTS:%s, AVG:%s, DAYS:%s, AVG:%s, MIN:%s, MAX:%s\n", row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7])
+		fmt.Printf("PERIOD: %s (%s - %s), PAYMENTS: %s, AVG: %s, MIN: %s, MAX: %s, DAYS: %s, AVG: %s, TOTAL: %s\n", row[0], row[1], row[2], row[4], row[5], row[6], row[7], row[9], row[10], row[12])
 	}
 }
