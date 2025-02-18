@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 	"payment/internal/client/cli"
-	"payment/internal/encryption"
 	"payment/internal/server/payments"
+	"payment/internal/utils"
 )
 
 const cipherKeyFile = ".cipher_key"
@@ -28,7 +28,7 @@ func runner() error {
 	}
 
 	// get paths
-	jsonDir, err := getExeDir()
+	jsonDir, err := utils.GetExeDir()
 	if err != nil {
 		return err
 	}
@@ -42,7 +42,7 @@ func runner() error {
 	if _, found := os.LookupEnv("LOCAL"); found {
 		allPayments, err = payments.NewAllPaymentsFromjsonFile(jsonLocalPath)
 	} else {
-		storedData, err = encryption.DecryptFile(cipherJsonPath, cipherKeyPath)
+		storedData, err = utils.DecryptFile(cipherJsonPath, cipherKeyPath)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ func runner() error {
 	// save changes to encrypted file
 	newStoredData, err := allPayments.DumpJson(false)
 	if newStoredData != storedData {
-		if err := encryption.EncryptFile(newStoredData, cipherJsonPath, cipherKeyPath); err != nil {
+		if err := utils.EncryptFile(newStoredData, cipherJsonPath, cipherKeyPath); err != nil {
 			return err
 		}
 	}
@@ -66,16 +66,4 @@ func runner() error {
 	}
 
 	return nil
-}
-
-func getExeDir() (string, error) {
-	exePath, err := os.Executable()
-	if err != nil {
-		return "", err
-	}
-	exePath, err = filepath.EvalSymlinks(exePath)
-	if err != nil {
-		return "", err
-	}
-	return filepath.Dir(exePath), nil
 }
