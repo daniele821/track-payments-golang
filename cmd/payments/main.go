@@ -41,13 +41,23 @@ func runner() error {
 	var allPayments payments.AllPayments
 	var storedData string
 	if _, found := os.LookupEnv("LOCAL"); found {
-		allPayments, _ = payments.NewAllPaymentsFromjsonFile(jsonLocalPath)
+		allPayments, err = payments.NewAllPaymentsFromjsonFile(jsonLocalPath)
+		if err != nil {
+			return err
+		}
 	} else {
 		storedData, err = utils.DecryptFile(cipherJsonPath, cipherKeyPath)
 		if err != nil {
 			return err
 		}
-		allPayments, _ = payments.NewAllPaymentsFromJson(storedData)
+		allPayments, err = payments.NewAllPaymentsFromJson(storedData)
+		if err != nil {
+			return err
+		}
+	}
+	storedData, err = allPayments.DumpJson(false)
+	if err != nil {
+		return err
 	}
 
 	// run cli tool
