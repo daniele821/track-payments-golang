@@ -97,7 +97,7 @@ func updateDetails(allPayments payments.AllPayments, data []string) error {
 				return errors.New(fmt.Sprintf("order (%d) update failed: invalid price value (%s)", index-1, price))
 			}
 			dateFinal := dateStr + " " + timeStr
-			if err := allPayments.UpdateOrder(item, dateFinal, &quantityInt, &priceInt); err != nil {
+			if err := allPayments.UpdateOrder(dateFinal, item, &quantityInt, &priceInt); err != nil {
 				return errors.New(fmt.Sprintf("order (%d) update failed: %s\n", index-1, err))
 			} else {
 				okMsg = append(okMsg, fmt.Sprintf("successfully updated order (%s, %s, %d, %.2f)\n", dateFinal, item, quantityInt, float64(priceInt)/100.0))
