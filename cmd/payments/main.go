@@ -40,7 +40,7 @@ func runner() error {
 	var allPayments payments.AllPayments
 	var storedData string
 	if _, found := os.LookupEnv("LOCAL"); found {
-		allPayments, err = payments.NewAllPaymentsFromjsonFile(jsonLocalPath)
+		allPayments, _ = payments.NewAllPaymentsFromjsonFile(jsonLocalPath)
 	} else {
 		storedData, err = utils.DecryptFile(cipherJsonPath, cipherKeyPath)
 		if err != nil {
@@ -55,14 +55,19 @@ func runner() error {
 	}
 
 	// save changes to encrypted file
-	newStoredData, err := allPayments.DumpJson(false)
-	if newStoredData != storedData {
-		if err := utils.EncryptFile(newStoredData, cipherJsonPath, cipherKeyPath); err != nil {
+	if _, found := os.LookupEnv("DRYRUN"); !found {
+		newStoredData, err := allPayments.DumpJson(false)
+		if err != nil {
 			return err
 		}
-	}
-	if err := allPayments.DumpJsonToFile(jsonLocalPath, true); err != nil {
-		return err
+		if newStoredData != storedData {
+			if err := utils.EncryptFile(newStoredData, cipherJsonPath, cipherKeyPath); err != nil {
+				return err
+			}
+		}
+		if err := allPayments.DumpJsonToFile(jsonLocalPath, true); err != nil {
+			return err
+		}
 	}
 
 	return nil

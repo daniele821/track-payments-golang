@@ -63,5 +63,6 @@ Operations:
 
 Environment Variables:
     LOCAL=      load data from local backup file (allows to manually modify json file)
+    DRYRUN=     do not save the modifications to file
 `)
 }
