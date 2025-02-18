@@ -16,6 +16,7 @@ const jsonLocalFile = "payments.json"
 func main() {
 	if err := runner(); err != nil {
 		fmt.Println(err)
+		os.Exit(1)
 	}
 }
 
