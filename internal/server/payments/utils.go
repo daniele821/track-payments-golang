@@ -2,7 +2,6 @@ package payments
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/google/btree"
@@ -18,10 +17,11 @@ func (allPayments *AllPayments) checks(date, city, shop, paymentMethod, item *st
 		if err != nil {
 			return errors.New("invalid date: " + err.Error())
 		}
-		dateNow := time.Now().Format("2006/01/02 15:04")
-		if *date > dateNow {
-			return errors.New(fmt.Sprintf("invalid date: future dates are not accepted (input: %s, now: %s)", *date, dateNow))
-		}
+		// FUTURE DATA CHECKS:
+		// dateNow := time.Now().Format("2006/01/02 15:04")
+		// if *date > dateNow {
+		// 	return errors.New(fmt.Sprintf("invalid date: future dates are not accepted (input: %s, now: %s)", *date, dateNow))
+		// }
 	}
 	if city != nil {
 		if !allPayments.p.valueSet.p.cities.Has(*city) {
