@@ -67,10 +67,6 @@ func runner() error {
 			return err
 		}
 	}
-	storedData, err = allPayments.DumpJson(false)
-	if err != nil {
-		return err
-	}
 
 	// run cli tool
 	if err := cli.ParseAndRun(allPayments, args); err != nil {
@@ -83,7 +79,11 @@ func runner() error {
 		if err != nil {
 			return err
 		}
-		if newStoredData != storedData {
+		oldDecryptedData, err := utils.DecryptFile(cipherJsonPath, cipherKeyPath)
+		if err != nil {
+			return err
+		}
+		if newStoredData != oldDecryptedData {
 			if err := utils.EncryptFile(newStoredData, cipherJsonPath, cipherKeyPath); err != nil {
 				return err
 			}
