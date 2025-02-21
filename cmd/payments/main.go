@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"payment/internal/client/cli"
@@ -40,7 +41,18 @@ func runner() error {
 	// load from local file or server encrypted one
 	var allPayments payments.AllPayments
 	var storedData string
-	if _, found := os.LookupEnv("LOCAL"); found {
+	if info, err := os.Stdin.Stat(); info.Mode()&os.ModeCharDevice == 0 {
+		data, err := io.ReadAll(os.Stdin)
+		if err != nil {
+			return err
+		}
+		allPayments, err = payments.NewAllPaymentsFromJson(string(data))
+		if err != nil {
+			return err
+		}
+	} else if err != nil {
+		return err
+	} else if _, found := os.LookupEnv("LOCAL"); found {
 		allPayments, err = payments.NewAllPaymentsFromjsonFile(jsonLocalPath)
 		if err != nil {
 			return err
