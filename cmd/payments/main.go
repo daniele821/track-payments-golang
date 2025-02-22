@@ -41,6 +41,7 @@ func runner() error {
 	// load from local file or server encrypted one
 	var allPayments payments.AllPayments
 	var storedData string
+	fromStdin := false
 	if info, err := os.Stdin.Stat(); info.Mode()&os.ModeCharDevice == 0 {
 		data, err := io.ReadAll(os.Stdin)
 		if err != nil {
@@ -50,6 +51,7 @@ func runner() error {
 		if err != nil {
 			return err
 		}
+		fromStdin = true
 	} else if err != nil {
 		return err
 	} else if _, found := os.LookupEnv("LOCAL"); found {
@@ -74,7 +76,7 @@ func runner() error {
 	}
 
 	// save changes to encrypted file
-	if _, found := os.LookupEnv("DRYRUN"); !found {
+	if _, found := os.LookupEnv("DRYRUN"); !found && !fromStdin {
 		newStoredData, err := allPayments.DumpJson(false)
 		if err != nil {
 			return err
