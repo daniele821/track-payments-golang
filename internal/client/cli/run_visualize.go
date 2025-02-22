@@ -201,6 +201,15 @@ func getAllAggregated(data payments.ReadOnlyBTree[payments.Payment], from, to *s
 		toStr = item.Date()[:10]
 		return false
 	})
+	if from != nil {
+		if len(*from) == 1 {
+			fromStr = time.Now().Format("2006/01/02")
+		} else if fromDate, err := time.Parse("2006/01/02", *from); err == nil {
+			fromStr = fromDate.Format("2006/01/02")
+		}
+	}
+	if to != nil {
+	}
 
 	if fromStr != "" {
 
@@ -245,7 +254,7 @@ func getAllAggregated(data payments.ReadOnlyBTree[payments.Payment], from, to *s
 	if total != nil {
 		lines = append(lines, total)
 	} else {
-		lines = append(lines, []string{"TOTAL", "-", "-", "", "0", strPrice(0), strPrice(0), strPrice(0), "", strPrice(0)})
+		lines = append(lines, []string{"TOTAL", fromStr, toStr, "", "0", strPrice(0), strPrice(0), strPrice(0), "", strPrice(0)})
 	}
 	return lines
 }
