@@ -124,7 +124,7 @@ func fmtBox(data [][][]string, lPad, rPad int, alignCells []cell) string {
 					}
 				}
 				cellAlign := leftAlign
-				for i := 0; i < 4; i++ {
+				for i := range 4 {
 					if alignByPreciseness[i] != nil {
 						cellAlign = *alignByPreciseness[i]
 						break
