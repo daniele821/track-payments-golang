@@ -224,7 +224,17 @@ func getAllAggregated(data payments.ReadOnlyBTree[payments.Payment], from, to *s
 		})
 	}
 
-	fmt.Println(fromStr, toStr)
+	if toStr == "" {
+		toStr = fromStr
+	}
+	if fromStr == "" {
+		fromStr = toStr
+	}
+	if fromStr > toStr {
+		tmpStr := fromStr
+		fromStr = toStr
+		toStr = tmpStr
+	}
 
 	if fromStr != "" {
 
