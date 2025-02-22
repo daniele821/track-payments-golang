@@ -193,23 +193,38 @@ func getAllAggregated(data payments.ReadOnlyBTree[payments.Payment], from, to *s
 	lines := [][]string{}
 
 	fromStr, toStr := "", ""
-	data.AscendRange(strToPayment(from), strToPayment(to), true, true, func(item payments.Payment) bool {
-		fromStr = item.Date()[:10]
-		return false
-	})
-	data.DescendRange(strToPayment(to), strToPayment(from), true, true, func(item payments.Payment) bool {
-		toStr = item.Date()[:10]
-		return false
-	})
 	if from != nil {
 		if len(*from) == 1 {
 			fromStr = time.Now().Format("2006/01/02")
+			*from = fromStr
 		} else if fromDate, err := time.Parse("2006/01/02", *from); err == nil {
 			fromStr = fromDate.Format("2006/01/02")
+			*from = fromStr
 		}
 	}
 	if to != nil {
+		if len(*to) == 1 {
+			toStr = time.Now().Format("2006/01/02")
+			*to = toStr
+		} else if toDate, err := time.Parse("2006/01/02", *to); err == nil {
+			toStr = toDate.Format("2006/01/02")
+			*to = toStr
+		}
 	}
+	if fromStr == "" {
+		data.AscendRange(strToPayment(from), strToPayment(to), true, true, func(item payments.Payment) bool {
+			fromStr = item.Date()[:10]
+			return false
+		})
+	}
+	if toStr == "" {
+		data.DescendRange(strToPayment(to), strToPayment(from), true, true, func(item payments.Payment) bool {
+			toStr = item.Date()[:10]
+			return false
+		})
+	}
+
+	fmt.Println(fromStr, toStr)
 
 	if fromStr != "" {
 
@@ -254,7 +269,7 @@ func getAllAggregated(data payments.ReadOnlyBTree[payments.Payment], from, to *s
 	if total != nil {
 		lines = append(lines, total)
 	} else {
-		lines = append(lines, []string{"TOTAL", fromStr, toStr, "", "0", strPrice(0), strPrice(0), strPrice(0), "", strPrice(0)})
+		lines = append(lines, []string{"TOTAL", fromStr, toStr, "", strconv.Itoa(days(fromStr, toStr)), strPrice(0), strPrice(0), strPrice(0), "", strPrice(0)})
 	}
 	return lines
 }
