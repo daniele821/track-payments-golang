@@ -30,7 +30,7 @@ func visualizePayment(data payments.ReadOnlyBTree[payments.Payment], from, to *s
 	data.AscendRange(fromPayment, toPayment, fromInclude, toInclude, func(item payments.Payment) bool {
 		index += 1
 		dateTime, _ := time.Parse("2006/01/02 15:04", item.Date())
-		month, day, time := dateTime.Format("2006 January"), dateTime.Format("02 Mon"), dateTime.Format("15:04")
+		month, day, time := dateTime.Format("2006 January"), dateTime.Format("02 Monday"), dateTime.Format("15:04")
 		monthFmt, dayFmt, timeFmt := month, day, time
 		dailyTotal += item.TotalPrice()
 		if dayOld != "" {
@@ -69,7 +69,7 @@ func visualizeDetail(data payments.ReadOnlyBTree[payments.Payment], from, to *st
 	data.AscendRange(fromPayment, toPayment, fromInclude, toInclude, func(item payments.Payment) bool {
 		index += 1
 		dateTime, _ := time.Parse("2006/01/02 15:04", item.Date())
-		month, day, time := dateTime.Format("2006 January"), dateTime.Format("02 Mon"), dateTime.Format("15:04")
+		month, day, time := dateTime.Format("2006 January"), dateTime.Format("02 Monday"), dateTime.Format("15:04")
 		monthFmt, dayFmt, timeFmt := month, day, time
 		dailyTotal += item.TotalPrice()
 		if dayOld != "" {
