@@ -141,3 +141,27 @@ func fmtBox(data [][][]string, lPad, rPad int, alignCells []cell) string {
 	acc.WriteString("\n")
 	return acc.String()
 }
+
+func drawBoxRow2(maxLen []int, skip []bool, totPad int) string {
+	acc := strings.Builder{}
+	for index, nthLen := range maxLen {
+		if index == 0 {
+			acc.WriteString(boxVert)
+		} else {
+			acc.WriteString(boxCross)
+		}
+		if skip[index] {
+			acc.WriteString(strings.Repeat(" ", nthLen+totPad))
+		} else {
+			acc.WriteString(strings.Repeat(boxHoriz, nthLen+totPad))
+		}
+	}
+	acc.WriteString(boxVertRight)
+
+	return acc.String()
+}
+
+func fmtBox2(data [][][]string, lPad, rPad int, alignCells []cell) string {
+	builder := strings.Builder{}
+	return builder.String()
+}

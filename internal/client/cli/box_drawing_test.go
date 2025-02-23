@@ -68,3 +68,19 @@ func TestBoxDrawing(t *testing.T) {
 		t.Fatalf("draw box failed: \nexpected:\n%s\nactual:\n%s\n", expected, actual)
 	}
 }
+
+func TestBoxRow2(t *testing.T) {
+	s := boxVert
+	m := boxVertRight
+	e := boxVertLeft
+	c := boxCross
+	expected := s + strings.Repeat(" ", 10) + m + strings.Repeat(boxHoriz, 5) + c + strings.Repeat(boxHoriz, 4) + e
+	actual := drawBoxRow2([]int{9, 4, 3}, []bool{true, false, false}, 1)
+	if !reflect.DeepEqual(actual, expected) {
+		t.Fatalf("draw box row 2 failed: \nexpected | %s |\nactual   | %s |", expected, actual)
+	}
+}
+
+func TestBoxDrawing2(t *testing.T) {
+	t.Fatalf("test yet to be implemented!")
+}
