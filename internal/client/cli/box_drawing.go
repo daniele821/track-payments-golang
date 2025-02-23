@@ -99,13 +99,32 @@ func drawBoxRow(maxLen []int, startChar, middleChar, endChar string, totPad int)
 }
 
 func fmtBox(data [][][]string, lPad, rPad int, alignCells []cell) string {
+	return fmtBoxVersions(data, lPad, rPad, alignCells, 0)
+}
+
+func fmtBox2(data [][][]string, lPad, rPad int, alignCells []cell) string {
+	return fmtBoxVersions(data, lPad, rPad, alignCells, 1)
+}
+
+func fmtBoxVersions(data [][][]string, lPad, rPad int, alignCells []cell, version int) string {
 	acc := strings.Builder{}
 	maxLen := getMaxLen(data)
 	acc.WriteString(drawBoxRow(maxLen, boxRightDown, boxHorizDown, boxLeftDown, lPad+rPad))
 	acc.WriteString("\n")
 	for indexBox, box := range data {
 		if indexBox != 0 {
-			acc.WriteString(drawBoxRow(maxLen, boxVertRight, boxCross, boxVertLeft, lPad+rPad))
+			switch version {
+			case 0:
+				acc.WriteString(drawBoxRow(maxLen, boxVertRight, boxCross, boxVertLeft, lPad+rPad))
+			case 1:
+				skip := []bool{}
+				for _, elem := range box[0] {
+					skip = append(skip, strings.TrimSpace(elem) == "")
+				}
+				acc.WriteString(drawBoxRow2(maxLen, skip, lPad+rPad))
+			default:
+				panic("invalid version")
+			}
 			acc.WriteString("\n")
 		}
 		for indexRow, row := range box {
@@ -172,9 +191,4 @@ func drawBoxRow2(maxLen []int, skip []bool, totPad int) string {
 	}
 
 	return acc.String()
-}
-
-func fmtBox2(data [][][]string, lPad, rPad int, alignCells []cell) string {
-	builder := strings.Builder{}
-	return builder.String()
 }

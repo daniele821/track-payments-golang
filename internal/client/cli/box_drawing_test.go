@@ -80,7 +80,3 @@ func TestBoxRow2(t *testing.T) {
 		t.Fatalf("draw box row 2 failed: \nexpected | %s |\nactual   | %s |", expected, actual)
 	}
 }
-
-func TestBoxDrawing2(t *testing.T) {
-	t.Fatalf("test yet to be implemented!")
-}
