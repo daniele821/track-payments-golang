@@ -144,11 +144,20 @@ func fmtBox(data [][][]string, lPad, rPad int, alignCells []cell) string {
 
 func drawBoxRow2(maxLen []int, skip []bool, totPad int) string {
 	acc := strings.Builder{}
+	left, right := false, false
 	for index, nthLen := range maxLen {
-		if index == 0 {
-			acc.WriteString(boxVert)
-		} else {
+		if index > 0 {
+			left = !skip[index-1]
+		}
+		right = !skip[index]
+		if left && right {
 			acc.WriteString(boxCross)
+		} else if left && !right {
+			acc.WriteString(boxVertLeft)
+		} else if !left && right {
+			acc.WriteString(boxVertRight)
+		} else if !left && !right {
+			acc.WriteString(boxVert)
 		}
 		if skip[index] {
 			acc.WriteString(strings.Repeat(" ", nthLen+totPad))
@@ -156,7 +165,11 @@ func drawBoxRow2(maxLen []int, skip []bool, totPad int) string {
 			acc.WriteString(strings.Repeat(boxHoriz, nthLen+totPad))
 		}
 	}
-	acc.WriteString(boxVertRight)
+	if skip[len(skip)-1] {
+		acc.WriteString(boxVert)
+	} else {
+		acc.WriteString(boxVertLeft)
+	}
 
 	return acc.String()
 }
