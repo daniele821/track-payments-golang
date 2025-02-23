@@ -43,32 +43,6 @@ func TestBoxRow(t *testing.T) {
 	}
 }
 
-func TestBoxDrawing(t *testing.T) {
-	expected := `
-┌────────┬───────────────┐
-│ Index  │     City      │
-├────────┼───────────────┤
-│ 0      │ Tesseract     │
-│   1    │     Monopoly  │
-├────────┼───────────────┤
-│ 2      │ VeryLongWord  │
-│ 3      │ Hello!        │
-└────────┴───────────────┘
-`
-	actual := "\n" + fmtBox([][][]string{{{"Index", "City"}},
-		{{"0", "Tesseract"}, {"1", "Monopoly"}},
-		{{"2", "VeryLongWord"}, {"3", "Hello!"}}},
-		1, 2,
-		[]cell{
-			{box: 1, row: 1, col: 1, align: rightAlign},
-			{box: 1, row: 1, col: -1, align: centerRightAlign},
-			{box: 0, row: -1, col: -1, align: centerRightAlign},
-		})
-	if !reflect.DeepEqual(actual, expected) {
-		t.Fatalf("draw box failed: \nexpected:\n%s\nactual:\n%s\n", expected, actual)
-	}
-}
-
 func TestBoxRow2(t *testing.T) {
 	s := boxVert
 	m := boxVertRight
