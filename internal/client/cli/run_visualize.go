@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"payment/internal/server/payments"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -107,7 +108,7 @@ func visualizeDetail(data payments.ReadOnlyBTree[payments.Payment], from, to *st
 		return true
 	})
 	boxData = append(boxData, bodyData)
-	fmt.Print(fmtBox2(boxData, 1, 1, nil))
+	fmt.Print(fmtBox2(reorgData(boxData), 1, 1, nil))
 }
 
 func visualizeAggregated(data payments.ReadOnlyBTree[payments.Payment], from, to *string) {
@@ -119,6 +120,27 @@ func visualizeAggregated(data payments.ReadOnlyBTree[payments.Payment], from, to
 		}
 	}
 	fmt.Print(fmtBox(boxData, 1, 1, nil))
+}
+
+func reorgData(data [][][]string) [][][]string {
+	res := [][][]string{}
+	tmpBox := [][]string{}
+	for _, box := range data {
+		for _, row := range box {
+			if len(tmpBox) != 0 {
+				if strings.TrimSpace(row[5]) != "" {
+					res = append(res, tmpBox)
+					tmpBox = [][]string{}
+				}
+			}
+			tmpBox = append(tmpBox, row)
+		}
+		if len(tmpBox) != 0 {
+			res = append(res, tmpBox)
+			tmpBox = [][]string{}
+		}
+	}
+	return res
 }
 
 func getAggregated(data payments.ReadOnlyBTree[payments.Payment], name, from, to string) []string {
