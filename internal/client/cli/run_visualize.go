@@ -58,7 +58,11 @@ func visualizePayment(data payments.ReadOnlyBTree[payments.Payment], from, to *s
 	})
 	boxData = append(boxData, bodyData)
 	if print {
-		fmt.Print(fmtBox2(boxData, 1, 1, nil))
+		fmt.Print(fmtBox2(boxData, 1, 1, []cell{
+			{-1, -1, 3, rightAlign},
+			{-1, -1, 8, rightAlign},
+			{0, 0, -1, leftAlign},
+		}))
 	}
 	return boxData
 }
@@ -139,7 +143,12 @@ func visualizeDetail(data payments.ReadOnlyBTree[payments.Payment], from, to *st
 		return true
 	})
 	boxData = append(boxData, bodyData)
-	fmt.Print(fmtBox2(reorgData(boxData), 1, 1, nil))
+	fmt.Print(fmtBox2(reorgData(boxData), 1, 1, []cell{
+		{-1, -1, 3, rightAlign},
+		{-1, -1, 8, rightAlign},
+		{-1, -1, 11, rightAlign},
+		{0, 0, -1, leftAlign},
+	}))
 }
 
 func visualizeAggregated(data payments.ReadOnlyBTree[payments.Payment], from, to *string) {
