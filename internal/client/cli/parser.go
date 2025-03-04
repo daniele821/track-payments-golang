@@ -161,7 +161,6 @@ func gitPull() {
 	fmt.Println("checking for updates")
 	cmd = exec.Command("git", "-C", scriptDir, "pull")
 	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
 		return
 	}
