@@ -11,6 +11,7 @@ import (
 
 func ParseAndRun(allPayments payments.AllPayments, args []string) error {
 	if len(args) == 0 {
+		gitPull()
 		return nil
 	}
 	switch {
@@ -158,7 +159,7 @@ func gitPull() {
 	if err := cmd.Run(); err != nil {
 		return
 	}
-	fmt.Println("checking for updates")
+	fmt.Println("checking for updates...")
 	cmd = exec.Command("git", "-C", scriptDir, "pull")
 	cmd.Stdout = os.Stdout
 	if err := cmd.Run(); err != nil {
