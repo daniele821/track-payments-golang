@@ -60,6 +60,8 @@ func ParseAndRun(allPayments payments.AllPayments, args []string) error {
 			listDetails(allPayments.Payments(), from, to)
 		case matchEveryLenght(args[1], "aggregated"):
 			listAggregated(allPayments.Payments(), from, to)
+		case matchEveryLenght(args[1], "time"):
+			listTime(allPayments.Payments(), from, to)
 		default:
 			return errors.New(fmt.Sprintf("invalid arg for list: %s", args[1]))
 		}
@@ -86,11 +88,13 @@ func ParseAndRun(allPayments payments.AllPayments, args []string) error {
 			visualizeGeneric("METHOD", allPayments.PaymentMethods(), from, to)
 			visualizeGeneric("ITEM", allPayments.Items(), from, to)
 		case matchEveryLenght(args[1], "payments"):
-			visualizePayment(allPayments.Payments(), from, to)
+			visualizePayment(allPayments.Payments(), from, to, true)
 		case matchEveryLenght(args[1], "details"):
 			visualizeDetail(allPayments.Payments(), from, to)
 		case matchEveryLenght(args[1], "aggregated"):
 			visualizeAggregated(allPayments.Payments(), from, to)
+		case matchEveryLenght(args[1], "time"):
+			visualizeTime(allPayments.Payments(), from, to, true)
 		default:
 			return errors.New(fmt.Sprintf("invalid arg for visualize: %s", args[1]))
 		}

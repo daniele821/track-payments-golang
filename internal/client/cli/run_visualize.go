@@ -21,7 +21,7 @@ func visualizeGeneric(dataType string, data payments.ReadOnlyBTree[string], from
 	fmt.Print(fmtBox(boxData, 1, 1, nil))
 }
 
-func visualizePayment(data payments.ReadOnlyBTree[payments.Payment], from, to *string) {
+func visualizePayment(data payments.ReadOnlyBTree[payments.Payment], from, to *string, print bool) [][][]string {
 	fromPayment, toPayment, fromInclude, toInclude := strToPayment(from), strToPayment(to), true, true
 	boxData := [][][]string{{{"", "MONTH", "DAY", "TOTAL", "TIME", "CITY", "SHOP", "METHOD", "PRICE"}}}
 	bodyData := [][]string{}
@@ -57,7 +57,19 @@ func visualizePayment(data payments.ReadOnlyBTree[payments.Payment], from, to *s
 		return true
 	})
 	boxData = append(boxData, bodyData)
-	fmt.Print(fmtBox2(boxData, 1, 1, nil))
+	if print {
+		fmt.Print(fmtBox2(boxData, 1, 1, nil))
+	}
+	return boxData
+}
+
+func visualizeTime(data payments.ReadOnlyBTree[payments.Payment], from, to *string, print bool) [][][]string {
+	tmpData := visualizePayment(data, from, to, false)
+	panic("todo: conversion")
+	if print {
+		fmt.Print(fmtBox2(tmpData, 1, 1, nil))
+	}
+	return tmpData
 }
 
 func visualizeDetail(data payments.ReadOnlyBTree[payments.Payment], from, to *string) {
