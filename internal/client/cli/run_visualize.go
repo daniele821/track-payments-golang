@@ -83,7 +83,10 @@ func visualizeTime(data payments.ReadOnlyBTree[payments.Payment], from, to *stri
 	}
 	newData = append(newData, newBox)
 	if print {
-		fmt.Print(fmtBox(newData, 1, 1, []cell{{-1, -1, 3, rightAlign}}))
+		fmt.Print(fmtBox(newData, 1, 1, []cell{
+			{-1, -1, 3, rightAlign},
+			{0, 0, -1, leftAlign},
+		}))
 	}
 	return newData
 }
