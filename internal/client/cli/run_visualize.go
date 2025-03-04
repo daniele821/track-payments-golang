@@ -65,7 +65,8 @@ func visualizePayment(data payments.ReadOnlyBTree[payments.Payment], from, to *s
 
 func visualizeTime(data payments.ReadOnlyBTree[payments.Payment], from, to *string, print bool) [][][]string {
 	tmpData := visualizePayment(data, from, to, false)
-	newData := [][][]string{}
+	row := tmpData[0][0]
+	newData := [][][]string{{row[:4]}}
 	newBox := [][]string{}
 	index := 1
 	for _, tmpBox := range tmpData[1:] {
