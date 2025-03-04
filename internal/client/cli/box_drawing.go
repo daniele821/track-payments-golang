@@ -119,6 +119,9 @@ func fmtBox2(data [][][]string, lPad, rPad int, alignCells []cell) string {
 }
 
 func fmtBoxVersions(data [][][]string, lPad, rPad int, alignCells []cell, version int) string {
+	if len(data) == 0 {
+		return ""
+	}
 	acc := strings.Builder{}
 	maxLen := getMaxLen(data)
 	acc.WriteString(drawBoxRow(maxLen, boxRightDown, boxHorizDown, boxLeftDown, lPad+rPad))

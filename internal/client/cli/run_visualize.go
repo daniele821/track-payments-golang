@@ -65,11 +65,26 @@ func visualizePayment(data payments.ReadOnlyBTree[payments.Payment], from, to *s
 
 func visualizeTime(data payments.ReadOnlyBTree[payments.Payment], from, to *string, print bool) [][][]string {
 	tmpData := visualizePayment(data, from, to, false)
-	panic("todo: conversion")
-	if print {
-		fmt.Print(fmtBox2(tmpData, 1, 1, nil))
+	newData := [][][]string{}
+	newBox := [][]string{}
+	index := 1
+	for _, tmpBox := range tmpData[1:] {
+		if len(tmpBox) > 0 {
+			newRow := tmpBox[0][:4]
+			newRow[0] = strconv.Itoa(index)
+			if strings.TrimSpace(newRow[1]) != "" && len(newBox) > 0 {
+				newData = append(newData, newBox)
+				newBox = [][]string{}
+			}
+			newBox = append(newBox, newRow)
+			index += 1
+		}
 	}
-	return tmpData
+	newData = append(newData, newBox)
+	if print {
+		fmt.Print(fmtBox(newData, 1, 1, nil))
+	}
+	return newData
 }
 
 func visualizeDetail(data payments.ReadOnlyBTree[payments.Payment], from, to *string) {
