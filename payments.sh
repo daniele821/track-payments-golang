@@ -8,9 +8,6 @@ cd "$SCRIPT_DIR" || exit 1
 GOMAIN_PATH="${SCRIPT_DIR}/cmd/payments/main.go"
 BIN_PATH="${SCRIPT_DIR}/data/.payments"
 
-echo 'checking for updates...'
-git -C "${SCRIPT_DIR}" pull
-
 # automagically build go executable ONLY if go source code was updated in the meanwhile
 if [[ -f "$BIN_PATH" ]]; then
     latest_go_file=$(find "$SCRIPT_DIR" -type f -name "*.go" -printf "%T@ %p\n" | sort -nr | head -n1 | awk '{print $2}')
