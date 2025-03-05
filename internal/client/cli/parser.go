@@ -20,25 +20,18 @@ func ParseAndRun(allPayments payments.AllPayments, args []string) error {
 		case len(args) <= 1:
 			return errors.New("missing arg for insert")
 		case matchEveryLenghtFromAnyWords(args[1], []string{"city", "cities"}):
-			gitPull()
 			return insertGeneric("cities", args[2:], allPayments.AddCities)
 		case matchEveryLenght(args[1], "shops"):
-			gitPull()
 			return insertGeneric("shops", args[2:], allPayments.AddShops)
 		case matchEveryLenght(args[1], "methods"):
-			gitPull()
 			return insertGeneric("methods", args[2:], allPayments.AddPaymentMethods)
 		case matchEveryLenght(args[1], "items"):
-			gitPull()
 			return insertGeneric("items", args[2:], allPayments.AddItems)
 		case matchEveryLenght(args[1], "payments"):
-			gitPull()
 			return insertPayments(allPayments, args[2:])
 		case matchEveryLenght(args[1], "orders"):
-			gitPull()
 			return insertOrders(allPayments, args[2:])
 		case matchEveryLenght(args[1], "details"):
-			gitPull()
 			return insertDetails(allPayments, args[2:])
 		default:
 			return errors.New(fmt.Sprintf("invalid arg for insert: %s", args[1]))
@@ -114,13 +107,10 @@ func ParseAndRun(allPayments payments.AllPayments, args []string) error {
 		case len(args) <= 1:
 			return errors.New("missing arg for update")
 		case matchEveryLenght(args[1], "payments"):
-			gitPull()
 			return updatePayments(allPayments, args[2:])
 		case matchEveryLenght(args[1], "orders"):
-			gitPull()
 			return updateOrders(allPayments, args[2:])
 		case matchEveryLenght(args[1], "details"):
-			gitPull()
 			return updateDetails(allPayments, args[2:])
 		default:
 			return errors.New(fmt.Sprintf("invalid arg for update: %s", args[1]))
@@ -130,10 +120,8 @@ func ParseAndRun(allPayments payments.AllPayments, args []string) error {
 		case len(args) <= 1:
 			return errors.New("missing arg for delete")
 		case matchEveryLenght(args[1], "payments"):
-			gitPull()
 			return deletePayments(allPayments, args[2:])
 		case matchEveryLenght(args[1], "orders"):
-			gitPull()
 			return deleteOrders(allPayments, args[2:])
 		default:
 			return errors.New(fmt.Sprintf("invalid arg for delete: %s", args[1]))
