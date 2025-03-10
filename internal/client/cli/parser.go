@@ -3,15 +3,11 @@ package cli
 import (
 	"errors"
 	"fmt"
-	"os"
-	"os/exec"
 	"payment/internal/server/payments"
-	"payment/internal/utils"
 )
 
 func ParseAndRun(allPayments payments.AllPayments, args []string) error {
 	if len(args) == 0 {
-		gitPull()
 		return nil
 	}
 	switch {
@@ -136,21 +132,4 @@ func ParseAndRun(allPayments payments.AllPayments, args []string) error {
 		return errors.New(fmt.Sprintf("invalid arg: %s", args[0]))
 	}
 	return nil
-}
-
-func gitPull() {
-	scriptDir, err := utils.GetExeDir()
-	if err != nil {
-		panic(err)
-	}
-	cmd := exec.Command("git", "-C", scriptDir, "rev-parse", "--show-toplevel")
-	if err := cmd.Run(); err != nil {
-		return
-	}
-	fmt.Println("checking for updates...")
-	cmd = exec.Command("git", "-C", scriptDir, "pull")
-	cmd.Stdout = os.Stdout
-	if err := cmd.Run(); err != nil {
-		return
-	}
 }
