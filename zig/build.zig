@@ -10,5 +10,6 @@ pub fn build(b: *std.Build) void {
     b.installArtifact(exe);
 
     const run_step = b.step("run", "run the program");
+    run_step.dependOn(b.getInstallStep());
     run_step.dependOn(&b.addRunArtifact(exe).step);
 }
