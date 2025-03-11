@@ -5,5 +5,6 @@ pub fn main() !void {
 
     const strings = ([_][]const u8{ "echo", "CMD OUTPUT" })[0..];
 
-    _ = try @import("./utils/shell.zig").runCmd(std.heap.page_allocator, strings);
+    const res = try @import("./utils/shell.zig").runCmd(std.heap.page_allocator, strings);
+    res.deinit();
 }
