@@ -81,9 +81,11 @@ func runner() error {
 		if err != nil {
 			return err
 		}
-		oldDecryptedData, err := utils.DecryptFile(cipherJsonPath, cipherKeyPath)
-		if err != nil {
-			return err
+		oldDecryptedData := ""
+		if _, found := os.LookupEnv("LOCAL"); !found {
+			if oldDecryptedData, err = utils.DecryptFile(cipherJsonPath, cipherKeyPath); err != nil {
+				return err
+			}
 		}
 		if newStoredData != oldDecryptedData {
 			if err := utils.EncryptFile(newStoredData, cipherJsonPath, cipherKeyPath); err != nil {
