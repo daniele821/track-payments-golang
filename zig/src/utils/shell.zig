@@ -34,5 +34,7 @@ pub fn runCmd(allocator: std.mem.Allocator, cmd: []const []const u8) !CmdOutput 
 
 test "successful command" {
     const res = try runCmd(std.testing.allocator, ([_][]const u8{ "echo", "CMD OUTPUT" })[0..]);
-    res.deinit();
+    defer res.deinit();
+    try std.testing.expectEqualSlices(u8, "CMD OUTPUT\n", res.stdout);
+    try std.testing.expectEqualSlices(u8, "", res.stderr);
 }
