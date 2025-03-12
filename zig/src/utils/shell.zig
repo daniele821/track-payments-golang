@@ -44,7 +44,7 @@ pub fn runCmd(allocator: std.mem.Allocator, cmd: []const []const u8, opts: CmdOp
 test "successful command" {
     const allocator = std.testing.allocator;
     const cmd = ([_][]const u8{ "echo", "CMD OUTPUT" })[0..];
-    const opts = .{ .stderr = false, .stdout = true };
+    const opts: CmdOptions = .{ .stderr = false, .stdout = true };
     const res = try runCmd(allocator, cmd, opts);
     defer res.deinit();
     try std.testing.expectEqualSlices(u8, "CMD OUTPUT\n", res.stdout.?);
@@ -54,7 +54,7 @@ test "successful command" {
 test "fail command" {
     const allocator = std.testing.allocator;
     const cmd = ([_][]const u8{"adawdawdawdawd"})[0..];
-    const opts = .{ .stderr = false, .stdout = true };
+    const opts: CmdOptions = .{ .stderr = false, .stdout = true };
     _ = runCmd(allocator, cmd, opts) catch |err| {
         try std.testing.expectEqual(err, error.FileNotFound);
         return;
