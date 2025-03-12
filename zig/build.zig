@@ -17,7 +17,7 @@ pub fn build(b: *std.Build) void {
     // add a test step
     const test_step = b.step("test", "Run the tests");
     const tests = b.addTest(.{
-        .root_source_file = b.path("src/unit_tests.zig"),
+        .root_source_file = b.path("src/tests.zig"),
     });
     test_step.dependOn(&b.addRunArtifact(tests).step);
 }
