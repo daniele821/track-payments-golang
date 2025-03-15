@@ -1,27 +1,43 @@
 package utils
 
 import (
-	"bytes"
-	"errors"
+	"crypto/aes"
+	"crypto/cipher"
 	"os"
-	"os/exec"
 )
 
 func DecryptFile(cipherFile, keyFile string) (string, error) {
-	if _, err := exec.LookPath("openssl"); err != nil {
+	// Reading ciphertext file
+	cipherText, err := os.ReadFile(cipherFile)
+	if err != nil {
 		return "", err
 	}
 
-	// Capture decrypted output
-	var stdout bytes.Buffer
-	cmd := exec.Command("openssl", "enc", "-d", "-aes-256-cbc", "-in", cipherFile, "-k", keyFile, "-pbkdf2")
-	cmd.Stdout = &stdout
-	cmd.Stderr = os.Stderr // Capture errors
-
-	// Run command
-	if err := cmd.Run(); err != nil {
-		return "", errors.New("decryption failed: " + err.Error())
+	// Reading key
+	key, err := os.ReadFile(keyFile)
+	if err != nil {
+		return "", err
 	}
 
-	return stdout.String(), nil
+	// Creating block of algorithm
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return "", err
+	}
+
+	// Creating GCM mode
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return "", err
+	}
+
+	// Deattached nonce and decrypt
+	nonce := cipherText[:gcm.NonceSize()]
+	cipherText = cipherText[gcm.NonceSize():]
+	plainTextByte, err := gcm.Open(nil, nonce, cipherText, nil)
+	if err != nil {
+		return "", err
+	}
+
+	return string(plainTextByte), nil
 }

@@ -1,23 +1,45 @@
 package utils
 
 import (
-	"bytes"
-	"errors"
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/rand"
+	"io"
 	"os"
-	"os/exec"
 )
 
 func EncryptFile(plainText, cipherFile, keyFile string) error {
-	if _, err := exec.LookPath("openssl"); err != nil {
+	// Reading key
+	key, err := os.ReadFile(keyFile)
+	if err != nil {
 		return err
 	}
-	cmd := exec.Command("openssl", "enc", "-aes-256-cbc", "-out", cipherFile, "-k", keyFile, "-pbkdf2")
-	cmd.Stdin = bytes.NewBufferString(plainText)
-	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdout
-	err := cmd.Run()
+
+	// Creating block of algorithm
+	block, err := aes.NewCipher(key)
 	if err != nil {
-		return errors.New("encryption failed!")
+		return err
+	}
+
+	// Creating GCM mode
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return err
+	}
+
+	// Generating random nonce
+	nonce := make([]byte, gcm.NonceSize())
+	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
+		return err
+	}
+
+	// Decrypt file
+	cipherText := gcm.Seal(nonce, nonce, []byte(plainText), nil)
+
+	// Writing ciphertext file
+	err = os.WriteFile(cipherFile, cipherText, 0600)
+	if err != nil {
+		return err
 	}
 	return nil
 }
