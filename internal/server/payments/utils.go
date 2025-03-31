@@ -2,6 +2,7 @@ package payments
 
 import (
 	"errors"
+	"strconv"
 	"time"
 
 	"github.com/google/btree"
@@ -16,6 +17,9 @@ func (allPayments *AllPayments) checks(date, city, shop, paymentMethod, item *st
 		_, err := parseDate(*date)
 		if err != nil {
 			return errors.New("invalid date: " + err.Error())
+		}
+		if len(*date) != 16 {
+			return errors.New("invalid len of date: " + *date + " actual len:" + strconv.Itoa(len(*date)) + " expected len: 16")
 		}
 		// FUTURE DATA CHECKS:
 		// dateNow := time.Now().Format("2006/01/02 15:04")
