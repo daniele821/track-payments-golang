@@ -5,20 +5,10 @@ SCRIPT_DIR="$(dirname "${SCRIPT_PWD}")"
 
 cd "$SCRIPT_DIR" || exit 1
 
-if [[ "$#" -eq "2" ]]; then
+GOMAIN_PATH="${SCRIPT_DIR}/cmd/payments/main.go"
+
+if [[ "$#" -eq "1" ]]; then
     BIN_PATH="$1"
-    case "$2" in
-    payment | payments)
-        GOMAIN_PATH="${SCRIPT_DIR}/cmd/payments/main.go"
-        ;;
-    decrypt | crypto | encrypt)
-        GOMAIN_PATH="${SCRIPT_DIR}/cmd/decrypt/main.go"
-        ;;
-    *)
-        echo 'invalid second parameter'
-        exit 1
-        ;;
-    esac
 else
     echo 'invalid amount of parameters'
     exit 1
