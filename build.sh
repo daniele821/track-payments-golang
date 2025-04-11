@@ -20,11 +20,11 @@ if [[ -f "$BIN_PATH" ]]; then
     other_file="$BIN_PATH"
 
     if [[ $(stat -c %Y "$latest_go_file") -gt $(stat -c %Y "$other_file") ]]; then
-        echo 'compiling program...'
+        echo 'compiling program (payments) ...'
         [[ -f "$BIN_PATH" ]] && rm "$BIN_PATH"
         go build -o "$BIN_PATH" "$GOMAIN_PATH"
     fi
 else
-    echo 'compiling program...'
+    echo 'compiling program (payments) ...'
     go build -o "$BIN_PATH" "$GOMAIN_PATH"
 fi
