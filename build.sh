@@ -25,5 +25,6 @@ if [[ -f "$BIN_PATH" ]]; then
         go build -o "$BIN_PATH" "$GOMAIN_PATH"
     fi
 else
+    echo 'compiling program...'
     go build -o "$BIN_PATH" "$GOMAIN_PATH"
 fi

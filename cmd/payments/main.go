@@ -54,11 +54,6 @@ func runner() error {
 		fromStdin = true
 	} else if err != nil {
 		return err
-	} else if _, found := os.LookupEnv("LOCAL"); found {
-		allPayments, err = payments.NewAllPaymentsFromjsonFile(jsonLocalPath)
-		if err != nil {
-			return err
-		}
 	} else {
 		storedData, err = utils.DecryptFile(cipherJsonPath, cipherKeyPath)
 		if err != nil {
@@ -76,16 +71,14 @@ func runner() error {
 	}
 
 	// save changes to encrypted file
-	if _, found := os.LookupEnv("DRYRUN"); !found && !fromStdin {
+	if !fromStdin {
 		newStoredData, err := allPayments.DumpJson(false)
 		if err != nil {
 			return err
 		}
 		oldDecryptedData := ""
-		if _, found := os.LookupEnv("LOCAL"); !found {
-			if oldDecryptedData, err = utils.DecryptFile(cipherJsonPath, cipherKeyPath); err != nil {
-				return err
-			}
+		if oldDecryptedData, err = utils.DecryptFile(cipherJsonPath, cipherKeyPath); err != nil {
+			return err
 		}
 		if newStoredData != oldDecryptedData {
 			if err := utils.EncryptFile(newStoredData, cipherJsonPath, cipherKeyPath); err != nil {
