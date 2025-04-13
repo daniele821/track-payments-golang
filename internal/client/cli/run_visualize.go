@@ -159,7 +159,12 @@ func visualizeAggregated(data payments.ReadOnlyBTree[payments.Payment], from, to
 			boxData = append(boxData, [][]string{row})
 		}
 	}
-	fmt.Print(fmtBox(boxData, 1, 1, nil))
+	fmt.Print(fmtBox(boxData, 1, 1, []cell{
+		{box: 0, row: 0, col: -1, align: leftAlign},
+		{box: -1, row: -1, col: 5, align: rightAlign},
+		{box: -1, row: -1, col: 7, align: rightAlign},
+		{box: -1, row: -1, col: 9, align: rightAlign},
+	}))
 }
 
 func reorgData(data [][][]string) [][][]string {
