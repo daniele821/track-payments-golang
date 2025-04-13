@@ -160,9 +160,12 @@ func visualizeAggregated(data payments.ReadOnlyBTree[payments.Payment], from, to
 		}
 	}
 	fmt.Print(fmtBox(boxData, 1, 1, []cell{
-		{box: 0, row: 0, col: -1, align: leftAlign},
+		{box: 0, row: 0, col: -1, align: centerLeftAlign},
+		{box: -1, row: -1, col: 4, align: rightAlign},
 		{box: -1, row: -1, col: 5, align: rightAlign},
+		{box: -1, row: -1, col: 6, align: rightAlign},
 		{box: -1, row: -1, col: 7, align: rightAlign},
+		{box: -1, row: -1, col: 8, align: rightAlign},
 		{box: -1, row: -1, col: 9, align: rightAlign},
 	}))
 }
