@@ -61,7 +61,7 @@ func visualizePayment(data payments.ReadOnlyBTree[payments.Payment], from, to *s
 		fmt.Print(fmtBox2(boxData, 1, 1, []cell{
 			{-1, -1, 3, rightAlign},
 			{-1, -1, 8, rightAlign},
-			{0, 0, -1, leftAlign},
+			{0, 0, -1, centerLeftAlign},
 		}))
 	}
 	return boxData
@@ -89,7 +89,7 @@ func visualizeTime(data payments.ReadOnlyBTree[payments.Payment], from, to *stri
 	if print {
 		fmt.Print(fmtBox(newData, 1, 1, []cell{
 			{-1, -1, 3, rightAlign},
-			{0, 0, -1, leftAlign},
+			{0, 0, -1, centerLeftAlign},
 		}))
 	}
 	return newData
@@ -147,7 +147,7 @@ func visualizeDetail(data payments.ReadOnlyBTree[payments.Payment], from, to *st
 		{-1, -1, 3, rightAlign},
 		{-1, -1, 8, rightAlign},
 		{-1, -1, 11, rightAlign},
-		{0, 0, -1, leftAlign},
+		{0, 0, -1, centerLeftAlign},
 	}))
 }
 
